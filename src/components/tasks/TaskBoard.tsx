@@ -1,11 +1,13 @@
 
 import React from 'react';
-import { Task } from '@/contexts/ProjectContext';
+import { Task, Status } from '@/contexts/ProjectContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TasksList } from '@/components/TasksList';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
+import { NewTaskForm } from '@/components/NewTaskForm';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 interface TaskBoardProps {
   todoTasks: Task[];
@@ -24,9 +26,21 @@ export function TaskBoard({ todoTasks, inProgressTasks, completedTasks }: TaskBo
               {todoTasks.length}
             </Badge>
           </CardTitle>
-          <Button size="sm" variant="ghost" className="h-7 w-7 p-0 rounded-full">
-            <Plus size={16} />
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button size="sm" variant="ghost" className="h-7 w-7 p-0 rounded-full">
+                <Plus size={16} />
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Ajouter une nouvelle tâche</DialogTitle>
+              </DialogHeader>
+              <div className="py-4">
+                <NewTaskForm initialStatus="todo" />
+              </div>
+            </DialogContent>
+          </Dialog>
         </CardHeader>
         <CardContent className="pt-4 px-3 flex-1 overflow-auto">
           <TasksList tasks={todoTasks} />
@@ -41,9 +55,21 @@ export function TaskBoard({ todoTasks, inProgressTasks, completedTasks }: TaskBo
               {inProgressTasks.length}
             </Badge>
           </CardTitle>
-          <Button size="sm" variant="ghost" className="h-7 w-7 p-0 rounded-full">
-            <Plus size={16} />
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button size="sm" variant="ghost" className="h-7 w-7 p-0 rounded-full">
+                <Plus size={16} />
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Ajouter une nouvelle tâche</DialogTitle>
+              </DialogHeader>
+              <div className="py-4">
+                <NewTaskForm initialStatus="in_progress" />
+              </div>
+            </DialogContent>
+          </Dialog>
         </CardHeader>
         <CardContent className="pt-4 px-3 flex-1 overflow-auto">
           <TasksList tasks={inProgressTasks} />
@@ -58,9 +84,21 @@ export function TaskBoard({ todoTasks, inProgressTasks, completedTasks }: TaskBo
               {completedTasks.length}
             </Badge>
           </CardTitle>
-          <Button size="sm" variant="ghost" className="h-7 w-7 p-0 rounded-full">
-            <Plus size={16} />
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button size="sm" variant="ghost" className="h-7 w-7 p-0 rounded-full">
+                <Plus size={16} />
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Ajouter une nouvelle tâche</DialogTitle>
+              </DialogHeader>
+              <div className="py-4">
+                <NewTaskForm initialStatus="done" />
+              </div>
+            </DialogContent>
+          </Dialog>
         </CardHeader>
         <CardContent className="pt-4 px-3 flex-1 overflow-auto">
           <TasksList tasks={completedTasks} />
