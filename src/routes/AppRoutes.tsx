@@ -19,6 +19,7 @@ import Help from "@/pages/Help";
 import Performance from "@/pages/analytics/Performance";
 import UserActivity from "@/pages/analytics/UserActivity";
 import ProjectView from "@/pages/ProjectView";
+import SaasOverview from "@/pages/SaasOverview";
 
 // Lazy loaded components
 const Growth = lazy(() => import('@/pages/analytics/Growth'));
@@ -93,6 +94,9 @@ export function AppRoutes() {
       <Route path="/billing" element={<AppLayout><Billing /></AppLayout>} />
       <Route path="/help" element={<AppLayout><Help /></AppLayout>} />
       <Route path="/projects/:projectId" element={<AppLayout><ProjectView /></AppLayout>} />
+      
+      {/* SaaS Overview route */}
+      <Route path="/saas" element={<AppLayout><SaasOverview /></AppLayout>} />
       
       {/* 404 route */}
       <Route path="*" element={<NotFound />} />

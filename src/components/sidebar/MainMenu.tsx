@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { 
   Home, 
@@ -27,6 +26,7 @@ export const mainMenuItems = [
   { name: 'Stats', path: '/stats', icon: <BarChart size={18} /> },
   { name: 'Analytics', path: '/analytics', icon: <ChartBar size={18} /> },
   { name: 'Reports', path: '/reports', icon: <FileText size={18} /> },
+  { name: 'SaaS Overview', path: '/saas', icon: <ChartBar size={18} /> },
   
   // Team & Settings
   { name: 'Team', path: '/team', icon: <Users size={18} /> },
@@ -36,7 +36,6 @@ export const mainMenuItems = [
   { name: 'Help', path: '/help', icon: <HelpCircle size={18} /> },
 ];
 
-// Update SidebarNavigation to group menu items
 export function MainMenu() {
   return null; // This component is now deprecated in favor of SidebarNavigation
 }
