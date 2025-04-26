@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { NewTaskForm } from '@/components/NewTaskForm';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Link } from 'react-router-dom';
 
 interface TaskSidebarProps {
   upcomingDeadlines: Task[];
@@ -103,8 +104,13 @@ export function TaskSidebar({ upcomingDeadlines }: TaskSidebarProps) {
               </div>
             </div>
             
-            <Button variant="outline" size="sm" className="w-full">
-              View Time Reports
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="w-full"
+              asChild
+            >
+              <Link to="/time-tracking">View Time Reports</Link>
             </Button>
           </div>
         </CardContent>
