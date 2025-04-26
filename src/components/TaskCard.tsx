@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { format, isToday, isYesterday, isTomorrow } from 'date-fns';
 import { useProject, Task, Priority } from '../contexts/ProjectContext';
@@ -7,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { Avatar } from '@/components/ui/avatar';
 import { AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { TaskTimer } from './TaskTimer';
 
 interface TaskCardProps {
   task: Task;
@@ -64,6 +64,8 @@ export function TaskCard({ task }: TaskCardProps) {
           </Badge>
         ))}
       </div>
+      
+      <TaskTimer taskId={task.id} />
       
       <div className="flex items-center justify-between mt-4 pt-2 border-t border-gray-100">
         {assignee ? (

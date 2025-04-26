@@ -33,6 +33,15 @@ export interface User {
   avatar: string;
 }
 
+interface TimeEntry {
+  id: string;
+  taskId: string;
+  userId: string;
+  startTime: string;
+  endTime?: string;
+  duration: number; // in seconds
+}
+
 interface ProjectContextType {
   projects: Project[];
   tasks: Task[];
@@ -43,6 +52,10 @@ interface ProjectContextType {
   setCurrentView: (view: 'kanban' | 'list' | 'calendar' | 'timeline') => void;
   addTask: (task: Omit<Task, 'id' | 'createdAt'>) => void;
   updateTaskStatus: (taskId: string, status: Status) => void;
+  timeEntries: TimeEntry[];
+  startTimeTracking: (taskId: string) => void;
+  stopTimeTracking: (taskId: string) => void;
+  getTaskTimeEntries: (taskId: string) => TimeEntry[];
 }
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
@@ -53,6 +66,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   const [usersList] = useState<User[]>(users);
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
   const [currentView, setCurrentView] = useState<'kanban' | 'list' | 'calendar' | 'timeline'>('kanban');
+  const [timeEntries, setTimeEntries] = useState<TimeEntry[]>([]);
 
   const addTask = (task: Omit<Task, 'id' | 'createdAt'>) => {
     const newTask: Task = {
@@ -71,6 +85,35 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     );
   };
 
+  const startTimeTracking = (taskId: string) => {
+    const newEntry: TimeEntry = {
+      id: `time-${Date.now()}`,
+      taskId,
+      userId: 'current-user', // In a real app, this would come from auth
+      startTime: new Date().toISOString(),
+      duration: 0
+    };
+    setTimeEntries([...timeEntries, newEntry]);
+  };
+
+  const stopTimeTracking = (taskId: string) => {
+    setTimeEntries(entries =>
+      entries.map(entry =>
+        entry.taskId === taskId && !entry.endTime
+          ? {
+              ...entry,
+              endTime: new Date().toISOString(),
+              duration: Math.floor((new Date().getTime() - new Date(entry.startTime).getTime()) / 1000)
+            }
+          : entry
+      )
+    );
+  };
+
+  const getTaskTimeEntries = (taskId: string) => {
+    return timeEntries.filter(entry => entry.taskId === taskId);
+  };
+
   return (
     <ProjectContext.Provider
       value={{
@@ -83,6 +126,10 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         setCurrentView,
         addTask,
         updateTaskStatus,
+        timeEntries,
+        startTimeTracking,
+        stopTimeTracking,
+        getTaskTimeEntries,
       }}
     >
       {children}
