@@ -56,12 +56,12 @@ export function TimeOverviewChart({ timeEntries, projects, tasks, timeRange }: T
   });
   
   // Prepare chart data in the format recharts expects
-  const chartData = Object.entries(aggregatedData).map(([date, projects]) => {
+  const chartData = Object.entries(aggregatedData).map(([date, projectDurations]) => {
     const dataPoint: any = { date };
     
-    Object.entries(projects).forEach(([projectId, duration]) => {
-      // Fix: Instead of finding in projects which is a number, we need to find in the projects array
-      const project = projects.find((p: Project) => p.id === projectId);
+    Object.entries(projectDurations).forEach(([projectId, duration]) => {
+      // Use the projects array passed as a prop to find the project by ID
+      const project = projects.find(p => p.id === projectId);
       const projectName = project ? project.name : 'Unknown';
       dataPoint[projectName] = duration;
     });
