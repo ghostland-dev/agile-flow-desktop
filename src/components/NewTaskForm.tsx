@@ -1,10 +1,18 @@
+
 import React, { useCallback } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Status } from '../types/project';
 import { useTaskForm } from '../hooks/useTaskForm';
 import { TaskFormFields } from './task-form/TaskFormFields';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+  DrawerDescription,
+} from '@/components/ui/drawer';
 
 interface NewTaskFormProps {
   initialStatus?: Status;
@@ -14,10 +22,9 @@ interface NewTaskFormProps {
 export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: NewTaskFormProps) {
   const [open, setOpen] = React.useState(false);
   const { formState, setFormState, isSubmitting, handleSubmit } = useTaskForm(initialStatus, () => setOpen(false));
-  // Create a stable ID for accessibility
-  const dialogDescriptionId = React.useId();
+  const drawerDescriptionId = React.useId();
 
-  const closeDialog = useCallback(() => {
+  const closeDrawer = useCallback(() => {
     setOpen(false);
   }, []);
 
@@ -27,7 +34,7 @@ export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: New
         formState={formState}
         setFormState={setFormState}
         isSubmitting={isSubmitting}
-        onCancel={closeDialog}
+        onCancel={closeDrawer}
         showCancel={openInDialog}
       />
     </form>
@@ -38,24 +45,28 @@ export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: New
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+    <Drawer open={open} onOpenChange={setOpen}>
+      <DrawerTrigger asChild>
         <Button className="flex items-center gap-2">
           <Plus size={16} />
           Add Task
         </Button>
-      </DialogTrigger>
-      <DialogContent aria-describedby={dialogDescriptionId} className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>Add New Task</DialogTitle>
-          <div id={dialogDescriptionId}>
-            <DialogDescription>
-              Create a new task with the details below
-            </DialogDescription>
+      </DrawerTrigger>
+      <DrawerContent aria-describedby={drawerDescriptionId}>
+        <div className="mx-auto w-full max-w-lg">
+          <DrawerHeader>
+            <DrawerTitle>Add New Task</DrawerTitle>
+            <div id={drawerDescriptionId}>
+              <DrawerDescription>
+                Create a new task with the details below
+              </DrawerDescription>
+            </div>
+          </DrawerHeader>
+          <div className="p-4">
+            <TaskFormContent />
           </div>
-        </DialogHeader>
-        <TaskFormContent />
-      </DialogContent>
-    </Dialog>
+        </div>
+      </DrawerContent>
+    </Drawer>
   );
 }

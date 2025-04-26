@@ -19,7 +19,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const [viewingTask, setViewingTask] = useState<Task | null>(null);
   const [deleteConfirmTask, setDeleteConfirmTask] = useState<Task | null>(null);
   
-  const [formValues, setFormValues] = useState<Partial<Task> & { tags?: string[] | string }>({});
+  const [formValues, setFormValues] = useState<Partial<Task>>({});
 
   const handleEditClick = (task: Task) => {
     setEditingTask(task);
@@ -43,19 +43,15 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingTask && formValues) {
-      let tagsArray: string[] = [];
-      
-      if (Array.isArray(formValues.tags)) {
-        tagsArray = formValues.tags;
-      } else if (typeof formValues.tags === 'string') {
-        tagsArray = formValues.tags.split(',').map((tag) => tag.trim()).filter(Boolean);
-      } else if (editingTask.tags) {
-        tagsArray = editingTask.tags;
-      }
+      const tags = Array.isArray(formValues.tags) 
+        ? formValues.tags 
+        : (typeof formValues.tags === 'string' 
+          ? formValues.tags.split(',').map(tag => tag.trim()).filter(Boolean)
+          : editingTask.tags || []);
 
       updateTask(editingTask.id, {
         ...formValues,
-        tags: tagsArray,
+        tags,
       } as Task);
       
       setEditingTask(null);
@@ -83,7 +79,6 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
     );
   }
 
-  // Generate unique IDs for ARIA attributes
   const viewingTaskDescriptionId = "task-details-description";
   const editingTaskDescriptionId = "task-edit-description";
   const deleteConfirmDescriptionId = "task-delete-description";
