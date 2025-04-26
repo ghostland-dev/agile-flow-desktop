@@ -6,18 +6,18 @@ import { Plus } from 'lucide-react';
 import { AddMemberDialog } from './team/AddMemberDialog';
 
 export function ProjectTeam() {
-  const { users, tasks, currentProject } = useProject();
+  const { users, currentProject, projectMembers } = useProject();
   const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
   
   const projectTeam = currentProject
     ? users.filter(user => 
-        tasks.some(task => 
-          task.project === currentProject.id && 
-          task.assignee === user.id
+        projectMembers.some(member => 
+          member.projectId === currentProject.id && 
+          member.userId === user.id
         )
       )
     : [];
-  
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">

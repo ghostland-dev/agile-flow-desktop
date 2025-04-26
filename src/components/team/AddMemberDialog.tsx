@@ -14,7 +14,7 @@ interface AddMemberDialogProps {
 }
 
 export function AddMemberDialog({ open, onOpenChange }: AddMemberDialogProps) {
-  const { users, currentProject } = useProject();
+  const { users, currentProject, addProjectMember } = useProject();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -25,7 +25,9 @@ export function AddMemberDialog({ open, onOpenChange }: AddMemberDialogProps) {
   );
 
   const handleAddMember = (userId: string) => {
-    // Dans une vraie application, vous appelleriez ici votre API pour ajouter le membre
+    if (!currentProject) return;
+    
+    addProjectMember(userId, currentProject.id);
     toast({
       title: "Member added",
       description: "The team member has been added to the project successfully.",

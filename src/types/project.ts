@@ -1,4 +1,3 @@
-
 export type Priority = 'low' | 'medium' | 'high' | 'urgent';
 export type Status = 'backlog' | 'todo' | 'in_progress' | 'in_review' | 'done';
 
@@ -50,7 +49,12 @@ export interface TimeEntry {
   duration: number;
 }
 
-// Core project context type - only project-specific properties
+export interface ProjectMember {
+  userId: string;
+  projectId: string;
+  joinedAt: string;
+}
+
 export interface ProjectContextType {
   projects: Project[];
   users: User[];
@@ -61,9 +65,10 @@ export interface ProjectContextType {
   setCurrentProject: (project: Project | null) => void;
   setCurrentView: (view: 'kanban' | 'list' | 'calendar' | 'timeline') => void;
   addProject: (project: Omit<Project, 'id'>) => void;
+  projectMembers: ProjectMember[];
+  addProjectMember: (userId: string, projectId: string) => void;
 }
 
-// Task management context type
 export interface TaskContextType {
   tasks: Task[];
   addTask: (task: Omit<Task, 'id' | 'createdAt'>) => void;
@@ -73,7 +78,6 @@ export interface TaskContextType {
   getTaskById: (taskId: string) => Task | undefined;
 }
 
-// Time tracking context type
 export interface TimeTrackingContextType {
   timeEntries: TimeEntry[];
   startTimeTracking: (taskId: string) => void;
@@ -81,7 +85,6 @@ export interface TimeTrackingContextType {
   getTaskTimeEntries: (taskId: string) => TimeEntry[];
 }
 
-// File attachment context type
 export interface FileAttachmentContextType {
   fileAttachments: FileAttachment[];
   getTaskAttachments: (taskId: string) => FileAttachment[];
@@ -89,7 +92,6 @@ export interface FileAttachmentContextType {
   deleteFileAttachment: (fileId: string) => void;
 }
 
-// Combined context type for useProject hook
 export interface CombinedContextType extends 
   ProjectContextType, 
   TaskContextType, 

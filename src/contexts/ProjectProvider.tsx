@@ -1,7 +1,6 @@
-
 import React, { createContext, useState, useEffect } from 'react';
 import { projects, users } from '../utils/mockData';
-import { Project, User, ProjectContextType } from '../types/project';
+import { Project, User, ProjectContextType, ProjectMember } from '../types/project';
 import { loadFromStorage, saveToStorage } from '../utils/storage';
 import { TaskProvider } from './TaskContext';
 import { TimeTrackingProvider } from './TimeTrackingContext';
@@ -19,6 +18,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
   const [currentView, setCurrentView] = useState<'kanban' | 'list' | 'calendar' | 'timeline'>('kanban');
   const [currentUser] = useState<User | null>(users[0] || null);
+  const [projectMembers, setProjectMembers] = useState<ProjectMember[]>([]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -40,6 +40,15 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     setProjectsList(prevProjects => [...prevProjects, newProject]);
   };
 
+  const addProjectMember = (userId: string, projectId: string) => {
+    const newMember: ProjectMember = {
+      userId,
+      projectId,
+      joinedAt: new Date().toISOString(),
+    };
+    setProjectMembers(prev => [...prev, newMember]);
+  };
+
   return (
     <ProjectContext.Provider value={{
       projects: projectsList,
@@ -51,6 +60,8 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       setCurrentProject,
       setCurrentView,
       addProject,
+      projectMembers,
+      addProjectMember,
     }}>
       <TaskProvider>
         <TimeTrackingProvider>
