@@ -140,12 +140,12 @@ export function NewTaskForm() {
             
             <div className="space-y-2">
               <label className="text-sm font-medium">Assignee</label>
-              <Select value={assignee || ''} onValueChange={setAssignee}>
+              <Select value={assignee || "unassigned"} onValueChange={setAssignee}>
                 <SelectTrigger>
                   <SelectValue placeholder="Unassigned" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Unassigned</SelectItem>
+                  <SelectItem value="unassigned">Unassigned</SelectItem>
                   <SelectItem value="user-1">Alex Johnson</SelectItem>
                   <SelectItem value="user-2">Sam Chen</SelectItem>
                   <SelectItem value="user-3">Taylor Williams</SelectItem>
