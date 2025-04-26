@@ -9,6 +9,8 @@ import { TaskSidebar } from '@/components/tasks/TaskSidebar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ListFilter, CheckCircle } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 export default function MyTasks() {
   const { tasks, currentUser, projects } = useProject();
@@ -57,65 +59,87 @@ export default function MyTasks() {
   };
 
   return (
-    <div className="flex-1 p-4 md:p-6 bg-muted/30 min-h-screen">
-      <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex flex-col gap-4">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold">My Tasks</h1>
-            <p className="text-muted-foreground mt-1">Manage and track your assigned tasks</p>
-          </div>
-          
-          <div className="flex flex-col md:flex-row md:items-center gap-4">
-            <div className="flex-1">
-              <TaskFilters 
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-                filterPriority={filterPriority}
-                setFilterPriority={setFilterPriority}
-                handleResetFilters={handleResetFilters}
-              />
-            </div>
-            <NewTaskForm />
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <div className="lg:col-span-3">
-            <Tabs defaultValue="board" className="w-full">
-              <div className="flex items-center justify-between mb-6">
-                <TabsList className="w-full sm:w-auto">
-                  <TabsTrigger value="board" className="flex items-center gap-2">
-                    <ListFilter size={16} />
-                    Board View
-                  </TabsTrigger>
-                  <TabsTrigger value="list" className="flex items-center gap-2">
-                    <CheckCircle size={16} />
-                    List View
-                  </TabsTrigger>
-                </TabsList>
+    <div className="relative flex-1 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-muted/50 to-muted/30 dark:from-background/50 dark:to-background/0" />
+      
+      <div className="relative h-full overflow-auto scrollbar-none">
+        <div className="container mx-auto p-4 md:p-6 space-y-6 max-w-7xl">
+          {/* Header Section */}
+          <div className="flex flex-col gap-4">
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-2">
+                <h1 className="text-2xl md:text-3xl font-bold tracking-tight">My Tasks</h1>
+                <Badge variant="outline" className="rounded-full">
+                  {filteredTasks.length} tasks
+                </Badge>
               </div>
-              
-              <TabsContent value="board" className="mt-0">
-                <TaskBoard 
-                  todoTasks={todoTasks}
-                  inProgressTasks={inProgressTasks}
-                  completedTasks={completedTasks}
+              <p className="text-muted-foreground">
+                Manage and track your assigned tasks efficiently
+              </p>
+            </div>
+            
+            <div className="flex flex-col md:flex-row md:items-center gap-4">
+              <div className="flex-1">
+                <TaskFilters 
+                  searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}
+                  filterPriority={filterPriority}
+                  setFilterPriority={setFilterPriority}
+                  handleResetFilters={handleResetFilters}
                 />
-              </TabsContent>
-              
-              <TabsContent value="list" className="mt-0">
-                <TaskListView 
-                  tasks={filteredTasks}
-                  projects={projects}
-                  getProjectDetails={getProjectDetails}
-                />
-              </TabsContent>
-            </Tabs>
+              </div>
+              <NewTaskForm />
+            </div>
           </div>
           
-          {!isMobile && (
-            <TaskSidebar upcomingDeadlines={upcomingDeadlines} />
-          )}
+          {/* Main Content */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div className="lg:col-span-3">
+              <Tabs defaultValue="board" className="w-full">
+                <div className="flex items-center justify-between mb-6">
+                  <TabsList className={cn(
+                    "w-full sm:w-auto",
+                    "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+                  )}>
+                    <TabsTrigger value="board" className="flex items-center gap-2 data-[state=active]:bg-primary/10">
+                      <ListFilter size={16} />
+                      Board View
+                    </TabsTrigger>
+                    <TabsTrigger value="list" className="flex items-center gap-2 data-[state=active]:bg-primary/10">
+                      <CheckCircle size={16} />
+                      List View
+                    </TabsTrigger>
+                  </TabsList>
+                </div>
+                
+                <div className="relative">
+                  <TabsContent value="board" className="mt-0 space-y-4">
+                    <TaskBoard 
+                      todoTasks={todoTasks}
+                      inProgressTasks={inProgressTasks}
+                      completedTasks={completedTasks}
+                    />
+                  </TabsContent>
+                  
+                  <TabsContent value="list" className="mt-0 space-y-4">
+                    <TaskListView 
+                      tasks={filteredTasks}
+                      projects={projects}
+                      getProjectDetails={getProjectDetails}
+                    />
+                  </TabsContent>
+                </div>
+              </Tabs>
+            </div>
+            
+            {!isMobile && (
+              <div className="hidden lg:block">
+                <div className="sticky top-4">
+                  <TaskSidebar upcomingDeadlines={upcomingDeadlines} />
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
