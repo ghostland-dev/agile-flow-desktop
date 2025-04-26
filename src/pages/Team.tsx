@@ -33,7 +33,7 @@ export default function Team() {
       tasksCount: userTasks.length,
       completedTasks: userTasks.filter(task => task.status === 'done').length,
       lastActivity: userTasks.length > 0 ? 
-        new Date(Math.max(...userTasks.map(t => new Date(t.updatedAt || t.createdAt).getTime()))) : 
+        new Date(Math.max(...userTasks.map(t => new Date(t.createdAt).getTime()))) : 
         null,
       projectsWorkedOn,
       role: user.email.includes('manager') ? 'Project Manager' : 
@@ -55,7 +55,7 @@ export default function Team() {
       title: "Invitation sent",
       description: `Invitation email has been sent to ${inviteEmail}`,
     });
-    setInviteDialogOpen(false);
+    setIsInviteDialogOpen(false);
     setInviteEmail('');
   };
   
