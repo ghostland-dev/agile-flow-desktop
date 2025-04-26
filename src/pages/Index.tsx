@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -9,7 +8,7 @@ const Index = () => {
   const navigate = useNavigate();
   
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 transition-all">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 transition-all overflow-y-auto">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 bg-background/90 backdrop-blur-sm z-10 px-6 py-4 border-b shadow-sm">
         <div className="container mx-auto flex items-center justify-between">
@@ -33,7 +32,7 @@ const Index = () => {
       </header>
       
       {/* Hero section */}
-      <section className="pt-36 pb-24 px-6 relative overflow-hidden">
+      <section className="pt-36 pb-24 px-6 relative">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent z-0"></div>
         <div className="container mx-auto text-center relative z-10">
           <span className="px-3 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full mb-6 inline-block">
