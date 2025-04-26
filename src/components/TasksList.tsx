@@ -22,7 +22,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [viewingTask, setViewingTask] = useState<Task | null>(null);
   const [deleteConfirmTask, setDeleteConfirmTask] = useState<Task | null>(null);
-  const [formValues, setFormValues] = useState<Partial<Task & { tags: string | string[] }>>({});
+  const [formValues, setFormValues] = useState<Partial<Task & { tags: string[] | string }>>({});
 
   const getPriorityClasses = (priority: string) => {
     switch(priority) {
