@@ -11,7 +11,7 @@ export interface TaskFormState {
   status: Status;
   dueDate: Date | undefined;
   assignee: string | undefined;
-  tags: string;
+  tags: string;  // Store as string for form input, convert to array when saving
 }
 
 export const useTaskForm = (initialStatus: Status = 'todo', onSuccess?: () => void) => {
@@ -55,6 +55,12 @@ export const useTaskForm = (initialStatus: Status = 'todo', onSuccess?: () => vo
     setIsSubmitting(true);
     
     try {
+      // Convert tags string to array
+      const tagsArray = formState.tags
+        .split(',')
+        .map(tag => tag.trim())
+        .filter(Boolean);
+        
       addTask({
         title: formState.title,
         description: formState.description,
@@ -63,7 +69,7 @@ export const useTaskForm = (initialStatus: Status = 'todo', onSuccess?: () => vo
         dueDate: formState.dueDate ? formState.dueDate.toISOString() : undefined,
         assignee: formState.assignee,
         project: currentProject.id,
-        tags: formState.tags.split(',').map(tag => tag.trim()).filter(Boolean),
+        tags: tagsArray,
         timeTracked: 0,
       });
       

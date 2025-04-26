@@ -1,7 +1,7 @@
+
 import React, { useState } from 'react';
 import { useProject } from '../hooks/useProject';
 import { Task } from '../types/project';
-import { TaskCard } from './TaskCard';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { AlertCircle, Calendar, CheckCircle, Clock, Edit, Eye, Trash2 } from 'lucide-react';
@@ -83,7 +83,11 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
 
   const handleEditClick = (task: Task) => {
     setEditingTask(task);
-    setFormValues({ ...task });
+    setFormValues({ 
+      ...task,
+      // Convert tags array to comma-separated string for the input field
+      tags: task.tags.join(', ')
+    });
   };
 
   const handleViewClick = (task: Task) => {
@@ -99,8 +103,8 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
       deleteTask(deleteConfirmTask.id);
       setDeleteConfirmTask(null);
       toast({
-        title: "Tâche supprimée",
-        description: "La tâche a été supprimée avec succès"
+        title: "Task deleted",
+        description: "The task has been successfully deleted"
       });
     }
   };
@@ -108,11 +112,19 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingTask && formValues) {
-      updateTask(editingTask.id, formValues);
+      const tags = typeof formValues.tags === 'string' 
+        ? formValues.tags.split(',').map(tag => tag.trim()).filter(Boolean)
+        : formValues.tags;
+
+      updateTask(editingTask.id, {
+        ...formValues,
+        tags
+      });
+      
       setEditingTask(null);
       toast({
-        title: "Tâche mise à jour",
-        description: "La tâche a été modifiée avec succès"
+        title: "Task updated",
+        description: "The task has been successfully modified"
       });
     }
   };
@@ -130,13 +142,13 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
     <div className="space-y-3">
       {tasks.length === 0 ? (
         <div className="p-6 text-center text-muted-foreground animate-fade-in">
-          Aucune tâche trouvée. Créez une nouvelle tâche pour commencer.
+          No tasks found. Create a new task to get started.
         </div>
       ) : (
         tasks.map(task => (
           <div 
             key={task.id} 
-            className="p-4 bg-card border rounded-lg shadow-sm hover:shadow transition-all animate-fade-in hover-lift"
+            className="p-4 bg-card border rounded-lg shadow-sm hover:shadow transition-all animate-fade-in hover:translate-y-[-2px]"
           >
             <div className="flex items-start justify-between">
               <div className="flex-1">
@@ -214,7 +226,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
                 onClick={() => handleViewClick(task)}
               >
                 <Eye size={16} className="mr-1" />
-                Consulter
+                View
               </Button>
               <Button 
                 variant="ghost" 
@@ -223,7 +235,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
                 onClick={() => handleEditClick(task)}
               >
                 <Edit size={16} className="mr-1" />
-                Modifier
+                Edit
               </Button>
               <Button 
                 variant="ghost" 
@@ -232,7 +244,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
                 onClick={() => handleDeleteClick(task)}
               >
                 <Trash2 size={16} className="mr-1" />
-                Supprimer
+                Delete
               </Button>
             </div>
           </div>
@@ -253,7 +265,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
             
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">Statut:</p>
+                <p className="text-sm text-muted-foreground mb-1">Status:</p>
                 <Badge 
                   variant="outline" 
                   className={cn(
@@ -267,7 +279,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
                 </Badge>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground mb-1">Priorité:</p>
+                <p className="text-sm text-muted-foreground mb-1">Priority:</p>
                 <Badge 
                   variant="outline" 
                   className={cn(
@@ -293,11 +305,11 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
             
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">Date d'échéance:</p>
-                <p className="text-sm">{viewingTask?.dueDate ? formatDate(viewingTask.dueDate) : 'Non définie'}</p>
+                <p className="text-sm text-muted-foreground mb-1">Due date:</p>
+                <p className="text-sm">{viewingTask?.dueDate ? formatDate(viewingTask.dueDate) : 'Not set'}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground mb-1">Temps suivi:</p>
+                <p className="text-sm text-muted-foreground mb-1">Time tracked:</p>
                 <p className="text-sm">{viewingTask?.timeTracked || 0} minutes</p>
               </div>
             </div>
@@ -309,7 +321,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
       <Dialog open={!!editingTask} onOpenChange={(open) => !open && setEditingTask(null)}>
         <DialogContent className="sm:max-w-[550px]">
           <DialogHeader>
-            <DialogTitle>Modifier la tâche</DialogTitle>
+            <DialogTitle>Edit Task</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleEditSubmit} className="space-y-4 mt-2">
             <div>
@@ -317,7 +329,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
                 name="title" 
                 value={formValues.title || ''} 
                 onChange={handleInputChange} 
-                placeholder="Titre de la tâche" 
+                placeholder="Task title" 
                 className="w-full" 
               />
             </div>
@@ -327,7 +339,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
                 name="description" 
                 value={formValues.description || ''} 
                 onChange={handleInputChange} 
-                placeholder="Description de la tâche" 
+                placeholder="Task description" 
                 className="w-full" 
                 rows={4} 
               />
@@ -335,53 +347,47 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
             
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm font-medium mb-1">Statut:</p>
+                <p className="text-sm font-medium mb-1">Status:</p>
                 <Select 
                   value={formValues.status} 
                   onValueChange={(value) => handleSelectChange('status', value)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Sélectionner un statut" />
+                    <SelectValue placeholder="Select status" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="todo">To Do</SelectItem>
-                    <SelectItem value="in_progress">En cours</SelectItem>
-                    <SelectItem value="in_review">En révision</SelectItem>
-                    <SelectItem value="done">Terminé</SelectItem>
+                    <SelectItem value="in_progress">In Progress</SelectItem>
+                    <SelectItem value="in_review">In Review</SelectItem>
+                    <SelectItem value="done">Done</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div>
-                <p className="text-sm font-medium mb-1">Priorité:</p>
+                <p className="text-sm font-medium mb-1">Priority:</p>
                 <Select 
                   value={formValues.priority} 
                   onValueChange={(value) => handleSelectChange('priority', value)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Sélectionner une priorité" />
+                    <SelectValue placeholder="Select priority" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="low">Basse</SelectItem>
-                    <SelectItem value="medium">Moyenne</SelectItem>
-                    <SelectItem value="high">Haute</SelectItem>
-                    <SelectItem value="urgent">Urgente</SelectItem>
+                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="high">High</SelectItem>
+                    <SelectItem value="urgent">Urgent</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
             
             <div>
-              <p className="text-sm font-medium mb-1">Tags (séparés par des virgules):</p>
+              <p className="text-sm font-medium mb-1">Tags (separated by commas):</p>
               <Input 
                 name="tags"
-                value={formValues.tags ? formValues.tags.join(', ') : ''}
-                onChange={(e) => {
-                  const tagsArray = e.target.value
-                    .split(',')
-                    .map(tag => tag.trim())
-                    .filter(tag => tag !== '');
-                  setFormValues(prev => ({ ...prev, tags: tagsArray }));
-                }}
+                value={typeof formValues.tags === 'string' ? formValues.tags : formValues.tags?.join(', ') || ''}
+                onChange={handleInputChange}
                 placeholder="design, frontend, bug..."
                 className="w-full"
               />
@@ -389,10 +395,10 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
             
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setEditingTask(null)}>
-                Annuler
+                Cancel
               </Button>
               <Button type="submit">
-                Mettre à jour
+                Update
               </Button>
             </DialogFooter>
           </form>
@@ -403,17 +409,17 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
       <Dialog open={!!deleteConfirmTask} onOpenChange={(open) => !open && setDeleteConfirmTask(null)}>
         <DialogContent className="sm:max-w-[400px]">
           <DialogHeader>
-            <DialogTitle>Confirmer la suppression</DialogTitle>
+            <DialogTitle>Confirm deletion</DialogTitle>
             <DialogDescription>
-              Êtes-vous sûr de vouloir supprimer cette tâche ? Cette action ne peut pas être annulée.
+              Are you sure you want to delete this task? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4">
             <Button variant="outline" onClick={() => setDeleteConfirmTask(null)}>
-              Annuler
+              Cancel
             </Button>
             <Button variant="destructive" onClick={handleDeleteConfirm}>
-              Supprimer
+              Delete
             </Button>
           </DialogFooter>
         </DialogContent>

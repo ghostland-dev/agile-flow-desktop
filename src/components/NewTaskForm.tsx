@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
@@ -16,7 +16,7 @@ export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: New
   const [open, setOpen] = React.useState(false);
   const { formState, setFormState, isSubmitting, handleSubmit } = useTaskForm(initialStatus, () => setOpen(false));
   
-  const closeDialog = React.useCallback(() => {
+  const closeDialog = useCallback(() => {
     setOpen(false);
   }, []);
   
@@ -44,7 +44,7 @@ export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: New
           Add Task
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md" aria-describedby="new-task-description">
         <DialogHeader>
           <DialogTitle>Add New Task</DialogTitle>
           <DialogDescription id="new-task-description">

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import { TaskFormState } from '@/hooks/useTaskForm';
 
@@ -9,7 +9,7 @@ interface TagsFieldProps {
 }
 
 export function TagsField({ formState, setFormState }: TagsFieldProps) {
-  const handleTagsChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTagsChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setFormState((prevState) => ({ ...prevState, tags: e.target.value }));
   }, [setFormState]);
 

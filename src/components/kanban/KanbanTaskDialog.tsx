@@ -18,15 +18,17 @@ interface KanbanTaskDialogProps {
 }
 
 export function KanbanTaskDialog({ isOpen, onClose, columnId, columnTitle }: KanbanTaskDialogProps) {
+  const descriptionId = `new-task-${columnId}-description`;
+  
   return (
     <Dialog 
       open={isOpen} 
       onOpenChange={(open) => !open && onClose()}
     >
-      <DialogContent aria-describedby={`new-task-${columnId}-description`}>
+      <DialogContent aria-describedby={descriptionId}>
         <DialogHeader>
           <DialogTitle>Add new task</DialogTitle>
-          <DialogDescription id={`new-task-${columnId}-description`}>
+          <DialogDescription id={descriptionId}>
             Create a new task in the {columnTitle} column
           </DialogDescription>
         </DialogHeader>
