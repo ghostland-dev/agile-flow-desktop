@@ -164,116 +164,57 @@ export function CalendarView() {
             </div>
           </div>
           
-          {viewMode === 'day' ? (
-            <div className="space-y-3">
-              {selectedDayTasks.length === 0 ? (
-                <Card className="p-6">
-                  <div className="flex flex-col items-center justify-center text-center">
-                    <CalendarIcon className="h-12 w-12 text-muted-foreground opacity-50 mb-2" />
-                    <p className="text-muted-foreground">No tasks scheduled for this date</p>
-                    <Button size="sm" variant="outline" className="mt-4 gap-1">
-                      <Plus className="h-4 w-4" />
-                      Add Task
-                    </Button>
+          {selectedDayTasks.length === 0 ? (
+            <Card className="p-6">
+              <div className="flex flex-col items-center justify-center text-center">
+                <CalendarIcon className="h-12 w-12 text-muted-foreground opacity-50 mb-2" />
+                <p className="text-muted-foreground">No tasks scheduled for this date</p>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="mt-4 gap-1"
+                  onClick={() => setIsAddTaskDialogOpen(true)}
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Task
+                </Button>
+              </div>
+            </Card>
+          ) : (
+            selectedDayTasks.map((task) => (
+              <Card key={task.id} className="p-4 hover-lift transition-all">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="font-medium">{task.title}</h3>
+                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                      {task.description}
+                    </p>
                   </div>
-                </Card>
-              ) : (
-                selectedDayTasks.map((task) => (
-                  <Card key={task.id} className="p-4 hover-lift transition-all">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h3 className="font-medium">{task.title}</h3>
-                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                          {task.description}
-                        </p>
-                      </div>
-                      {task.priority === 'urgent' && (
-                        <AlertCircle size={16} className="text-red-500 ml-2" />
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 mt-3">
-                      <span className={cn(
-                        "px-2 py-0.5 rounded-full text-xs",
-                        priorityColors[task.priority]
-                      )}>
-                        {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
-                      </span>
-                      {task.project && (
-                        <span className="text-xs text-muted-foreground flex items-center gap-1">
-                          <div 
-                            className="w-2 h-2 rounded-full" 
-                            style={{ 
-                              backgroundColor: projects.find(p => p.id === task.project)?.color || '#888' 
-                            }} 
-                          />
-                          {projects.find(p => p.id === task.project)?.name}
-                        </span>
-                      )}
-                    </div>
-                  </Card>
-                ))
-              )}
-            </div>
-          ) : viewMode === 'week' ? (
-            <div className="grid grid-cols-7 gap-2">
-              <Card className="p-6 col-span-7">
-                <div className="flex flex-col items-center justify-center text-center">
-                  <CalendarIcon className="h-12 w-12 text-muted-foreground opacity-50 mb-2" />
-                  <p className="text-muted-foreground">Week view coming soon</p>
+                  {task.priority === 'urgent' && (
+                    <AlertCircle size={16} className="text-red-500 ml-2" />
+                  )}
+                </div>
+                <div className="flex items-center gap-2 mt-3">
+                  <span className={cn(
+                    "px-2 py-0.5 rounded-full text-xs",
+                    priorityColors[task.priority]
+                  )}>
+                    {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+                  </span>
+                  {task.project && (
+                    <span className="text-xs text-muted-foreground flex items-center gap-1">
+                      <div 
+                        className="w-2 h-2 rounded-full" 
+                        style={{ 
+                          backgroundColor: projects.find(p => p.id === task.project)?.color || '#888' 
+                        }} 
+                      />
+                      {projects.find(p => p.id === task.project)?.name}
+                    </span>
+                  )}
                 </div>
               </Card>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {monthTasks.map(({ date, tasks }) => (
-                <Card 
-                  key={date.toISOString()} 
-                  className={cn(
-                    "p-4",
-                    isToday(date) && "border-primary",
-                    !isSameMonth(date, selectedDate || new Date()) && "opacity-50",
-                    tasks.length > 0 && "hover-lift transition-all"
-                  )}
-                >
-                  <div className={cn(
-                    "font-medium mb-2 flex justify-between items-center",
-                    isToday(date) && "text-primary"
-                  )}>
-                    <span>{format(date, 'MMM d')}</span>
-                    {isToday(date) && (
-                      <span className="text-xs bg-primary text-primary-foreground rounded-full px-2 py-0.5">
-                        Today
-                      </span>
-                    )}
-                  </div>
-                  {tasks.length === 0 ? (
-                    <p className="text-sm text-muted-foreground h-12 flex items-center justify-center">No tasks</p>
-                  ) : (
-                    <div className="space-y-2 max-h-48 overflow-auto">
-                      {tasks.map(task => (
-                        <div
-                          key={task.id}
-                          className="text-sm p-2 rounded-md bg-muted/50 hover:bg-muted transition-colors"
-                        >
-                          <div className="font-medium flex items-start justify-between">
-                            <span className="line-clamp-1">{task.title}</span>
-                            {task.priority === 'urgent' && (
-                              <AlertCircle size={14} className="text-red-500 ml-1 flex-shrink-0" />
-                            )}
-                          </div>
-                          <span className={cn(
-                            "inline-block mt-1 px-2 py-0.5 rounded-full text-xs",
-                            priorityColors[task.priority]
-                          )}>
-                            {task.priority}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </Card>
-              ))}
-            </div>
+            ))
           )}
         </div>
       </div>
