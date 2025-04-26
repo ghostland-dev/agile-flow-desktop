@@ -59,11 +59,11 @@ export default function MyTasks() {
   };
 
   return (
-    <div className="relative flex-1 overflow-hidden">
+    <div className="relative flex-1">
       <div className="absolute inset-0 bg-gradient-to-b from-muted/50 to-muted/30 dark:from-background/50 dark:to-background/0" />
       
       <div className="relative h-full overflow-auto scrollbar-none">
-        <div className="container mx-auto p-4 md:p-6 space-y-6 max-w-7xl">
+        <div className="w-full px-4 md:px-6 space-y-6">
           {/* Header Section */}
           <div className="flex flex-col gap-4">
             <div className="space-y-1.5">
@@ -145,3 +145,4 @@ export default function MyTasks() {
     </div>
   );
 }
+
