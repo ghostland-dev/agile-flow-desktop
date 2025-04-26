@@ -33,6 +33,13 @@ export function TimeTrackingSummary({ timeEntries, tasks }: TimeTrackingSummaryP
     ? Math.floor(totalTrackedSeconds / completedTasksCount / 60) 
     : 0;
   
+  // Format average time into hours and minutes
+  const avgHours = Math.floor(avgTimePerTask / 60);
+  const avgMinutes = avgTimePerTask % 60;
+  const avgTimeFormatted = avgHours > 0 
+    ? `${avgHours}h ${avgMinutes}m`
+    : `${avgMinutes}m`;
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
       <Card className="bg-white hover-lift transition-all">
@@ -89,7 +96,7 @@ export function TimeTrackingSummary({ timeEntries, tasks }: TimeTrackingSummaryP
             <div>
               <p className="text-muted-foreground text-sm">Avg. time per task</p>
               <h3 className="text-2xl font-bold mt-1">
-                {avgTimePerTask} min
+                {avgTimeFormatted}
               </h3>
             </div>
             <div className="bg-amber-100 p-2 rounded-full">
