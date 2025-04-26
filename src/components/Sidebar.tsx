@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useProject } from '../hooks/useProject';
@@ -11,18 +10,31 @@ import {
   Plus,
   Search, 
   Settings,
-  BarChart, 
-  Users 
+  BarChart,
+  Users,
+  Pencil,
+  Trash2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { NewProjectForm } from './dashboard/NewProjectForm';
+import { EditProjectForm } from './dashboard/EditProjectForm';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from './ui/alert-dialog';
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 
 export function Sidebar() {
   const location = useLocation();
-  const { projects } = useProject();
+  const { projects, deleteProject } = useProject();
   const [newProjectDialogOpen, setNewProjectDialogOpen] = useState(false);
+  const [editProjectDialogOpen, setEditProjectDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<null | { id: string, name: string }>(null);
   
   const mainMenu = [
     { name: 'Dashboard', path: '/dashboard', icon: <Home size={18} /> },
@@ -32,6 +44,23 @@ export function Sidebar() {
     { name: 'Stats', path: '/stats', icon: <BarChart size={18} /> },
     { name: 'Team', path: '/team', icon: <Users size={18} /> },
   ];
+
+  const handleEditProject = (project: { id: string, name: string }) => {
+    setSelectedProject(project);
+    setEditProjectDialogOpen(true);
+  };
+
+  const handleDeleteProject = (project: { id: string, name: string }) => {
+    setSelectedProject(project);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (selectedProject) {
+      deleteProject(selectedProject.id);
+      setDeleteDialogOpen(false);
+    }
+  };
 
   return (
     <div className="flex flex-col h-full w-60 bg-sidebar border-r border-sidebar-border text-sidebar-foreground">
@@ -88,19 +117,35 @@ export function Sidebar() {
           </div>
           <nav className="space-y-1">
             {projects.map((project) => (
-              <Link
-                key={project.id}
-                to={`/projects/${project.id}`}
-                className={cn(
-                  "flex items-center gap-2 px-2 py-2 text-sm rounded-md transition-colors",
-                  location.pathname.includes(`/projects/${project.id}`)
-                    ? "bg-primary/20 text-primary-foreground font-medium"
-                    : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground"
-                )}
-              >
-                <span className="h-3 w-3 rounded-full" style={{ backgroundColor: project.color }} />
-                {project.name}
-              </Link>
+              <ContextMenu key={project.id}>
+                <ContextMenuTrigger>
+                  <Link
+                    to={`/projects/${project.id}`}
+                    className={cn(
+                      "flex items-center gap-2 px-2 py-2 text-sm rounded-md transition-colors",
+                      location.pathname.includes(`/projects/${project.id}`)
+                        ? "bg-primary/20 text-primary-foreground font-medium"
+                        : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+                    )}
+                  >
+                    <span className="h-3 w-3 rounded-full" style={{ backgroundColor: project.color }} />
+                    {project.name}
+                  </Link>
+                </ContextMenuTrigger>
+                <ContextMenuContent>
+                  <ContextMenuItem onClick={() => handleEditProject(project)}>
+                    <Pencil className="mr-2 h-4 w-4" />
+                    Edit
+                  </ContextMenuItem>
+                  <ContextMenuItem 
+                    className="text-destructive"
+                    onClick={() => handleDeleteProject(project)}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Delete
+                  </ContextMenuItem>
+                </ContextMenuContent>
+              </ContextMenu>
             ))}
           </nav>
         </div>
@@ -129,6 +174,41 @@ export function Sidebar() {
           <NewProjectForm onSuccess={() => setNewProjectDialogOpen(false)} />
         </DialogContent>
       </Dialog>
+
+      <Dialog open={editProjectDialogOpen} onOpenChange={setEditProjectDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Project</DialogTitle>
+          </DialogHeader>
+          {selectedProject && (
+            <EditProjectForm 
+              project={selectedProject} 
+              onSuccess={() => setEditProjectDialogOpen(false)} 
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Project</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this project? This action cannot be undone
+              and all associated tasks will be deleted.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={confirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
