@@ -1,23 +1,24 @@
 
-import React, { useCallback } from 'react';
+import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { TaskFormState } from '@/hooks/useTaskForm';
 import { Label } from '@/components/ui/label';
 
+// Define BasicInfoFields as a top-level component to avoid re-renders
 interface BasicInfoFieldsProps {
   formState: TaskFormState;
   setFormState: React.Dispatch<React.SetStateAction<TaskFormState>>;
 }
 
 export function BasicInfoFields({ formState, setFormState }: BasicInfoFieldsProps) {
-  // Use stable callback references to prevent re-renders and focus loss
-  const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  // Create stable event handlers with useCallback to prevent focus loss
+  const handleTitleChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setFormState(prevState => ({ ...prevState, title: newValue }));
   }, [setFormState]);
 
-  const handleDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleDescriptionChange = React.useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
     setFormState(prevState => ({ ...prevState, description: newValue }));
   }, [setFormState]);

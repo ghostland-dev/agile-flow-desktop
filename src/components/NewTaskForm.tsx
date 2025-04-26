@@ -15,6 +15,35 @@ import {
   DrawerClose,
 } from '@/components/ui/drawer';
 
+// Define TaskFormContent outside of NewTaskForm to prevent re-rendering issues
+const TaskFormContent = React.memo(({
+  formState,
+  setFormState,
+  isSubmitting,
+  handleSubmit,
+  onCancel,
+  showCancel
+}: {
+  formState: any;
+  setFormState: any;
+  isSubmitting: boolean;
+  handleSubmit: (e: React.FormEvent) => void;
+  onCancel?: () => void;
+  showCancel: boolean;
+}) => (
+  <form onSubmit={handleSubmit}>
+    <TaskFormFields
+      formState={formState}
+      setFormState={setFormState}
+      isSubmitting={isSubmitting}
+      onCancel={onCancel}
+      showCancel={showCancel}
+    />
+  </form>
+));
+
+TaskFormContent.displayName = 'TaskFormContent';
+
 interface NewTaskFormProps {
   initialStatus?: Status;
   openInDialog?: boolean;
@@ -23,7 +52,7 @@ interface NewTaskFormProps {
 export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: NewTaskFormProps) {
   const [open, setOpen] = useState(false);
   
-  // Create a callback for success that will be stable across renders
+  // Create a stable callback for success that will be stable across renders
   const onSuccess = useCallback(() => setOpen(false), []);
   
   const { formState, setFormState, isSubmitting, handleSubmit } = useTaskForm(initialStatus, onSuccess);
@@ -33,24 +62,18 @@ export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: New
   const closeDrawer = useCallback(() => {
     setOpen(false);
   }, []);
-  
-  // Memoize the form component to prevent unnecessary re-renders
-  const TaskFormContent = React.memo(() => (
-    <form onSubmit={handleSubmit}>
-      <TaskFormFields
+
+  if (!openInDialog) {
+    return (
+      <TaskFormContent
         formState={formState}
         setFormState={setFormState}
         isSubmitting={isSubmitting}
+        handleSubmit={handleSubmit}
         onCancel={closeDrawer}
         showCancel={openInDialog}
       />
-    </form>
-  ));
-  
-  TaskFormContent.displayName = 'TaskFormContent';
-
-  if (!openInDialog) {
-    return <TaskFormContent />;
+    );
   }
 
   return (
@@ -70,7 +93,14 @@ export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: New
             </DrawerDescription>
           </DrawerHeader>
           <div className="p-4">
-            <TaskFormContent />
+            <TaskFormContent
+              formState={formState}
+              setFormState={setFormState}
+              isSubmitting={isSubmitting}
+              handleSubmit={handleSubmit}
+              onCancel={closeDrawer}
+              showCancel={openInDialog}
+            />
           </div>
         </div>
       </DrawerContent>

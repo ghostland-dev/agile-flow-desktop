@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { Task, Status, TaskContextType } from '../types/project';
 import { loadFromStorage, saveToStorage } from '../utils/storage';
 import { tasks } from '../utils/mockData';
@@ -23,13 +23,14 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
     saveToStorage('tasks', tasksList);
   }, [tasksList]);
 
-  // Optimize with useCallback to ensure stable function references
+  // Use useCallback for all functions to ensure stable references
   const addTask = useCallback((task: Omit<Task, 'id' | 'createdAt'>) => {
     const newTask: Task = {
       ...task,
       id: `task-${Date.now()}`,
       createdAt: new Date().toISOString(),
     };
+    
     setTasksList(prevTasks => [...prevTasks, newTask]);
   }, []);
 
@@ -61,15 +62,18 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
     return tasksList.find(task => task.id === taskId);
   }, [tasksList]);
 
+  // Create a stable context value with useMemo
+  const contextValue = useMemo(() => ({
+    tasks: tasksList,
+    addTask,
+    updateTaskStatus,
+    updateTask,
+    deleteTask,
+    getTaskById,
+  }), [tasksList, addTask, updateTaskStatus, updateTask, deleteTask, getTaskById]);
+
   return (
-    <TaskContext.Provider value={{
-      tasks: tasksList,
-      addTask,
-      updateTaskStatus,
-      updateTask,
-      deleteTask,
-      getTaskById,
-    }}>
+    <TaskContext.Provider value={contextValue}>
       {children}
     </TaskContext.Provider>
   );
