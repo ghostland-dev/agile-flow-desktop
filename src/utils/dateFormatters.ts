@@ -1,6 +1,13 @@
 
 import { format, isToday, isYesterday, isTomorrow, isAfter } from 'date-fns';
 
+export function formatDate(dateString?: string): string {
+  if (!dateString) return 'Not set';
+  
+  const date = new Date(dateString);
+  return format(date, 'MMM d');
+}
+
 export function formatTimeTracked(minutes: number): string {
   if (minutes < 60) {
     return `${minutes}m`;
