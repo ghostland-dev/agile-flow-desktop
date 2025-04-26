@@ -1,26 +1,23 @@
+
 import React, { useState } from 'react';
 import { useProject } from '../hooks/useProject';
 import { Task } from '../types/project';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { AlertCircle, Calendar, CheckCircle, Clock, Edit, Eye, Trash2 } from 'lucide-react';
-import { format, isAfter } from 'date-fns';
-import { Button } from '@/components/ui/button';
+import { AlertCircle, Calendar, CheckCircle, Clock } from 'lucide-react';
 import { Dialog } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { TaskDetails } from './tasks/TaskDetails';
 import { TaskEditor } from './tasks/TaskEditor';
 import { TaskDeleteConfirmation } from './tasks/TaskDeleteConfirmation';
-import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar";
-import { MoreHorizontal } from "lucide-react";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { TaskActions } from './tasks/TaskActions';
+import { TaskTags } from './tasks/TaskTags';
+import { format, isAfter } from 'date-fns';
+import { getPriorityClasses, getStatusClasses } from '@/utils/taskStyles';
 
 interface TasksListProps {
   tasks: Task[];
 }
-
-// Form values have `tags` as string (comma separated)
-type TaskFormValues = Omit<Task, 'tags'> & { tags?: string };
 
 export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const { updateTask, deleteTask } = useProject();
@@ -28,35 +25,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [viewingTask, setViewingTask] = useState<Task | null>(null);
   const [deleteConfirmTask, setDeleteConfirmTask] = useState<Task | null>(null);
-  const [formValues, setFormValues] = useState<Partial<TaskFormValues>>({});
-
-  const getPriorityClasses = (priority: string) => {
-    switch (priority) {
-      case 'urgent':
-        return 'bg-red-100 text-red-800 border-red-200';
-      case 'high':
-        return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'medium':
-        return 'bg-amber-100 text-amber-800 border-amber-200';
-      case 'low':
-        return 'bg-sky-100 text-sky-800 border-sky-200';
-      default:
-        return 'bg-blue-100 text-blue-800 border-blue-200';
-    }
-  };
-
-  const getStatusClasses = (status: string) => {
-    switch (status) {
-      case 'done':
-        return 'bg-green-50 text-green-700 border-green-200';
-      case 'in_progress':
-        return 'bg-blue-50 text-blue-700 border-blue-200';
-      case 'in_review':
-        return 'bg-purple-50 text-purple-700 border-purple-200';
-      default:
-        return 'bg-gray-50 text-gray-700 border-gray-200';
-    }
-  };
+  const [formValues, setFormValues] = useState<Partial<Task> & { tags?: string[] | string }>({});
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return null;
@@ -89,14 +58,6 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
     });
   };
 
-  const handleViewClick = (task: Task) => {
-    setViewingTask(task);
-  };
-
-  const handleDeleteClick = (task: Task) => {
-    setDeleteConfirmTask(task);
-  };
-
   const handleDeleteConfirm = () => {
     if (deleteConfirmTask) {
       deleteTask(deleteConfirmTask.id);
@@ -111,9 +72,9 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingTask && formValues) {
-      const tagsArray = formValues.tags
+      const tagsArray = typeof formValues.tags === 'string'
         ? formValues.tags.split(',').map((tag) => tag.trim()).filter(Boolean)
-        : [];
+        : formValues.tags || [];
 
       updateTask(editingTask.id, {
         ...formValues,
@@ -137,177 +98,93 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
     setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 
+  if (tasks.length === 0) {
+    return (
+      <div className="p-6 text-center text-muted-foreground animate-fade-in">
+        No tasks found. Create a new task to get started.
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-3">
-      {tasks.length === 0 ? (
-        <div className="p-6 text-center text-muted-foreground animate-fade-in">
-          No tasks found. Create a new task to get started.
-        </div>
-      ) : (
-        tasks.map((task) => (
-          <div
-            key={task.id}
-            className="p-4 bg-card border rounded-lg shadow-sm hover:shadow transition-all animate-fade-in hover:translate-y-[-2px]"
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <h3 className="font-medium text-base">{task.title}</h3>
-                <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{task.description}</p>
-              </div>
-              {task.priority === 'urgent' && (
-                <AlertCircle size={16} className="text-red-500 ml-2 flex-shrink-0" />
+      {tasks.map((task) => (
+        <div
+          key={task.id}
+          className="p-4 bg-card border rounded-lg shadow-sm hover:shadow transition-all animate-fade-in hover:translate-y-[-2px]"
+        >
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <h3 className="font-medium text-base">{task.title}</h3>
+              <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{task.description}</p>
+            </div>
+            {task.priority === 'urgent' && (
+              <AlertCircle size={16} className="text-red-500 ml-2 flex-shrink-0" />
+            )}
+          </div>
+
+          <TaskTags tags={task.tags} />
+
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-4 pt-2 border-t border-border/40 gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant="outline" className={cn('font-normal text-xs', getPriorityClasses(task.priority))}>
+                {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+              </Badge>
+
+              <Badge variant="outline" className={cn('font-normal text-xs', getStatusClasses(task.status))}>
+                {task.status === 'todo'
+                  ? 'To Do'
+                  : task.status === 'in_progress'
+                  ? 'In Progress'
+                  : task.status === 'in_review'
+                  ? 'In Review'
+                  : 'Done'}
+              </Badge>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              {task.timeTracked > 0 && (
+                <div className="flex items-center text-xs text-gray-600">
+                  <Clock size={12} className="mr-1" />
+                  {task.timeTracked}m
+                </div>
+              )}
+
+              {task.dueDate && (
+                <div
+                  className={cn(
+                    'flex items-center text-xs gap-1',
+                    isPastDue(task.dueDate)
+                      ? 'text-red-600 font-medium'
+                      : isDueSoon(task.dueDate)
+                      ? 'text-amber-600'
+                      : 'text-gray-600'
+                  )}
+                >
+                  <Calendar size={12} />
+                  {formatDate(task.dueDate)}
+                  {isPastDue(task.dueDate) && ' (overdue)'}
+                </div>
+              )}
+
+              {task.status === 'done' && (
+                <div className="text-green-600 flex items-center text-xs">
+                  <CheckCircle size={12} className="mr-1" />
+                  Complete
+                </div>
               )}
             </div>
-
-            <div className="mt-3 flex flex-wrap gap-2">
-              {task.tags?.map((tag) => (
-                <Badge key={tag} variant="outline" className="text-xs bg-muted/50">
-                  {tag}
-                </Badge>
-              ))}
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-4 pt-2 border-t border-border/40 gap-2">
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge
-                  variant="outline"
-                  className={cn('font-normal text-xs', getPriorityClasses(task.priority))}
-                >
-                  {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
-                </Badge>
-
-                <Badge
-                  variant="outline"
-                  className={cn('font-normal text-xs', getStatusClasses(task.status))}
-                >
-                  {task.status === 'todo'
-                    ? 'To Do'
-                    : task.status === 'in_progress'
-                    ? 'In Progress'
-                    : task.status === 'in_review'
-                    ? 'In Review'
-                    : 'Done'}
-                </Badge>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-3">
-                {task.timeTracked > 0 && (
-                  <div className="flex items-center text-xs text-gray-600">
-                    <Clock size={12} className="mr-1" />
-                    {task.timeTracked}m
-                  </div>
-                )}
-
-                {task.dueDate && (
-                  <div
-                    className={cn(
-                      'flex items-center text-xs gap-1',
-                      isPastDue(task.dueDate)
-                        ? 'text-red-600 font-medium'
-                        : isDueSoon(task.dueDate)
-                        ? 'text-amber-600'
-                        : 'text-gray-600'
-                    )}
-                  >
-                    <Calendar size={12} />
-                    {formatDate(task.dueDate)}
-                    {isPastDue(task.dueDate) && ' (overdue)'}
-                  </div>
-                )}
-
-                {task.status === 'done' && (
-                  <div className="text-green-600 flex items-center text-xs">
-                    <CheckCircle size={12} className="mr-1" />
-                    Complete
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="mt-3 pt-2 border-t border-border/40 flex justify-end gap-2">
-              <div className="hidden sm:flex gap-2">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="h-8 w-8 p-0"
-                        onClick={() => handleViewClick(task)}
-                      >
-                        <Eye className="h-4 w-4" />
-                        <span className="sr-only">View task</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>View details</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="h-8 w-8 p-0"
-                        onClick={() => handleEditClick(task)}
-                      >
-                        <Edit className="h-4 w-4" />
-                        <span className="sr-only">Edit task</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Edit task</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
-                        onClick={() => handleDeleteClick(task)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                        <span className="sr-only">Delete task</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Delete task</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-
-              <div className="sm:hidden">
-                <Menubar>
-                  <MenubarMenu>
-                    <MenubarTrigger className="h-8 w-8 p-0">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </MenubarTrigger>
-                    <MenubarContent align="end">
-                      <MenubarItem onClick={() => handleViewClick(task)}>
-                        <Eye className="h-4 w-4 mr-2" />
-                        View details
-                      </MenubarItem>
-                      <MenubarItem onClick={() => handleEditClick(task)}>
-                        <Edit className="h-4 w-4 mr-2" />
-                        Edit task
-                      </MenubarItem>
-                      <MenubarItem 
-                        onClick={() => handleDeleteClick(task)}
-                        className="text-red-600 focus:text-red-600"
-                      >
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Delete task
-                      </MenubarItem>
-                    </MenubarContent>
-                  </MenubarMenu>
-                </Menubar>
-              </div>
-            </div>
           </div>
-        ))
-      )}
+
+          <div className="mt-3 pt-2 border-t border-border/40 flex justify-end gap-2">
+            <TaskActions 
+              onView={() => setViewingTask(task)}
+              onEdit={() => handleEditClick(task)}
+              onDelete={() => setDeleteConfirmTask(task)}
+            />
+          </div>
+        </div>
+      ))}
 
       <Dialog open={!!viewingTask} onOpenChange={(open) => !open && setViewingTask(null)}>
         <TaskDetails task={viewingTask} />
