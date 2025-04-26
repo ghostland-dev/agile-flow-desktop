@@ -13,11 +13,13 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export function KanbanBoard() {
   const { tasks, currentProject, updateTaskStatus } = useProject();
   const [filterPriority, setFilterPriority] = useState<string | null>(null);
   const [filterAssignee, setFilterAssignee] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState<{ [key: string]: boolean }>({});
   
   const columns: { id: Status; title: string }[] = [
     { id: 'backlog', title: 'Backlog' },
@@ -64,6 +66,14 @@ export function KanbanBoard() {
   const resetFilters = () => {
     setFilterPriority(null);
     setFilterAssignee(null);
+  };
+
+  const openDialog = (columnId: string) => {
+    setIsDialogOpen(prev => ({ ...prev, [columnId]: true }));
+  };
+
+  const closeDialog = (columnId: string) => {
+    setIsDialogOpen(prev => ({ ...prev, [columnId]: false }));
   };
   
   return (
@@ -131,18 +141,14 @@ export function KanbanBoard() {
                   <span className="bg-muted text-muted-foreground text-xs px-2 py-0.5 rounded-full">{columnTasks.length}</span>
                 </div>
                 
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button className="text-muted-foreground hover:text-foreground">
-                      <Plus size={16} />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
-                      <NewTaskForm />
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <Button 
+                  variant="ghost" 
+                  className="h-7 w-7 p-0" 
+                  onClick={() => openDialog(column.id)}
+                >
+                  <Plus size={16} />
+                  <span className="sr-only">Add task</span>
+                </Button>
               </div>
               
               <div className="flex-1 p-2 space-y-3 overflow-y-auto">
@@ -162,6 +168,18 @@ export function KanbanBoard() {
                   ))
                 )}
               </div>
+
+              <Dialog 
+                open={isDialogOpen[column.id]} 
+                onOpenChange={(open) => open ? openDialog(column.id) : closeDialog(column.id)}
+              >
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add new task</DialogTitle>
+                  </DialogHeader>
+                  <NewTaskForm initialStatus={column.id} openInDialog={false} />
+                </DialogContent>
+              </Dialog>
             </div>
           );
         })}
