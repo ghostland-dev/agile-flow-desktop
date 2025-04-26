@@ -19,11 +19,21 @@ import TimeTracking from "./pages/TimeTracking";
 import Team from "./pages/Team";
 import Settings from "./pages/Settings";
 import Stats from "./pages/Stats";
+import Profile from "./pages/Profile";
 import { CalendarView } from "./components/CalendarView";
 import { ProjectProvider } from "./contexts/ProjectProvider";
 import { Sidebar } from "./components/Sidebar";
+import { Suspense } from "react";
+import { LoadingSkeleton } from "./components/ui/loading-skeleton";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 
 function AppHeader() {
   const { notifications, markAsRead, markAllAsRead, clearNotification } = useNotifications();
@@ -47,7 +57,9 @@ function AppLayout({ children }: { children: React.ReactNode }) {
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader />
-        {children}
+        <Suspense fallback={<div className="p-6"><LoadingSkeleton /></div>}>
+          {children}
+        </Suspense>
       </div>
     </div>
   );
@@ -127,6 +139,15 @@ const App = () => {
                     element={
                       <AppLayout>
                         <Settings />
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/profile" 
+                    element={
+                      <AppLayout>
+                        <Profile />
                       </AppLayout>
                     } 
                   />

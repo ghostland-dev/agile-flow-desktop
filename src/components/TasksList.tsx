@@ -20,7 +20,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const [viewingTask, setViewingTask] = useState<Task | null>(null);
   const [deleteConfirmTask, setDeleteConfirmTask] = useState<Task | null>(null);
   
-  // Fix the type definition to explicitly include tags as a string or string[]
+  // Fixed type definition with proper typing for tags
   const [formValues, setFormValues] = useState<Partial<Task> & { tags?: string[] | string }>({});
 
   const handleEditClick = (task: Task) => {
@@ -45,15 +45,20 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingTask && formValues) {
-      const tags = Array.isArray(formValues.tags) 
-        ? formValues.tags 
-        : (typeof formValues.tags === 'string' 
-          ? formValues.tags.split(',').map(tag => tag.trim()).filter(Boolean)
-          : editingTask.tags || []);
+      // Fixed the type handling for tags
+      let processedTags: string[] = [];
+      
+      if (Array.isArray(formValues.tags)) {
+        processedTags = formValues.tags;
+      } else if (typeof formValues.tags === 'string') {
+        processedTags = formValues.tags.split(',').map(tag => tag.trim()).filter(Boolean);
+      } else {
+        processedTags = editingTask.tags || [];
+      }
 
       updateTask(editingTask.id, {
         ...formValues,
-        tags,
+        tags: processedTags,
       } as Task);
       
       setEditingTask(null);
@@ -97,6 +102,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
         />
       ))}
 
+      {/* Task viewing dialog */}
       <Dialog open={!!viewingTask} onOpenChange={(open) => !open && setViewingTask(null)}>
         <DialogContent aria-describedby={viewingTaskDescriptionId}>
           <DialogDescription id={viewingTaskDescriptionId} className="sr-only">
@@ -106,6 +112,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
         </DialogContent>
       </Dialog>
 
+      {/* Task editing dialog */}
       <Dialog open={!!editingTask} onOpenChange={(open) => !open && setEditingTask(null)}>
         <DialogContent aria-describedby={editingTaskDescriptionId}>
           <DialogDescription id={editingTaskDescriptionId} className="sr-only">
@@ -122,6 +129,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
         </DialogContent>
       </Dialog>
 
+      {/* Task deletion confirmation dialog */}
       <Dialog open={!!deleteConfirmTask} onOpenChange={(open) => !open && setDeleteConfirmTask(null)}>
         <DialogContent aria-describedby={deleteConfirmDescriptionId}>
           <DialogDescription id={deleteConfirmDescriptionId} className="sr-only">
