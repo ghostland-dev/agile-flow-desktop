@@ -17,8 +17,12 @@ export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: New
   const { formState, setFormState, isSubmitting, handleSubmit } = useTaskForm(initialStatus, () => setOpen(false));
   
   // Mémoriser la fonction de mise à jour de l'état pour éviter les re-rendus
-  const updateFormState = useCallback((state) => {
-    setFormState(state);
+  const updateFormState = useCallback((newState) => {
+    if (typeof newState === 'function') {
+      setFormState(newState);
+    } else {
+      setFormState(newState);
+    }
   }, [setFormState]);
   
   const closeDialog = useCallback(() => {
@@ -49,7 +53,7 @@ export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: New
           Add Task
         </Button>
       </DialogTrigger>
-      <DialogContent aria-describedby="new-task-description">
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Add New Task</DialogTitle>
           <DialogDescription id="new-task-description">

@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Priority, Status } from '../types/project';
 import { useProject } from './useProject';
 import { useToast } from './use-toast';
@@ -29,7 +29,7 @@ export const useTaskForm = (initialStatus: Status = 'todo', onSuccess?: () => vo
     tags: '',
   });
 
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setFormState({
       title: '',
       description: '',
@@ -39,9 +39,9 @@ export const useTaskForm = (initialStatus: Status = 'todo', onSuccess?: () => vo
       assignee: undefined,
       tags: '',
     });
-  };
+  }, [initialStatus]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formState.title.trim() || !currentProject) {
       toast({
@@ -84,7 +84,7 @@ export const useTaskForm = (initialStatus: Status = 'todo', onSuccess?: () => vo
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [formState, currentProject, addTask, toast, resetForm, onSuccess]);
 
   return {
     formState,

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -15,13 +15,16 @@ interface DateAssigneeFieldsProps {
 }
 
 export function DateAssigneeFields({ formState, setFormState }: DateAssigneeFieldsProps) {
-  const handleDateChange = (date: Date | undefined) => {
-    setFormState({ ...formState, dueDate: date });
-  };
+  const handleDateChange = useCallback((date: Date | undefined) => {
+    setFormState((prevState) => ({ ...prevState, dueDate: date }));
+  }, [setFormState]);
 
-  const handleAssigneeChange = (value: string) => {
-    setFormState({ ...formState, assignee: value === "unassigned" ? undefined : value });
-  };
+  const handleAssigneeChange = useCallback((value: string) => {
+    setFormState((prevState) => ({ 
+      ...prevState, 
+      assignee: value === "unassigned" ? undefined : value 
+    }));
+  }, [setFormState]);
 
   return (
     <div className="grid grid-cols-2 gap-4">

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { TaskFormState } from '@/hooks/useTaskForm';
@@ -10,14 +10,14 @@ interface BasicInfoFieldsProps {
 }
 
 export function BasicInfoFields({ formState, setFormState }: BasicInfoFieldsProps) {
-  // Create update handlers to avoid inline function recreation on each render
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormState({ ...formState, title: e.target.value });
-  };
+  // Create memoized update handlers to prevent recreating functions on each render
+  const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormState((prevState) => ({ ...prevState, title: e.target.value }));
+  }, [setFormState]);
 
-  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setFormState({ ...formState, description: e.target.value });
-  };
+  const handleDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setFormState((prevState) => ({ ...prevState, description: e.target.value }));
+  }, [setFormState]);
 
   return (
     <div className="space-y-4">

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { TaskFormState } from '@/hooks/useTaskForm';
 
@@ -9,13 +9,13 @@ interface StatusPriorityFieldsProps {
 }
 
 export function StatusPriorityFields({ formState, setFormState }: StatusPriorityFieldsProps) {
-  const handleStatusChange = (value: string) => {
-    setFormState({ ...formState, status: value as any });
-  };
+  const handleStatusChange = useCallback((value: string) => {
+    setFormState((prevState) => ({ ...prevState, status: value as any }));
+  }, [setFormState]);
 
-  const handlePriorityChange = (value: string) => {
-    setFormState({ ...formState, priority: value as any });
-  };
+  const handlePriorityChange = useCallback((value: string) => {
+    setFormState((prevState) => ({ ...prevState, priority: value as any }));
+  }, [setFormState]);
 
   return (
     <div className="grid grid-cols-2 gap-4">

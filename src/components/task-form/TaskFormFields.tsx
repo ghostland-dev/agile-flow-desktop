@@ -1,5 +1,5 @@
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { TaskFormState } from '@/hooks/useTaskForm';
 import { BasicInfoFields } from './BasicInfoFields';
@@ -22,14 +22,19 @@ export function TaskFormFields({
   onCancel,
   showCancel = true 
 }: TaskFormFieldsProps) {
-  // Mémoriser la fonction de mise à jour de l'état pour éviter les re-rendus
-  const updateFormState = useCallback((newState: TaskFormState) => {
-    setFormState(newState);
+  // Utiliser une fonction de rappel stable pour mettre à jour l'état du formulaire
+  const updateFormState = useCallback((updater: TaskFormState | ((prev: TaskFormState) => TaskFormState)) => {
+    if (typeof updater === 'function') {
+      setFormState(updater);
+    } else {
+      setFormState(updater);
+    }
   }, [setFormState]);
 
-  const handleCancelClick = () => {
+  // Mémoriser la fonction de gestion d'annulation
+  const handleCancelClick = useCallback(() => {
     if (onCancel) onCancel();
-  };
+  }, [onCancel]);
 
   return (
     <div className="space-y-4 mt-2">
