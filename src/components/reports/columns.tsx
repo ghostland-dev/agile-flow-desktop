@@ -3,6 +3,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { getPriorityClasses } from '@/utils/taskStyles';
+import { Status, Priority } from '@/types/project';
 
 // Colonnes pour le rapport de complétion de tâches
 export const taskCompletionColumns: ColumnDef<any>[] = [

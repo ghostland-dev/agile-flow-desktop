@@ -11,10 +11,47 @@ import { columns } from '@/components/reports/columns';
 import { format, subDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from 'date-fns';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { Status, Priority } from '@/types/project';
+
+// Define report data types to match column definitions
+interface TaskCompletionReport {
+  id: string;
+  title: string;
+  status: Status;
+  priority: Priority;
+  assignee: string;
+  project: string;
+  createdAt: string;
+  dueDate: string;
+}
+
+interface TimeSpentReport {
+  id: string;
+  title: string;
+  status: Status;
+  timeTracked: string;
+  assignee: string;
+  project: string;
+  efficiency: string;
+}
+
+interface TeamPerformanceReport {
+  id: string;
+  name: string;
+  role: string;
+  tasksAssigned: number;
+  tasksCompleted: number;
+  completionRate: string;
+  totalTimeTracked: string;
+  averageTimePerTask: string;
+}
+
+// Union type for all report types
+type ReportData = TaskCompletionReport | TimeSpentReport | TeamPerformanceReport;
 
 export default function Reports() {
   const { tasks, projects, users } = useProject();
-  const [reportType, setReportType] = useState('task-completion');
+  const [reportType, setReportType] = useState<'task-completion' | 'time-spent' | 'team-performance'>('task-completion');
   const [timeFrame, setTimeFrame] = useState('weekly');
   const [selectedProject, setSelectedProject] = useState('all');
   
@@ -52,23 +89,23 @@ export default function Reports() {
       return filteredTasks.map(task => ({
         id: task.id,
         title: task.title,
-        status: task.status,
-        priority: task.priority,
+        status: task.status as Status,
+        priority: task.priority as Priority,
         assignee: users.find(u => u.id === task.assignee)?.name || 'Unassigned',
         project: projects.find(p => p.id === task.project)?.name || 'Unknown Project',
         createdAt: format(new Date(task.createdAt), 'MMM dd, yyyy'),
         dueDate: task.dueDate ? format(new Date(task.dueDate), 'MMM dd, yyyy') : 'No deadline',
-      }));
+      })) as TaskCompletionReport[];
     } else if (reportType === 'time-spent') {
       return filteredTasks.map(task => ({
         id: task.id,
         title: task.title,
-        status: task.status,
+        status: task.status as Status,
         timeTracked: `${task.timeTracked} min`,
         assignee: users.find(u => u.id === task.assignee)?.name || 'Unassigned',
         project: projects.find(p => p.id === task.project)?.name || 'Unknown Project',
         efficiency: task.status === 'done' ? 'Good' : 'In progress'
-      }));
+      })) as TimeSpentReport[];
     } else {
       // Rapport de performance d'équipe
       const teamPerformance = users.map(user => {
@@ -88,7 +125,7 @@ export default function Reports() {
         };
       });
       
-      return teamPerformance.filter(tp => tp.tasksAssigned > 0);
+      return teamPerformance.filter(tp => tp.tasksAssigned > 0) as TeamPerformanceReport[];
     }
   };
   
@@ -136,7 +173,7 @@ export default function Reports() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Report Type</label>
-                <Tabs defaultValue={reportType} onValueChange={setReportType}>
+                <Tabs defaultValue={reportType} onValueChange={(value) => setReportType(value as 'task-completion' | 'time-spent' | 'team-performance')}>
                   <TabsList className="grid grid-cols-3 w-full">
                     <TabsTrigger value="task-completion">Tasks</TabsTrigger>
                     <TabsTrigger value="time-spent">Time</TabsTrigger>
@@ -192,7 +229,24 @@ export default function Reports() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <DataTable columns={columns[reportType]} data={reportData} />
+            {reportType === 'task-completion' && (
+              <DataTable 
+                columns={columns['task-completion']} 
+                data={reportData as TaskCompletionReport[]} 
+              />
+            )}
+            {reportType === 'time-spent' && (
+              <DataTable 
+                columns={columns['time-spent']} 
+                data={reportData as TimeSpentReport[]} 
+              />
+            )}
+            {reportType === 'team-performance' && (
+              <DataTable 
+                columns={columns['team-performance']} 
+                data={reportData as TeamPerformanceReport[]} 
+              />
+            )}
           </CardContent>
         </Card>
       </div>
