@@ -44,13 +44,23 @@ export const useTaskForm = (initialStatus: Status = 'todo', onSuccess?: () => vo
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Fix: Properly trim the title before checking if it's empty
+    // Trim the title before checking
     const trimmedTitle = formState.title.trim();
     
-    if (!trimmedTitle || !currentProject) {
+    // Check title and project separately with specific error messages
+    if (!trimmedTitle) {
       toast({
         title: "Missing information",
-        description: trimmedTitle ? "Project information is missing" : "Please provide a title for the task",
+        description: "Please provide a title for the task",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!currentProject) {
+      toast({
+        title: "Missing information",
+        description: "No project selected. Please select a project first.",
         variant: "destructive",
       });
       return;
@@ -68,7 +78,7 @@ export const useTaskForm = (initialStatus: Status = 'todo', onSuccess?: () => vo
         : [];
         
       addTask({
-        title: trimmedTitle, // Use the trimmed title
+        title: trimmedTitle,
         description: formState.description,
         priority: formState.priority,
         status: formState.status,
