@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Status } from '../types/project';
@@ -40,9 +40,12 @@ export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: New
           Add Task
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent aria-describedby="new-task-description">
         <DialogHeader>
           <DialogTitle>Add New Task</DialogTitle>
+          <DialogDescription id="new-task-description">
+            Create a new task with the details below
+          </DialogDescription>
         </DialogHeader>
         <TaskFormContent />
       </DialogContent>

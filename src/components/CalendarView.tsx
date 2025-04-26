@@ -6,7 +6,7 @@ import { Task } from '../types/project';
 import { format, isSameDay, isSameMonth, addDays, startOfMonth, endOfMonth, eachDayOfInterval, isToday } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import {
   Select,
   SelectContent,
@@ -17,12 +17,14 @@ import {
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Filter, Plus } from 'lucide-react';
+import { NewTaskForm } from './NewTaskForm';
 
 export function CalendarView() {
   const { tasks, currentProject, projects } = useProject();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day');
   const [selectedProject, setSelectedProject] = useState<string | 'all'>('all');
+  const [isAddTaskDialogOpen, setIsAddTaskDialogOpen] = useState(false);
 
   const filteredTasks = tasks.filter(task => {
     const matchesProject = selectedProject === 'all' || task.project === selectedProject;
@@ -155,7 +157,7 @@ export function CalendarView() {
               <Button size="sm" variant="outline" className="ml-2" onClick={() => setSelectedDate(new Date())}>
                 Today
               </Button>
-              <Button size="sm" variant="default" className="gap-1">
+              <Button size="sm" variant="default" className="gap-1" onClick={() => setIsAddTaskDialogOpen(true)}>
                 <Plus className="h-4 w-4" />
                 Add Task
               </Button>
@@ -275,6 +277,23 @@ export function CalendarView() {
           )}
         </div>
       </div>
+
+      {isAddTaskDialogOpen && (
+        <Dialog 
+          open={true}
+          onOpenChange={(open) => !open && setIsAddTaskDialogOpen(false)}
+        >
+          <DialogContent aria-describedby="calendar-add-task-description">
+            <DialogHeader>
+              <DialogTitle>Add new task</DialogTitle>
+              <DialogDescription id="calendar-add-task-description">
+                Create a new task
+              </DialogDescription>
+            </DialogHeader>
+            <NewTaskForm initialStatus="todo" openInDialog={false} />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
