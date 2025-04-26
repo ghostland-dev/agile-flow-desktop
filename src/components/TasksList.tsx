@@ -16,13 +16,16 @@ interface TasksListProps {
   tasks: Task[];
 }
 
+// ✅ Define a clean type for the form values
+type TaskFormValues = Omit<Task, 'tags'> & { tags?: string };
+
 export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const { updateTask, deleteTask } = useProject();
   const { toast } = useToast();
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [viewingTask, setViewingTask] = useState<Task | null>(null);
   const [deleteConfirmTask, setDeleteConfirmTask] = useState<Task | null>(null);
-  const [formValues, setFormValues] = useState<Partial<Task> & { tags?: string[] | string }>({});
+  const [formValues, setFormValues] = useState<Partial<TaskFormValues>>({}); // 🛠️ Clean form values
 
   const getPriorityClasses = (priority: string) => {
     switch(priority) {
@@ -54,29 +57,24 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return null;
-    
     const date = new Date(dateString);
     return format(date, 'MMM d');
   };
 
   const isDueSoon = (dateString?: string) => {
     if (!dateString) return false;
-    
     const date = new Date(dateString);
     const today = new Date();
     const threeDaysLater = new Date();
     threeDaysLater.setDate(today.getDate() + 3);
-    
     return isAfter(date, today) && !isAfter(date, threeDaysLater);
   };
 
   const isPastDue = (dateString?: string) => {
     if (!dateString) return false;
-    
     const date = new Date(dateString);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
     return isAfter(today, date);
   };
 
@@ -110,19 +108,15 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingTask && formValues) {
-      let tagsArray: string[] = [];
-      
-      if (typeof formValues.tags === 'string') {
-        tagsArray = formValues.tags.split(',').map(tag => tag.trim()).filter(Boolean);
-      } else if (Array.isArray(formValues.tags)) {
-        tagsArray = formValues.tags;
-      }
+      const tagsArray = formValues.tags
+        ? formValues.tags.split(',').map(tag => tag.trim()).filter(Boolean)
+        : [];
 
       updateTask(editingTask.id, {
         ...formValues,
         tags: tagsArray
-      });
-      
+      } as Task);
+
       setEditingTask(null);
       toast({
         title: "Task updated",
@@ -163,13 +157,11 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
             </div>
 
             <div className="mt-3 flex flex-wrap gap-2">
-              {task.tags && task.tags.map(tag => (
-                <Badge key={tag} variant="outline" className="text-xs bg-muted/50">
-                  {tag}
-                </Badge>
+              {task.tags?.map(tag => (
+                <Badge key={tag} variant="outline" className="text-xs bg-muted/50">{tag}</Badge>
               ))}
             </div>
-            
+
             <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-4 pt-2 border-t border-border/40 gap-2">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge 
@@ -178,7 +170,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
                 >
                   {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
                 </Badge>
-                
+
                 <Badge 
                   variant="outline" 
                   className={cn("font-normal text-xs", getStatusClasses(task.status))}
@@ -188,7 +180,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
                    task.status === 'in_review' ? 'In Review' : 'Done'}
                 </Badge>
               </div>
-              
+
               <div className="flex flex-wrap items-center gap-3">
                 {task.timeTracked > 0 && (
                   <div className="flex items-center text-xs text-gray-600">
@@ -196,12 +188,12 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
                     {task.timeTracked}m
                   </div>
                 )}
-                
+
                 {task.dueDate && (
                   <div className={cn(
-                    "flex items-center text-xs gap-1", 
-                    isPastDue(task.dueDate) ? "text-red-600 font-medium" : 
-                    isDueSoon(task.dueDate) ? "text-amber-600" : 
+                    "flex items-center text-xs gap-1",
+                    isPastDue(task.dueDate) ? "text-red-600 font-medium" :
+                    isDueSoon(task.dueDate) ? "text-amber-600" :
                     "text-gray-600"
                   )}>
                     <Calendar size={12} />
@@ -209,7 +201,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
                     {isPastDue(task.dueDate) && " (overdue)"}
                   </div>
                 )}
-                
+
                 {task.status === 'done' && (
                   <div className="text-green-600 flex items-center text-xs">
                     <CheckCircle size={12} className="mr-1" />
@@ -220,30 +212,15 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
             </div>
 
             <div className="mt-3 pt-2 border-t border-border/40 flex justify-end gap-2">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="h-8 px-2" 
-                onClick={() => handleViewClick(task)}
-              >
+              <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => handleViewClick(task)}>
                 <Eye size={16} className="mr-1" />
                 View
               </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="h-8 px-2" 
-                onClick={() => handleEditClick(task)}
-              >
+              <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => handleEditClick(task)}>
                 <Edit size={16} className="mr-1" />
                 Edit
               </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="h-8 px-2 text-red-600 hover:text-red-700 hover:bg-red-50" 
-                onClick={() => handleDeleteClick(task)}
-              >
+              <Button variant="ghost" size="sm" className="h-8 px-2 text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteClick(task)}>
                 <Trash2 size={16} className="mr-1" />
                 Delete
               </Button>
@@ -252,6 +229,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
         ))
       )}
 
+      {/* Modals */}
       <Dialog open={!!viewingTask} onOpenChange={(open) => !open && setViewingTask(null)}>
         <TaskDetails task={viewingTask} />
       </Dialog>
