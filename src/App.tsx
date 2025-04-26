@@ -59,9 +59,9 @@ function AppLayout({ children }: { children: React.ReactNode }) {
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader />
         <Suspense fallback={<div className="p-6"><LoadingSkeleton /></div>}>
-          <ScrollArea className="h-[calc(100vh-3.5rem)]">
+          <main className="flex-1 overflow-hidden">
             {children}
-          </ScrollArea>
+          </main>
         </Suspense>
       </div>
     </div>

@@ -42,14 +42,12 @@ export default function ProjectView() {
         </Card>
       </div>
       
-      <ScrollArea className="flex-1 p-2 sm:p-4">
-        <div className="min-h-full">
-          {currentView === 'kanban' && <KanbanBoard />}
-          {currentView === 'list' && <TasksList tasks={projectTasks} />}
-          {currentView === 'calendar' && <CalendarView />}
-          {currentView === 'timeline' && <TimelineView />}
-        </div>
-      </ScrollArea>
+      <div className="flex-1 overflow-hidden">
+        {currentView === 'kanban' && <KanbanBoard />}
+        {currentView === 'list' && <TasksList tasks={projectTasks} />}
+        {currentView === 'calendar' && <CalendarView />}
+        {currentView === 'timeline' && <TimelineView />}
+      </div>
     </div>
   );
 }
