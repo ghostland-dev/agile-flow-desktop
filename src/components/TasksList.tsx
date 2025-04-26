@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useProject } from '../hooks/useProject';
 import { Task } from '../types/project';
@@ -25,7 +24,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [viewingTask, setViewingTask] = useState<Task | null>(null);
   const [deleteConfirmTask, setDeleteConfirmTask] = useState<Task | null>(null);
-  const [formValues, setFormValues] = useState<Partial<Task> & { tags?: string[] | string }>({});
+  const [formValues, setFormValues] = useState<Partial<Task>>({});
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return null;
@@ -54,7 +53,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
     setEditingTask(task);
     setFormValues({
       ...task,
-      tags: task.tags?.join(', ') || '',
+      tags: task.tags || [],
     });
   };
 
@@ -72,9 +71,11 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingTask && formValues) {
-      const tagsArray = typeof formValues.tags === 'string'
-        ? formValues.tags.split(',').map((tag) => tag.trim()).filter(Boolean)
-        : formValues.tags || [];
+      const tagsArray = Array.isArray(formValues.tags)
+        ? formValues.tags
+        : typeof formValues.tags === 'string'
+          ? formValues.tags.split(',').map((tag) => tag.trim()).filter(Boolean)
+          : editingTask.tags;
 
       updateTask(editingTask.id, {
         ...formValues,
