@@ -50,6 +50,7 @@ export interface TimeEntry {
   duration: number;
 }
 
+// Core project context type - only project-specific properties
 export interface ProjectContextType {
   projects: Project[];
   users: User[];
@@ -59,21 +60,37 @@ export interface ProjectContextType {
   currentUser: User | null;
   setCurrentProject: (project: Project | null) => void;
   setCurrentView: (view: 'kanban' | 'list' | 'calendar' | 'timeline') => void;
-  // Task context
+}
+
+// Task management context type
+export interface TaskContextType {
   tasks: Task[];
   addTask: (task: Omit<Task, 'id' | 'createdAt'>) => void;
   updateTaskStatus: (taskId: string, status: Status) => void;
   updateTask: (taskId: string, updatedTask: Partial<Task>) => void;
   deleteTask: (taskId: string) => void;
   getTaskById: (taskId: string) => Task | undefined;
-  // Time tracking context
+}
+
+// Time tracking context type
+export interface TimeTrackingContextType {
   timeEntries: TimeEntry[];
   startTimeTracking: (taskId: string) => void;
   stopTimeTracking: (taskId: string) => void;
   getTaskTimeEntries: (taskId: string) => TimeEntry[];
-  // File attachment context
+}
+
+// File attachment context type
+export interface FileAttachmentContextType {
   fileAttachments: FileAttachment[];
   getTaskAttachments: (taskId: string) => FileAttachment[];
   addFileAttachment: (taskId: string, file: Omit<FileAttachment, 'id' | 'taskId' | 'uploadedAt' | 'uploadedBy'>) => void;
   deleteFileAttachment: (fileId: string) => void;
 }
+
+// Combined context type for useProject hook
+export interface CombinedContextType extends 
+  ProjectContextType, 
+  TaskContextType, 
+  TimeTrackingContextType,
+  FileAttachmentContextType {}

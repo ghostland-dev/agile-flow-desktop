@@ -1,18 +1,9 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Task, Status } from '../types/project';
+import { Task, Status, TaskContextType } from '../types/project';
 import { loadFromStorage, saveToStorage } from '../utils/storage';
 import { tasks } from '../utils/mockData';
 import { useToast } from '@/hooks/use-toast';
-
-interface TaskContextType {
-  tasks: Task[];
-  addTask: (task: Omit<Task, 'id' | 'createdAt'>) => void;
-  updateTaskStatus: (taskId: string, status: Status) => void;
-  updateTask: (taskId: string, updatedTask: Partial<Task>) => void;
-  deleteTask: (taskId: string) => void;
-  getTaskById: (taskId: string) => Task | undefined;
-}
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
 

@@ -1,15 +1,8 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { TimeEntry } from '../types/project';
+import { TimeEntry, TimeTrackingContextType } from '../types/project';
 import { loadFromStorage, saveToStorage } from '../utils/storage';
 import { useTaskContext } from './TaskContext';
-
-interface TimeTrackingContextType {
-  timeEntries: TimeEntry[];
-  startTimeTracking: (taskId: string) => void;
-  stopTimeTracking: (taskId: string) => void;
-  getTaskTimeEntries: (taskId: string) => TimeEntry[];
-}
 
 const TimeTrackingContext = createContext<TimeTrackingContextType | undefined>(undefined);
 

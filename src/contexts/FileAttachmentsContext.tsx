@@ -1,15 +1,8 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { FileAttachment } from '../types/project';
+import { FileAttachment, FileAttachmentContextType } from '../types/project';
 import { loadFromStorage, saveToStorage } from '../utils/storage';
 import { v4 as uuidv4 } from 'uuid';
-
-interface FileAttachmentContextType {
-  fileAttachments: FileAttachment[];
-  getTaskAttachments: (taskId: string) => FileAttachment[];
-  addFileAttachment: (taskId: string, file: Omit<FileAttachment, 'id' | 'taskId' | 'uploadedAt' | 'uploadedBy'>) => void;
-  deleteFileAttachment: (fileId: string) => void;
-}
 
 const FileAttachmentContext = createContext<FileAttachmentContextType | undefined>(undefined);
 

@@ -4,9 +4,9 @@ import { ProjectContext } from '../contexts/ProjectProvider';
 import { useTaskContext } from '../contexts/TaskContext';
 import { useTimeTracking } from '../contexts/TimeTrackingContext';
 import { useFileAttachments } from '../contexts/FileAttachmentsContext';
-import type { ProjectContextType } from '../types/project';
+import type { CombinedContextType } from '../types/project';
 
-export const useProject = (): ProjectContextType => {
+export const useProject = (): CombinedContextType => {
   const projectContext = useContext(ProjectContext);
   const taskContext = useTaskContext();
   const timeContext = useTimeTracking();
