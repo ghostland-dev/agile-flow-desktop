@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useProject } from '../hooks/useProject';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -6,7 +7,7 @@ import { Plus } from 'lucide-react';
 import { AddMemberDialog } from './team/AddMemberDialog';
 
 export function ProjectTeam() {
-  const { users, currentProject, projectMembers } = useProject();
+  const { users, currentProject, projectMembers, tasks } = useProject();
   const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
   
   const projectTeam = currentProject
