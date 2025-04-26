@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useProject } from '../hooks/useProject';
 import { NewTaskForm } from '@/components/NewTaskForm';
@@ -59,10 +58,8 @@ export default function MyTasks() {
   };
 
   return (
-    <div className="relative flex-1">
-      <div className="absolute inset-0 bg-gradient-to-b from-muted/50 to-muted/30 dark:from-background/50 dark:to-background/0" />
-      
-      <div className="relative h-full overflow-auto scrollbar-none">
+    <div className="w-full h-full flex-1">
+      <div className="w-full h-full overflow-auto scrollbar-none">
         <div className="w-full px-4 md:px-6 space-y-6">
           {/* Header Section */}
           <div className="flex flex-col gap-4">
@@ -94,7 +91,7 @@ export default function MyTasks() {
           
           {/* Main Content */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            <div className="lg:col-span-3">
+            <div className="lg:col-span-3 w-full">
               <Tabs defaultValue="board" className="w-full">
                 <div className="flex items-center justify-between mb-6">
                   <TabsList className={cn(
@@ -133,7 +130,7 @@ export default function MyTasks() {
             </div>
             
             {!isMobile && (
-              <div className="hidden lg:block">
+              <div className="hidden lg:block w-full">
                 <div className="sticky top-4">
                   <TaskSidebar upcomingDeadlines={upcomingDeadlines} />
                 </div>
@@ -145,4 +142,3 @@ export default function MyTasks() {
     </div>
   );
 }
-
