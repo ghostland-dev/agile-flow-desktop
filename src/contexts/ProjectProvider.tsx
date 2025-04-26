@@ -6,6 +6,7 @@ import { loadFromStorage, saveToStorage } from '../utils/storage';
 import { TaskProvider } from './TaskContext';
 import { TimeTrackingProvider } from './TimeTrackingContext';
 import { FileAttachmentProvider } from './FileAttachmentsContext';
+import { v4 as uuidv4 } from 'uuid';
 
 export const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 
@@ -30,6 +31,15 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     saveToStorage('projects', projectsList);
   }, [projectsList]);
 
+  const addProject = (projectData: Omit<Project, 'id'>) => {
+    const newProject = {
+      ...projectData,
+      id: uuidv4()
+    };
+    
+    setProjectsList(prevProjects => [...prevProjects, newProject]);
+  };
+
   return (
     <ProjectContext.Provider value={{
       projects: projectsList,
@@ -40,6 +50,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       loading,
       setCurrentProject,
       setCurrentView,
+      addProject,
     }}>
       <TaskProvider>
         <TimeTrackingProvider>

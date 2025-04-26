@@ -60,6 +60,7 @@ export interface ProjectContextType {
   currentUser: User | null;
   setCurrentProject: (project: Project | null) => void;
   setCurrentView: (view: 'kanban' | 'list' | 'calendar' | 'timeline') => void;
+  addProject: (project: Omit<Project, 'id'>) => void;
 }
 
 // Task management context type
