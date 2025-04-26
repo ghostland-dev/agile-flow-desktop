@@ -39,6 +39,54 @@ const App = () => (
             />
             
             <Route 
+              path="/my-tasks" 
+              element={
+                <div className="flex h-screen">
+                  <Sidebar />
+                  <div className="flex-1 flex flex-col overflow-hidden">
+                    <MyTasks />
+                  </div>
+                </div>
+              } 
+            />
+            
+            <Route 
+              path="/calendar" 
+              element={
+                <div className="flex h-screen">
+                  <Sidebar />
+                  <div className="flex-1 flex flex-col overflow-hidden">
+                    <CalendarView />
+                  </div>
+                </div>
+              } 
+            />
+            
+            <Route 
+              path="/time-tracking" 
+              element={
+                <div className="flex h-screen">
+                  <Sidebar />
+                  <div className="flex-1 flex flex-col overflow-hidden">
+                    <TimeTracking />
+                  </div>
+                </div>
+              } 
+            />
+            
+            <Route 
+              path="/team" 
+              element={
+                <div className="flex h-screen">
+                  <Sidebar />
+                  <div className="flex-1 flex flex-col overflow-hidden">
+                    <Team />
+                  </div>
+                </div>
+              } 
+            />
+            
+            <Route 
               path="/projects/:projectId" 
               element={
                 <div className="flex h-screen">
