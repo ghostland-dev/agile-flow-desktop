@@ -8,21 +8,33 @@ import { useToast } from '@/hooks/use-toast';
 interface InviteMemberDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSubmit: (data: { email: string; role: string }) => void;
 }
 
-export function InviteMemberDialog({ open, onOpenChange }: InviteMemberDialogProps) {
+export function InviteMemberDialog({ open, onOpenChange, onSubmit }: InviteMemberDialogProps) {
   const { toast } = useToast();
   const [inviteEmail, setInviteEmail] = React.useState('');
   const [inviteRole, setInviteRole] = React.useState('team-member');
 
   const handleInviteSend = (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Invitation sent",
-      description: `Invitation email has been sent to ${inviteEmail}`,
+    if (!inviteEmail) {
+      toast({
+        title: "Error",
+        description: "Please enter an email address",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    onSubmit({
+      email: inviteEmail,
+      role: inviteRole,
     });
+    
     onOpenChange(false);
     setInviteEmail('');
+    setInviteRole('team-member');
   };
 
   return (

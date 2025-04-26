@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -8,8 +8,17 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { InviteMemberDialog } from '@/components/team/InviteMemberDialog';
 
-// Fictional data for invitations
-const invitations = [
+// Types for our invitation data
+interface TeamInvitation {
+  id: number;
+  email: string;
+  role: string;
+  status: 'pending' | 'expired';
+  invited: string;
+}
+
+// Initial mock data
+const initialInvitations: TeamInvitation[] = [
   { 
     id: 1, 
     email: 'david.smith@example.com', 
@@ -34,6 +43,43 @@ const invitations = [
 ];
 
 export default function TeamInvitations() {
+  const [invitations, setInvitations] = useState<TeamInvitation[]>(initialInvitations);
+  const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
+
+  const handleResendInvitation = (invitation: TeamInvitation) => {
+    // In a real app, this would make an API call to resend the invitation
+    const updatedInvitations = invitations.map(inv => {
+      if (inv.id === invitation.id) {
+        return {
+          ...inv,
+          status: 'pending' as const,
+          invited: new Date().toISOString()
+        };
+      }
+      return inv;
+    });
+    setInvitations(updatedInvitations);
+    toast.success(`Invitation resent to ${invitation.email}`);
+  };
+
+  const handleRevokeInvitation = (invitation: TeamInvitation) => {
+    // In a real app, this would make an API call to revoke the invitation
+    setInvitations(invitations.filter(inv => inv.id !== invitation.id));
+    toast.success(`Invitation to ${invitation.email} revoked`);
+  };
+
+  const handleCreateInvitation = (data: { email: string; role: string }) => {
+    const newInvitation: TeamInvitation = {
+      id: Math.max(...invitations.map(inv => inv.id)) + 1,
+      email: data.email,
+      role: data.role,
+      status: 'pending',
+      invited: new Date().toISOString()
+    };
+    setInvitations([newInvitation, ...invitations]);
+    toast.success(`Invitation sent to ${data.email}`);
+  };
+
   return (
     <ScrollArea className="h-[calc(100vh-3.5rem)]">
       <div className="p-6 space-y-6">
@@ -44,7 +90,7 @@ export default function TeamInvitations() {
               Manage pending and expired invitations
             </p>
           </div>
-          <Button onClick={() => toast.info('Send invitation dialog will open')}>Send New Invitation</Button>
+          <Button onClick={() => setIsInviteDialogOpen(true)}>Send New Invitation</Button>
         </div>
 
         <Card>
@@ -83,21 +129,34 @@ export default function TeamInvitations() {
                       </TableCell>
                       <TableCell>{formattedDate}</TableCell>
                       <TableCell className="text-right space-x-2">
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={() => toast.success(`Invitation to ${invite.email} resent`)}
-                        >
-                          Resend
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={() => toast.success(`Invitation to ${invite.email} revoked`)}
-                          className="text-destructive"
-                        >
-                          Revoke
-                        </Button>
+                        {invite.status === 'pending' && (
+                          <>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => handleResendInvitation(invite)}
+                            >
+                              Resend
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => handleRevokeInvitation(invite)}
+                              className="text-destructive"
+                            >
+                              Revoke
+                            </Button>
+                          </>
+                        )}
+                        {invite.status === 'expired' && (
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => handleResendInvitation(invite)}
+                          >
+                            Resend
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   );
@@ -113,20 +172,13 @@ export default function TeamInvitations() {
             </Table>
           </CardContent>
         </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Invitation Settings</CardTitle>
-            <CardDescription>Customize how invitations work</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="h-[100px] flex items-center justify-center">
-              <p className="text-muted-foreground">Invitation settings will be displayed here</p>
-            </div>
-            <Button onClick={() => toast.success('Settings saved')}>Save Settings</Button>
-          </CardContent>
-        </Card>
       </div>
+
+      <InviteMemberDialog
+        open={isInviteDialogOpen}
+        onOpenChange={setIsInviteDialogOpen}
+        onSubmit={handleCreateInvitation}
+      />
     </ScrollArea>
   );
 }
