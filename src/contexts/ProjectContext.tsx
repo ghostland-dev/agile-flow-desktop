@@ -33,6 +33,16 @@ export interface User {
   avatar: string;
 }
 
+export interface FileAttachment {
+  id: string;
+  taskId: string;
+  name: string;
+  url: string;
+  type: 'image' | 'document' | 'other';
+  uploadedAt: string;
+  uploadedBy: string;
+}
+
 interface TimeEntry {
   id: string;
   taskId: string;
@@ -56,6 +66,9 @@ interface ProjectContextType {
   startTimeTracking: (taskId: string) => void;
   stopTimeTracking: (taskId: string) => void;
   getTaskTimeEntries: (taskId: string) => TimeEntry[];
+  fileAttachments: FileAttachment[];
+  addFileAttachment: (taskId: string, file: Pick<FileAttachment, 'name' | 'url' | 'type'>) => void;
+  getTaskAttachments: (taskId: string) => FileAttachment[];
 }
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
@@ -67,6 +80,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
   const [currentView, setCurrentView] = useState<'kanban' | 'list' | 'calendar' | 'timeline'>('kanban');
   const [timeEntries, setTimeEntries] = useState<TimeEntry[]>([]);
+  const [fileAttachments, setFileAttachments] = useState<FileAttachment[]>([]);
 
   const addTask = (task: Omit<Task, 'id' | 'createdAt'>) => {
     const newTask: Task = {
@@ -114,6 +128,24 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     return timeEntries.filter(entry => entry.taskId === taskId);
   };
 
+  const addFileAttachment = (
+    taskId: string, 
+    file: Pick<FileAttachment, 'name' | 'url' | 'type'>
+  ) => {
+    const newAttachment: FileAttachment = {
+      id: `file-${Date.now()}`,
+      taskId,
+      uploadedAt: new Date().toISOString(),
+      uploadedBy: 'current-user', // In a real app, this would come from auth
+      ...file,
+    };
+    setFileAttachments(prev => [...prev, newAttachment]);
+  };
+
+  const getTaskAttachments = (taskId: string) => {
+    return fileAttachments.filter(file => file.taskId === taskId);
+  };
+
   return (
     <ProjectContext.Provider
       value={{
@@ -130,6 +162,9 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         startTimeTracking,
         stopTimeTracking,
         getTaskTimeEntries,
+        fileAttachments,
+        addFileAttachment,
+        getTaskAttachments,
       }}
     >
       {children}

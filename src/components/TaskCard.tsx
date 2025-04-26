@@ -7,6 +7,11 @@ import { Avatar } from '@/components/ui/avatar';
 import { AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { TaskTimer } from './TaskTimer';
+import { FileAttachments } from './FileAttachments';
+import { FileUploader } from './FileUploader';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Upload } from 'lucide-react';
 
 interface TaskCardProps {
   task: Task;
@@ -43,6 +48,7 @@ const priorityColors: Record<Priority, string> = {
 export function TaskCard({ task }: TaskCardProps) {
   const { users } = useProject();
   const assignee = task.assignee ? users.find(u => u.id === task.assignee) : undefined;
+  const [showUploader, setShowUploader] = useState(false);
   
   return (
     <div className="task-card bg-white border rounded-lg shadow-sm p-4 animate-fade-in">
@@ -66,6 +72,27 @@ export function TaskCard({ task }: TaskCardProps) {
       </div>
       
       <TaskTimer taskId={task.id} />
+      
+      <FileAttachments taskId={task.id} />
+      
+      {showUploader ? (
+        <div className="mt-3">
+          <FileUploader 
+            taskId={task.id} 
+            onUpload={() => setShowUploader(false)} 
+          />
+        </div>
+      ) : (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="mt-3 h-7 text-xs"
+          onClick={() => setShowUploader(true)}
+        >
+          <Upload size={12} className="mr-1" />
+          Attach files
+        </Button>
+      )}
       
       <div className="flex items-center justify-between mt-4 pt-2 border-t border-gray-100">
         {assignee ? (
