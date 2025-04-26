@@ -1,4 +1,3 @@
-
 import React, { useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -15,11 +14,11 @@ interface NewTaskFormProps {
 export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: NewTaskFormProps) {
   const [open, setOpen] = React.useState(false);
   const { formState, setFormState, isSubmitting, handleSubmit } = useTaskForm(initialStatus, () => setOpen(false));
-  
+
   const closeDialog = useCallback(() => {
     setOpen(false);
   }, []);
-  
+
   const TaskFormContent = () => (
     <form onSubmit={handleSubmit}>
       <TaskFormFields
@@ -31,13 +30,11 @@ export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: New
       />
     </form>
   );
-  
+
   if (!openInDialog) {
     return <TaskFormContent />;
   }
-  
-  const descriptionId = "new-task-description";
-  
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -46,10 +43,10 @@ export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: New
           Add Task
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md" aria-describedby={descriptionId}>
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Add New Task</DialogTitle>
-          <DialogDescription id={descriptionId}>
+          <DialogDescription>
             Create a new task with the details below
           </DialogDescription>
         </DialogHeader>
