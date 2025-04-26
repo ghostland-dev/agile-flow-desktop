@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Task } from '../types/project';
 import { useProject } from '../hooks/useProject';
@@ -19,6 +18,8 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [viewingTask, setViewingTask] = useState<Task | null>(null);
   const [deleteConfirmTask, setDeleteConfirmTask] = useState<Task | null>(null);
+  
+  // Fix: Explicitly define the type for formValues to handle tags properly
   const [formValues, setFormValues] = useState<Partial<Task> & { tags?: string[] | string }>({});
 
   const handleEditClick = (task: Task) => {
@@ -48,8 +49,10 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
       if (Array.isArray(formValues.tags)) {
         tagsArray = formValues.tags;
       } else if (typeof formValues.tags === 'string') {
+        // This is where the error was occurring
         tagsArray = formValues.tags.split(',').map((tag) => tag.trim()).filter(Boolean);
-      } else {
+      } else if (editingTask.tags) {
+        // Fallback to existing tags if tags is undefined
         tagsArray = editingTask.tags;
       }
 
@@ -57,7 +60,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
         ...formValues,
         tags: tagsArray,
       } as Task);
-
+      
       setEditingTask(null);
       toast({
         title: 'Task updated',
