@@ -11,6 +11,9 @@ import { useToast } from '@/hooks/use-toast';
 import { TaskDetails } from './tasks/TaskDetails';
 import { TaskEditor } from './tasks/TaskEditor';
 import { TaskDeleteConfirmation } from './tasks/TaskDeleteConfirmation';
+import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar";
+import { MoreHorizontal } from "lucide-react";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 interface TasksListProps {
   tasks: Task[];
@@ -222,29 +225,90 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
             </div>
 
             <div className="mt-3 pt-2 border-t border-border/40 flex justify-end gap-2">
-              <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => handleViewClick(task)}>
-                <Eye size={16} className="mr-1" />
-                View
-              </Button>
-              <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => handleEditClick(task)}>
-                <Edit size={16} className="mr-1" />
-                Edit
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 px-2 text-red-600 hover:text-red-700 hover:bg-red-50"
-                onClick={() => handleDeleteClick(task)}
-              >
-                <Trash2 size={16} className="mr-1" />
-                Delete
-              </Button>
+              <div className="hidden sm:flex gap-2">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 w-8 p-0"
+                        onClick={() => handleViewClick(task)}
+                      >
+                        <Eye className="h-4 w-4" />
+                        <span className="sr-only">View task</span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>View details</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 w-8 p-0"
+                        onClick={() => handleEditClick(task)}
+                      >
+                        <Edit className="h-4 w-4" />
+                        <span className="sr-only">Edit task</span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Edit task</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                        onClick={() => handleDeleteClick(task)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">Delete task</span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Delete task</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+
+              <div className="sm:hidden">
+                <Menubar>
+                  <MenubarMenu>
+                    <MenubarTrigger className="h-8 w-8 p-0">
+                      <MoreHorizontal className="h-4 w-4" />
+                    </MenubarTrigger>
+                    <MenubarContent align="end">
+                      <MenubarItem onClick={() => handleViewClick(task)}>
+                        <Eye className="h-4 w-4 mr-2" />
+                        View details
+                      </MenubarItem>
+                      <MenubarItem onClick={() => handleEditClick(task)}>
+                        <Edit className="h-4 w-4 mr-2" />
+                        Edit task
+                      </MenubarItem>
+                      <MenubarItem 
+                        onClick={() => handleDeleteClick(task)}
+                        className="text-red-600 focus:text-red-600"
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Delete task
+                      </MenubarItem>
+                    </MenubarContent>
+                  </MenubarMenu>
+                </Menubar>
+              </div>
             </div>
           </div>
         ))
       )}
 
-      {/* Dialogs */}
       <Dialog open={!!viewingTask} onOpenChange={(open) => !open && setViewingTask(null)}>
         <TaskDetails task={viewingTask} />
       </Dialog>
