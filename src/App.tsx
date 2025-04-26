@@ -23,9 +23,14 @@ import Profile from "./pages/Profile";
 import { CalendarView } from "./components/CalendarView";
 import { ProjectProvider } from "./contexts/ProjectProvider";
 import { Sidebar } from "./components/Sidebar";
-import { Suspense } from "react";
+import { Suspense, lazy } from "react";
 import { LoadingSkeleton } from "./components/ui/loading-skeleton";
 import { ScrollArea } from "./components/ui/scroll-area";
+import Analytics from "./pages/Analytics";
+import Reports from "./pages/Reports";
+import Integrations from "./pages/Integrations";
+import Billing from "./pages/Billing";
+import Help from "./pages/Help";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -138,10 +143,55 @@ const App = () => {
                   />
                   
                   <Route 
+                    path="/analytics" 
+                    element={
+                      <AppLayout>
+                        <Analytics />
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/reports" 
+                    element={
+                      <AppLayout>
+                        <Reports />
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/integrations" 
+                    element={
+                      <AppLayout>
+                        <Integrations />
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/billing" 
+                    element={
+                      <AppLayout>
+                        <Billing />
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
                     path="/settings" 
                     element={
                       <AppLayout>
                         <Settings />
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/help" 
+                    element={
+                      <AppLayout>
+                        <Help />
                       </AppLayout>
                     } 
                   />
