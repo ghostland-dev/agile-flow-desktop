@@ -1,80 +1,28 @@
 
 import React, { useState } from 'react';
-import { format, isToday, isYesterday, isTomorrow } from 'date-fns';
-import { useProject, Task, Priority, Status } from '../contexts/ProjectContext';
-import { AlertCircle, Calendar, Clock, MoreVertical, User } from 'lucide-react';
+import { useProject, Task } from '../contexts/ProjectContext';
+import { AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Avatar } from '@/components/ui/avatar';
-import { AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { TaskTimer } from './TaskTimer';
 import { FileAttachments } from './FileAttachments';
 import { FileUploader } from './FileUploader';
 import { Button } from '@/components/ui/button';
 import { Upload } from 'lucide-react';
-import { 
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
 import { useToast } from "@/hooks/use-toast";
+import { TaskStatusBadge } from './tasks/TaskStatusBadge';
+import { TaskPriorityBadge } from './tasks/TaskPriorityBadge';
+import { TaskMetadata } from './tasks/TaskMetadata';
 
 interface TaskCardProps {
   task: Task;
 }
 
-function formatTimeTracked(minutes: number): string {
-  if (minutes < 60) {
-    return `${minutes}m`;
-  }
-  const hours = Math.floor(minutes / 60);
-  const remainingMinutes = minutes % 60;
-  return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}m` : `${hours}h`;
-}
-
-function formatDueDate(dateString?: string): string {
-  if (!dateString) return '';
-  
-  const date = new Date(dateString);
-  
-  if (isToday(date)) return 'Today';
-  if (isYesterday(date)) return 'Yesterday';
-  if (isTomorrow(date)) return 'Tomorrow';
-  
-  return format(date, 'MMM d');
-}
-
-const priorityColors: Record<Priority, string> = {
-  low: 'bg-sky-100 text-sky-800',
-  medium: 'bg-amber-100 text-amber-800',
-  high: 'bg-orange-100 text-orange-800',
-  urgent: 'bg-red-100 text-red-800',
-};
-
-const statusLabels: Record<Status, string> = {
-  backlog: 'Backlog',
-  todo: 'To Do',
-  in_progress: 'In Progress',
-  in_review: 'In Review',
-  done: 'Done',
-};
-
 export function TaskCard({ task }: TaskCardProps) {
-  const { users, updateTaskStatus } = useProject();
-  const { toast } = useToast();
+  const { users } = useProject();
   const assignee = task.assignee ? users.find(u => u.id === task.assignee) : undefined;
   const [showUploader, setShowUploader] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  
-  const handleStatusChange = (newStatus: Status) => {
-    updateTaskStatus(task.id, newStatus);
-    toast({
-      title: "Task updated",
-      description: `Task moved to ${statusLabels[newStatus]}`,
-    });
-  };
 
   return (
     <div className={cn(
@@ -83,64 +31,9 @@ export function TaskCard({ task }: TaskCardProps) {
     )}>
       <div className="flex items-start justify-between mb-2">
         <h3 className="font-medium text-base">{task.title}</h3>
-        <div className="flex items-center gap-1">
-          {task.priority !== 'low' && (
-            <span className={cn("text-xs font-medium rounded-full px-2 py-0.5", priorityColors[task.priority])}>
-              {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
-            </span>
-          )}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem 
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="cursor-pointer"
-              >
-                {isExpanded ? "Collapse" : "Expand"}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem 
-                disabled={task.status === 'backlog'}
-                onClick={() => handleStatusChange('backlog')}
-                className="cursor-pointer"
-              >
-                Move to Backlog
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                disabled={task.status === 'todo'}
-                onClick={() => handleStatusChange('todo')}
-                className="cursor-pointer"
-              >
-                Move to To Do
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                disabled={task.status === 'in_progress'}
-                onClick={() => handleStatusChange('in_progress')}
-                className="cursor-pointer"
-              >
-                Move to In Progress
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                disabled={task.status === 'in_review'}
-                onClick={() => handleStatusChange('in_review')}
-                className="cursor-pointer"
-              >
-                Move to In Review
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                disabled={task.status === 'done'}
-                onClick={() => handleStatusChange('done')}
-                className="cursor-pointer"
-              >
-                Move to Done
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+        {task.priority === 'urgent' && (
+          <AlertCircle size={16} className="text-red-500 ml-2 flex-shrink-0" />
+        )}
       </div>
       
       <p className={cn(
@@ -184,36 +77,16 @@ export function TaskCard({ task }: TaskCardProps) {
       )}
       
       <div className="flex items-center justify-between mt-4 pt-2 border-t border-gray-100">
-        {assignee ? (
-          <div className="flex items-center">
-            <Avatar className="h-6 w-6 mr-1">
-              <AvatarImage src={assignee.avatar} />
-              <AvatarFallback>{assignee.name.charAt(0)}</AvatarFallback>
-            </Avatar>
-            <span className="text-xs text-gray-600">{assignee.name.split(' ')[0]}</span>
-          </div>
-        ) : (
-          <div className="h-6" />
-        )}
-        
-        <div className="flex items-center gap-3">
-          {task.timeTracked > 0 && (
-            <div className="flex items-center text-xs text-gray-600">
-              <Clock size={12} className="mr-1" />
-              {formatTimeTracked(task.timeTracked)}
-            </div>
-          )}
-          
-          {task.dueDate && (
-            <div className={cn(
-              "flex items-center text-xs", 
-              new Date(task.dueDate) < new Date() ? "text-red-600" : "text-gray-600"
-            )}>
-              <Calendar size={12} className="mr-1" />
-              {formatDueDate(task.dueDate)}
-            </div>
-          )}
+        <div className="flex items-center gap-2">
+          <TaskPriorityBadge priority={task.priority} />
+          <TaskStatusBadge status={task.status} />
         </div>
+        
+        <TaskMetadata 
+          timeTracked={task.timeTracked}
+          dueDate={task.dueDate}
+          status={task.status}
+        />
       </div>
     </div>
   );
