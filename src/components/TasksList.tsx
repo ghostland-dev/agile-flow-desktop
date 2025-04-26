@@ -97,8 +97,8 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
               ))}
             </div>
             
-            <div className="flex items-center justify-between mt-4 pt-2 border-t border-border/40">
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-4 pt-2 border-t border-border/40 gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <Badge 
                   variant="outline" 
                   className={cn("font-normal text-xs", getPriorityClasses(task.priority))}
@@ -116,7 +116,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
                 </Badge>
               </div>
               
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 {task.timeTracked > 0 && (
                   <div className="flex items-center text-xs text-gray-600">
                     <Clock size={12} className="mr-1" />
