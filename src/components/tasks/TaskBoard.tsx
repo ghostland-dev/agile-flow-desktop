@@ -15,8 +15,8 @@ interface TaskBoardProps {
 
 export function TaskBoard({ todoTasks, inProgressTasks, completedTasks }: TaskBoardProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <Card>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+      <Card className="flex flex-col min-h-[200px]">
         <CardHeader className="bg-muted/50 pb-2 flex flex-row items-center justify-between">
           <CardTitle className="text-sm font-medium">
             To Do
@@ -28,12 +28,12 @@ export function TaskBoard({ todoTasks, inProgressTasks, completedTasks }: TaskBo
             <Plus size={16} />
           </Button>
         </CardHeader>
-        <CardContent className="pt-4 px-3">
+        <CardContent className="pt-4 px-3 flex-1 overflow-auto">
           <TasksList tasks={todoTasks} />
         </CardContent>
       </Card>
       
-      <Card>
+      <Card className="flex flex-col min-h-[200px]">
         <CardHeader className="bg-muted/50 pb-2 flex flex-row items-center justify-between">
           <CardTitle className="text-sm font-medium">
             In Progress
@@ -45,12 +45,12 @@ export function TaskBoard({ todoTasks, inProgressTasks, completedTasks }: TaskBo
             <Plus size={16} />
           </Button>
         </CardHeader>
-        <CardContent className="pt-4 px-3">
+        <CardContent className="pt-4 px-3 flex-1 overflow-auto">
           <TasksList tasks={inProgressTasks} />
         </CardContent>
       </Card>
       
-      <Card>
+      <Card className="flex flex-col min-h-[200px]">
         <CardHeader className="bg-muted/50 pb-2 flex flex-row items-center justify-between">
           <CardTitle className="text-sm font-medium">
             Completed
@@ -62,7 +62,7 @@ export function TaskBoard({ todoTasks, inProgressTasks, completedTasks }: TaskBo
             <Plus size={16} />
           </Button>
         </CardHeader>
-        <CardContent className="pt-4 px-3">
+        <CardContent className="pt-4 px-3 flex-1 overflow-auto">
           <TasksList tasks={completedTasks} />
         </CardContent>
       </Card>

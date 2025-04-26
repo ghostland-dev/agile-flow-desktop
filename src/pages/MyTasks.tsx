@@ -8,11 +8,13 @@ import { TaskListView } from '@/components/tasks/TaskListView';
 import { TaskSidebar } from '@/components/tasks/TaskSidebar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ListFilter, CheckCircle } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export default function MyTasks() {
   const { tasks, currentUser, projects } = useProject();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterPriority, setFilterPriority] = useState<string | null>(null);
+  const isMobile = useIsMobile();
   
   // Get all tasks assigned to current user
   const myTasks = tasks.filter(task => task.assignee === currentUser?.id);
@@ -55,22 +57,24 @@ export default function MyTasks() {
   };
 
   return (
-    <div className="flex-1 p-6 bg-muted/30">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+    <div className="flex-1 p-4 md:p-6 bg-muted/30 min-h-screen">
+      <div className="max-w-7xl mx-auto space-y-6">
+        <div className="flex flex-col gap-4">
           <div>
-            <h1 className="text-3xl font-bold">My Tasks</h1>
+            <h1 className="text-2xl md:text-3xl font-bold">My Tasks</h1>
             <p className="text-muted-foreground mt-1">Manage and track your assigned tasks</p>
           </div>
           
-          <div className="flex items-center gap-3">
-            <TaskFilters 
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-              filterPriority={filterPriority}
-              setFilterPriority={setFilterPriority}
-              handleResetFilters={handleResetFilters}
-            />
+          <div className="flex flex-col md:flex-row md:items-center gap-4">
+            <div className="flex-1">
+              <TaskFilters 
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                filterPriority={filterPriority}
+                setFilterPriority={setFilterPriority}
+                handleResetFilters={handleResetFilters}
+              />
+            </div>
             <NewTaskForm />
           </div>
         </div>
@@ -79,7 +83,7 @@ export default function MyTasks() {
           <div className="lg:col-span-3">
             <Tabs defaultValue="board" className="w-full">
               <div className="flex items-center justify-between mb-6">
-                <TabsList>
+                <TabsList className="w-full sm:w-auto">
                   <TabsTrigger value="board" className="flex items-center gap-2">
                     <ListFilter size={16} />
                     Board View
@@ -109,7 +113,9 @@ export default function MyTasks() {
             </Tabs>
           </div>
           
-          <TaskSidebar upcomingDeadlines={upcomingDeadlines} />
+          {!isMobile && (
+            <TaskSidebar upcomingDeadlines={upcomingDeadlines} />
+          )}
         </div>
       </div>
     </div>
