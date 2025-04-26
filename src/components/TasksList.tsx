@@ -1,8 +1,9 @@
+
 import React, { useState } from 'react';
 import { Task } from '../types/project';
 import { useProject } from '../hooks/useProject';
 import { Dialog, DialogContent, DialogDescription } from '@/components/ui/dialog';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from "@/hooks/use-toast";
 import { TaskDetails } from './tasks/TaskDetails';
 import { TaskEditor } from './tasks/TaskEditor';
 import { TaskDeleteConfirmation } from './tasks/TaskDeleteConfirmation';
@@ -19,7 +20,8 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const [viewingTask, setViewingTask] = useState<Task | null>(null);
   const [deleteConfirmTask, setDeleteConfirmTask] = useState<Task | null>(null);
   
-  const [formValues, setFormValues] = useState<Partial<Task>>({});
+  // Fix the type definition to explicitly include tags as a string or string[]
+  const [formValues, setFormValues] = useState<Partial<Task> & { tags?: string[] | string }>({});
 
   const handleEditClick = (task: Task) => {
     setEditingTask(task);
