@@ -30,15 +30,14 @@ export function TaskBoard({ todoTasks, inProgressTasks, completedTasks }: TaskBo
             <DialogTrigger asChild>
               <Button size="sm" variant="ghost" className="h-7 w-7 p-0 rounded-full">
                 <Plus size={16} />
+                <span className="sr-only">Add task</span>
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-card dark:bg-card">
+            <DialogContent>
               <DialogHeader>
-                <DialogTitle>Ajouter une nouvelle tâche</DialogTitle>
+                <DialogTitle>Add new task</DialogTitle>
               </DialogHeader>
-              <div className="py-4">
-                <NewTaskForm initialStatus="todo" />
-              </div>
+              <NewTaskForm initialStatus="todo" openInDialog={false} />
             </DialogContent>
           </Dialog>
         </CardHeader>
@@ -59,15 +58,14 @@ export function TaskBoard({ todoTasks, inProgressTasks, completedTasks }: TaskBo
             <DialogTrigger asChild>
               <Button size="sm" variant="ghost" className="h-7 w-7 p-0 rounded-full">
                 <Plus size={16} />
+                <span className="sr-only">Add task</span>
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-card dark:bg-card">
+            <DialogContent>
               <DialogHeader>
-                <DialogTitle>Ajouter une nouvelle tâche</DialogTitle>
+                <DialogTitle>Add new task</DialogTitle>
               </DialogHeader>
-              <div className="py-4">
-                <NewTaskForm initialStatus="in_progress" />
-              </div>
+              <NewTaskForm initialStatus="in_progress" openInDialog={false} />
             </DialogContent>
           </Dialog>
         </CardHeader>
@@ -88,15 +86,14 @@ export function TaskBoard({ todoTasks, inProgressTasks, completedTasks }: TaskBo
             <DialogTrigger asChild>
               <Button size="sm" variant="ghost" className="h-7 w-7 p-0 rounded-full">
                 <Plus size={16} />
+                <span className="sr-only">Add task</span>
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-card dark:bg-card">
+            <DialogContent>
               <DialogHeader>
-                <DialogTitle>Ajouter une nouvelle tâche</DialogTitle>
+                <DialogTitle>Add new task</DialogTitle>
               </DialogHeader>
-              <div className="py-4">
-                <NewTaskForm initialStatus="done" />
-              </div>
+              <NewTaskForm initialStatus="done" openInDialog={false} />
             </DialogContent>
           </Dialog>
         </CardHeader>
