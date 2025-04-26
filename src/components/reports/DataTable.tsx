@@ -1,27 +1,19 @@
 
-import React from 'react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getSortedRowModel,
-  SortingState,
+import React, { useState } from 'react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { 
+  flexRender, 
+  getCoreRowModel, 
+  useReactTable, 
+  getSortedRowModel, 
   getPaginationRowModel,
-  ColumnFiltersState,
   getFilteredRowModel,
+  ColumnDef,
+  SortingState,
+  ColumnFiltersState
 } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface DataTableProps<TData, TValue> {
@@ -29,13 +21,13 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
+export function DataTable<TData, TValue>({ 
+  columns, 
+  data 
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = useState('');
+  const [globalFilter, setGlobalFilter] = useState<string>('');
 
   const table = useReactTable({
     data,
@@ -50,8 +42,8 @@ export function DataTable<TData, TValue>({
     state: {
       sorting,
       columnFilters,
-      globalFilter,
-    },
+      globalFilter
+    }
   });
 
   return (
@@ -64,24 +56,25 @@ export function DataTable<TData, TValue>({
           className="max-w-sm"
         />
         <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => table.previousPage()} 
             disabled={!table.getCanPreviousPage()}
           >
             Previous
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => table.nextPage()} 
             disabled={!table.getCanNextPage()}
           >
             Next
           </Button>
         </div>
       </div>
+
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -91,22 +84,15 @@ export function DataTable<TData, TValue>({
                   <TableHead key={header.id}>
                     {header.isPlaceholder ? null : (
                       <div
-                        className={
-                          header.column.getCanSort()
-                            ? 'cursor-pointer flex items-center space-x-1 select-none'
-                            : ''
-                        }
+                        className={header.column.getCanSort() ? 'cursor-pointer flex items-center space-x-1 select-none' : ''}
                         onClick={header.column.getToggleSortingHandler()}
                       >
                         <span>
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          {flexRender(header.column.columnDef.header, header.getContext())}
                         </span>
                         {{
                           asc: <ChevronUp className="h-4 w-4" />,
-                          desc: <ChevronDown className="h-4 w-4" />,
+                          desc: <ChevronDown className="h-4 w-4" />
                         }[header.column.getIsSorted() as string] ?? null}
                       </div>
                     )}
@@ -159,7 +145,8 @@ export function DataTable<TData, TValue>({
             Previous
           </Button>
           <span className="text-sm text-muted-foreground">
-            Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getPageCount()}
           </span>
           <Button
             variant="outline"
