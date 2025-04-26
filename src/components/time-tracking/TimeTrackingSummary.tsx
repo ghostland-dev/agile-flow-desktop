@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Task } from '@/contexts/ProjectContext';
+import { Task } from '@/types/project';
 import { Card, CardContent } from '@/components/ui/card';
 import { Clock, CheckCircle, Calendar, BarChart } from 'lucide-react';
 

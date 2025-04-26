@@ -1,10 +1,12 @@
-
 import React, { useState } from 'react';
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isToday, isSameMonth } from 'date-fns';
-import { Calendar } from '@/components/ui/calendar';
-import { useProject, Task } from '../contexts/ProjectContext';
-import { Card, CardContent } from '@/components/ui/card';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useProject } from '../hooks/useProject';
+import { Task } from '../types/project';
+import { format, isSameDay, isSameMonth, addDays } from 'date-fns';
+import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import {
   Select,
   SelectContent,
@@ -19,7 +21,7 @@ import { AlertCircle, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Filte
 export function CalendarView() {
   const { tasks, currentProject, projects } = useProject();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
-  const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day');
+  const [viewMode, setViewMode<'day' | 'week' | 'month'>('day');
   const [selectedProject, setSelectedProject] = useState<string | 'all'>('all');
 
   // Filter tasks for the current selection
@@ -128,7 +130,7 @@ export function CalendarView() {
       <div className="grid md:grid-cols-[auto,1fr] gap-6">
         <div className="w-fit">
           <Card className="bg-white p-4">
-            <Calendar
+            <CalendarComponent
               mode="single"
               selected={selectedDate}
               onSelect={setSelectedDate}

@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { useProject } from '../contexts/ProjectContext';
+import { useProject } from '../hooks/useProject';
 import { NewTaskForm } from '@/components/NewTaskForm';
 import { TaskFilters } from '@/components/tasks/TaskFilters';
 import { TaskBoard } from '@/components/tasks/TaskBoard';

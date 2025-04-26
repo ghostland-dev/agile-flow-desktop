@@ -1,7 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useProject } from '../contexts/ProjectContext';
+import { useProject } from '../hooks/useProject';
 import { ProjectHeader } from '../components/ProjectHeader';
 import { KanbanBoard } from '../components/KanbanBoard';
 import { TasksList } from '../components/TasksList';

@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
-import { useProject, Task } from '../contexts/ProjectContext';
+import { useProject } from '../hooks/useProject';
+import { Task } from '../types/project';
 import { AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';

@@ -1,5 +1,4 @@
-
-import { Project, Task, User } from '../contexts/ProjectContext';
+import { Project, Task, User } from '../types/project';
 
 export const projects: Project[] = [
   {

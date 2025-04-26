@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { useProject } from '../contexts/ProjectContext';
+import { useProject } from '../hooks/useProject';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TeamSearch } from '@/components/team/TeamSearch';
 import { TeamMemberCard } from '@/components/team/TeamMemberCard';

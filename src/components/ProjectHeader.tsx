@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { useProject } from '../contexts/ProjectContext';
+import { useProject } from '../hooks/useProject';
 import { Calendar, Clock, List, Play, Square, Timer, Search, Filter, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';

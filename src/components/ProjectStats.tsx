@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Task } from '../contexts/ProjectContext';
+import { Task } from '../types/project';
 import { Progress } from '@/components/ui/progress';
 import { Check, Clock, AlertTriangle } from 'lucide-react';
 

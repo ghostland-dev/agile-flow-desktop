@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Task } from '@/contexts/ProjectContext';
+import { Task } from '@/types/project';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

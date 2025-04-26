@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { FileCode, FileImage } from 'lucide-react';
-import { useProject } from '../contexts/ProjectContext';
+import { useProject } from '../hooks/useProject';
 import { Button } from '@/components/ui/button';
 
 interface FileAttachmentsProps {

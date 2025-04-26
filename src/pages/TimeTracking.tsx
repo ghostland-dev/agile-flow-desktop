@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { useProject } from '../contexts/ProjectContext';
+import { useProject } from '../hooks/useProject';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { TimeOverviewChart } from '@/components/time-tracking/TimeOverviewChart';
 import { TimeTrackingFilter } from '@/components/time-tracking/TimeTrackingFilter';

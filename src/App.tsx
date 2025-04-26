@@ -15,7 +15,7 @@ import Team from "./pages/Team";
 import Settings from "./pages/Settings";
 import Stats from "./pages/Stats";
 import { CalendarView } from "./components/CalendarView";
-import { ProjectProvider } from "./contexts/ProjectContext";
+import { ProjectProvider } from "./contexts/ProjectProvider";
 import { Sidebar } from "./components/Sidebar";
 
 const queryClient = new QueryClient();

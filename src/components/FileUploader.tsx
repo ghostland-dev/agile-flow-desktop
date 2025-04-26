@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FileCode, FileImage, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useProject } from '../contexts/ProjectContext';
+import { useProject } from '../hooks/useProject';
 import { useToast } from '@/hooks/use-toast';
 
 interface FileUploaderProps {

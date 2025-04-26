@@ -2,7 +2,7 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { Priority } from '@/contexts/ProjectContext';
+import { Priority } from '@/types/project';
 
 interface TaskPriorityBadgeProps {
   priority: Priority;

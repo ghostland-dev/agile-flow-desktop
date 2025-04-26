@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { format, addDays, isSameDay } from 'date-fns';
-import { useProject } from '../contexts/ProjectContext';
+import { useProject } from '../hooks/useProject';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 

@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
-import { useProject, Status, Task } from '../contexts/ProjectContext';
+import { useProject } from '../hooks/useProject';
+import { Status, Task } from '../types/project';
 import { TaskCard } from './TaskCard';
 import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';

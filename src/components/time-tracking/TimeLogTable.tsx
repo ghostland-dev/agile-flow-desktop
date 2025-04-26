@@ -1,112 +1,97 @@
-
 import React from 'react';
-import { Project, Task, User } from '@/contexts/ProjectContext';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format } from 'date-fns';
+import { Project, Task, User, TimeEntry } from '@/types/project';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Calendar, Clock, Download } from 'lucide-react';
 
 interface TimeLogTableProps {
-  timeEntries: Array<{
-    id: string;
-    taskId: string;
-    userId: string;
-    startTime: string;
-    endTime?: string;
-    duration: number;
-  }>;
-  tasks: Task[];
-  projects: Project[];
-  users: User[];
+  timeEntries: TimeEntry[];
+  tasks: Record<string, Task>;
+  projects: Record<string, Project>;
+  users: Record<string, User>;
 }
 
 export function TimeLogTable({ timeEntries, tasks, projects, users }: TimeLogTableProps) {
-  // Sort entries by start time (newest first)
-  const sortedEntries = [...timeEntries].sort((a, b) => {
-    return new Date(b.startTime).getTime() - new Date(a.startTime).getTime();
-  });
-  
-  const formatDuration = (seconds: number): string => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    return `${hours}h ${minutes}m`;
+  // Helper function to get task details
+  const getTaskDetails = (taskId: string): Task | undefined => {
+    return Object.values(tasks).find(task => task.id === taskId);
   };
   
-  const getTaskById = (id: string): Task | undefined => {
-    return tasks.find(task => task.id === id);
+  // Helper function to get project details
+  const getProjectDetails = (projectId: string): Project | undefined => {
+    return Object.values(projects).find(project => project.id === projectId);
   };
   
-  const getUserById = (id: string): User | undefined => {
-    return users.find(user => user.id === id);
-  };
-  
-  const getProjectById = (id: string): Project | undefined => {
-    return projects.find(project => project.id === id);
+  // Helper function to get user details
+  const getUserDetails = (userId: string): User | undefined => {
+    return Object.values(users).find(user => user.id === userId);
   };
   
   return (
-    <Card className="bg-white">
-      <CardHeader>
-        <CardTitle>Time Log Entries</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="rounded-md border">
-          <div className="bg-muted/50 p-2 border-b grid grid-cols-12 text-xs font-medium text-muted-foreground">
-            <div className="col-span-2 px-3 py-2">Date</div>
-            <div className="col-span-2 px-3 py-2">User</div>
-            <div className="col-span-3 px-3 py-2">Task</div>
-            <div className="col-span-2 px-3 py-2">Project</div>
-            <div className="col-span-2 px-3 py-2">Start Time</div>
-            <div className="col-span-1 px-3 py-2">Duration</div>
-          </div>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Task</TableHead>
+          <TableHead>Project</TableHead>
+          <TableHead>User</TableHead>
+          <TableHead>Start Time</TableHead>
+          <TableHead>End Time</TableHead>
+          <TableHead>Duration</TableHead>
+          <TableHead className="text-right">Actions</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {timeEntries.map(entry => {
+          const task = getTaskDetails(entry.taskId);
+          const project = task ? getProjectDetails(task.project) : undefined;
+          const user = getUserDetails(entry.userId);
           
-          <div className="divide-y">
-            {sortedEntries.map(entry => {
-              const task = getTaskById(entry.taskId);
-              const project = task ? getProjectById(task.project) : undefined;
-              const user = getUserById(entry.userId);
-              
-              if (!task || !project || !user) return null;
-              
-              return (
-                <div key={entry.id} className="grid grid-cols-12 hover:bg-muted/20 transition-colors">
-                  <div className="col-span-2 px-3 py-3 text-sm">
-                    {format(new Date(entry.startTime), 'MMM dd, yyyy')}
-                  </div>
-                  <div className="col-span-2 px-3 py-3 flex items-center gap-2">
-                    <Avatar className="h-6 w-6">
-                      <AvatarImage src={user.avatar} />
-                      <AvatarFallback>{user.name.substring(0, 2).toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    <span className="text-sm">{user.name}</span>
-                  </div>
-                  <div className="col-span-3 px-3 py-3 text-sm">
-                    {task.title}
-                  </div>
-                  <div className="col-span-2 px-3 py-3 flex items-center gap-2">
+          return (
+            <TableRow key={entry.id}>
+              <TableCell>{task?.title || 'N/A'}</TableCell>
+              <TableCell>
+                <div className="flex items-center gap-2">
+                  {project && (
                     <div 
-                      className="h-3 w-3 rounded-full" 
-                      style={{ backgroundColor: project.color }}
+                      className="h-2 w-2 rounded-full" 
+                      style={{ backgroundColor: project.color }} 
                     />
-                    <span className="text-sm">{project.name}</span>
-                  </div>
-                  <div className="col-span-2 px-3 py-3 text-sm">
-                    {format(new Date(entry.startTime), 'h:mm a')}
-                  </div>
-                  <div className="col-span-1 px-3 py-3 text-sm">
-                    {formatDuration(entry.duration)}
-                  </div>
+                  )}
+                  {project?.name || 'N/A'}
                 </div>
-              );
-            })}
-            
-            {sortedEntries.length === 0 && (
-              <div className="px-4 py-8 text-center text-muted-foreground">
-                No time entries found matching your criteria.
-              </div>
-            )}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+              </TableCell>
+              <TableCell>{user?.name || 'N/A'}</TableCell>
+              <TableCell>
+                <div className="flex items-center gap-1">
+                  <Calendar size={14} className="text-muted-foreground" />
+                  {format(new Date(entry.startTime), 'MMM d, yyyy h:mm a')}
+                </div>
+              </TableCell>
+              <TableCell>
+                {entry.endTime ? (
+                  <div className="flex items-center gap-1">
+                    <Calendar size={14} className="text-muted-foreground" />
+                    {format(new Date(entry.endTime), 'MMM d, yyyy h:mm a')}
+                  </div>
+                ) : 'N/A'}
+              </TableCell>
+              <TableCell>
+                <div className="flex items-center gap-1">
+                  <Clock size={14} className="text-muted-foreground" />
+                  {entry.duration} seconds
+                </div>
+              </TableCell>
+              <TableCell className="text-right">
+                <Button variant="ghost" size="sm">
+                  <Download size={16} className="mr-2" />
+                  Export
+                </Button>
+              </TableCell>
+            </TableRow>
+          );
+        })}
+      </TableBody>
+    </Table>
   );
 }

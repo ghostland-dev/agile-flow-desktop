@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { Calendar, ChartGantt, List } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useProject } from '../contexts/ProjectContext';
+import { useProject } from '../hooks/useProject';
 
 export function ViewSelector() {
   const { currentView, setCurrentView } = useProject();
