@@ -7,17 +7,23 @@ import { TeamSearch } from '@/components/team/TeamSearch';
 import { InviteMemberDialog } from '@/components/team/InviteMemberDialog';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { TeamMemberWithStats } from '@/components/team/types';
 
-// Données fictives pour les membres de l'équipe
-const teamMembers = [
+// Enhanced mock data to match TeamMemberWithStats interface
+const teamMembers: TeamMemberWithStats[] = [
   {
     id: '1',
     name: 'Emma Wilson',
     email: 'emma.wilson@example.com',
     avatar: '',
     role: 'Product Manager',
-    status: 'active',
-    lastActive: '2 minutes ago'
+    tasksCount: 12,
+    completedTasks: 8,
+    lastActivity: new Date('2023-04-25T10:30:00'),
+    projectsWorkedOn: [
+      { id: 'p1', name: 'Website Redesign', description: 'Redesigning the company website', createdAt: '2023-04-01', color: '#4f46e5' },
+      { id: 'p2', name: 'Mobile App', description: 'Building a new mobile app', createdAt: '2023-03-15', color: '#0ea5e9' }
+    ]
   },
   {
     id: '2',
@@ -25,8 +31,13 @@ const teamMembers = [
     email: 'alex.j@example.com',
     avatar: '',
     role: 'Developer',
-    status: 'active',
-    lastActive: '15 minutes ago'
+    tasksCount: 15,
+    completedTasks: 10,
+    lastActivity: new Date('2023-04-25T09:15:00'),
+    projectsWorkedOn: [
+      { id: 'p2', name: 'Mobile App', description: 'Building a new mobile app', createdAt: '2023-03-15', color: '#0ea5e9' },
+      { id: 'p3', name: 'API Integration', description: 'Integrating with third-party APIs', createdAt: '2023-02-20', color: '#10b981' }
+    ]
   },
   {
     id: '3',
@@ -34,8 +45,12 @@ const teamMembers = [
     email: 'sarah.m@example.com',
     avatar: '',
     role: 'Designer',
-    status: 'active',
-    lastActive: '1 hour ago'
+    tasksCount: 8,
+    completedTasks: 5,
+    lastActivity: new Date('2023-04-24T14:45:00'),
+    projectsWorkedOn: [
+      { id: 'p1', name: 'Website Redesign', description: 'Redesigning the company website', createdAt: '2023-04-01', color: '#4f46e5' }
+    ]
   },
   {
     id: '4',
@@ -43,8 +58,12 @@ const teamMembers = [
     email: 'james.c@example.com',
     avatar: '',
     role: 'Developer',
-    status: 'inactive',
-    lastActive: '2 days ago'
+    tasksCount: 10,
+    completedTasks: 3,
+    lastActivity: new Date('2023-04-23T11:20:00'),
+    projectsWorkedOn: [
+      { id: 'p3', name: 'API Integration', description: 'Integrating with third-party APIs', createdAt: '2023-02-20', color: '#10b981' }
+    ]
   },
   {
     id: '5',
@@ -52,8 +71,12 @@ const teamMembers = [
     email: 'o.brown@example.com',
     avatar: '',
     role: 'Marketing',
-    status: 'active',
-    lastActive: '3 hours ago'
+    tasksCount: 6,
+    completedTasks: 4,
+    lastActivity: new Date('2023-04-25T08:30:00'),
+    projectsWorkedOn: [
+      { id: 'p4', name: 'Marketing Campaign', description: 'Q2 Marketing Campaign', createdAt: '2023-03-30', color: '#f97316' }
+    ]
   },
   {
     id: '6',
@@ -61,8 +84,13 @@ const teamMembers = [
     email: 'michael.d@example.com',
     avatar: '',
     role: 'Developer',
-    status: 'active',
-    lastActive: 'Just now'
+    tasksCount: 14,
+    completedTasks: 12,
+    lastActivity: new Date('2023-04-25T11:45:00'),
+    projectsWorkedOn: [
+      { id: 'p2', name: 'Mobile App', description: 'Building a new mobile app', createdAt: '2023-03-15', color: '#0ea5e9' },
+      { id: 'p3', name: 'API Integration', description: 'Integrating with third-party APIs', createdAt: '2023-02-20', color: '#10b981' }
+    ]
   }
 ];
 
@@ -70,16 +98,20 @@ export default function TeamMembers() {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [inviteDialogOpen, setInviteDialogOpen] = React.useState(false);
   
-  // Filtrer les membres en fonction de la recherche
+  // Filter members based on search query
   const filteredMembers = teamMembers.filter(member =>
     member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     member.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
     member.role.toLowerCase().includes(searchQuery.toLowerCase())
   );
   
-  // Filtrer par statut
-  const activeMembers = filteredMembers.filter(member => member.status === 'active');
-  const inactiveMembers = filteredMembers.filter(member => member.status === 'inactive');
+  // Filter by activity status (for demonstration purposes based on tasks completed)
+  const activeMembers = filteredMembers.filter(member => 
+    member.lastActivity && new Date().getTime() - member.lastActivity.getTime() < 7 * 24 * 60 * 60 * 1000
+  );
+  const inactiveMembers = filteredMembers.filter(member => 
+    !member.lastActivity || new Date().getTime() - member.lastActivity.getTime() >= 7 * 24 * 60 * 60 * 1000
+  );
 
   return (
     <ScrollArea className="h-[calc(100vh-3.5rem)]">
@@ -99,7 +131,8 @@ export default function TeamMembers() {
             <div className="mb-6">
               <TeamSearch
                 searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
+                onSearchChange={setSearchQuery}
+                onInviteClick={() => setInviteDialogOpen(true)}
               />
             </div>
 
@@ -119,21 +152,18 @@ export default function TeamMembers() {
               <TabsContent value="all">
                 <TeamMemberList 
                   members={filteredMembers} 
-                  searchQuery={searchQuery}
                 />
               </TabsContent>
               
               <TabsContent value="active">
                 <TeamMemberList 
                   members={activeMembers} 
-                  searchQuery={searchQuery}
                 />
               </TabsContent>
               
               <TabsContent value="inactive">
                 <TeamMemberList 
                   members={inactiveMembers} 
-                  searchQuery={searchQuery}
                 />
               </TabsContent>
             </Tabs>
