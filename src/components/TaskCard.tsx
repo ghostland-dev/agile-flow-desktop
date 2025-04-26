@@ -27,18 +27,18 @@ export function TaskCard({ task }: TaskCardProps) {
 
   return (
     <div className={cn(
-      "task-card bg-white border rounded-lg shadow-sm p-4 animate-fade-in transition-all",
-      isExpanded ? "hover:shadow-md" : "hover:shadow-sm"
+      "task-card bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-lg shadow-sm dark:shadow-none p-4 animate-fade-in transition-all",
+      isExpanded ? "hover:shadow-md dark:hover:shadow-lg" : "hover:shadow-sm"
     )}>
       <div className="flex items-start justify-between mb-2">
-        <h3 className="font-medium text-base">{task.title}</h3>
+        <h3 className="font-medium text-base dark:text-gray-200">{task.title}</h3>
         {task.priority === 'urgent' && (
-          <AlertCircle size={16} className="text-red-500 ml-2 flex-shrink-0" />
+          <AlertCircle size={16} className="text-red-500 dark:text-red-400 ml-2 flex-shrink-0" />
         )}
       </div>
       
       <p className={cn(
-        "text-sm text-gray-600 mb-3", 
+        "text-sm text-gray-600 dark:text-gray-400 mb-3", 
         isExpanded ? "" : "line-clamp-2"
       )}>
         {task.description}
@@ -46,7 +46,11 @@ export function TaskCard({ task }: TaskCardProps) {
       
       <div className="flex flex-wrap gap-1 mb-3">
         {task.tags.map(tag => (
-          <Badge key={tag} variant="outline" className="text-xs bg-muted text-muted-foreground">
+          <Badge 
+            key={tag} 
+            variant="outline" 
+            className="text-xs bg-muted dark:bg-gray-700 text-muted-foreground dark:text-gray-300"
+          >
             {tag}
           </Badge>
         ))}
@@ -68,7 +72,7 @@ export function TaskCard({ task }: TaskCardProps) {
           <Button
             variant="ghost"
             size="sm"
-            className="mt-3 h-7 text-xs"
+            className="mt-3 h-7 text-xs dark:hover:bg-gray-700"
             onClick={() => setShowUploader(true)}
           >
             <Upload size={12} className="mr-1" />
@@ -77,7 +81,7 @@ export function TaskCard({ task }: TaskCardProps) {
         )
       )}
       
-      <div className="flex items-center justify-between mt-4 pt-2 border-t border-gray-100">
+      <div className="flex items-center justify-between mt-4 pt-2 border-t border-gray-100 dark:border-gray-700">
         <div className="flex items-center gap-2">
           <TaskPriorityBadge priority={task.priority} />
           <TaskStatusBadge status={task.status} />
