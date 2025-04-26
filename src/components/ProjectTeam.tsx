@@ -33,7 +33,7 @@ export function ProjectTeam() {
           <div key={member.id} className="flex items-center gap-3 p-2 hover:bg-accent rounded-lg transition-colors">
             <Avatar>
               <AvatarImage src={member.avatar} />
-              <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
+              <AvatarFallback className="bg-primary/10 text-primary">{member.name.charAt(0)}</AvatarFallback>
             </Avatar>
             
             <div className="flex-1">

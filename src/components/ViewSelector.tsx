@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Calendar, ChartGantt, List } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -14,7 +15,7 @@ export function ViewSelector() {
   ] as const;
   
   return (
-    <div className="flex border-b">
+    <div className="flex border-b dark:border-border">
       {views.map((view) => (
         <button
           key={view.id}

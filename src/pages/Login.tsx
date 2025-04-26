@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FileText, Github, Mail } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -29,10 +30,14 @@ export default function Login() {
   };
   
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-muted/40 p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-muted/40 dark:bg-background p-4">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+      
       <div className="flex items-center mb-6">
         <div className="h-10 w-10 rounded-md bg-primary flex items-center justify-center mr-2">
-          <FileText size={24} className="text-white" />
+          <FileText size={24} className="text-primary-foreground" />
         </div>
         <h1 className="font-bold text-2xl">ProjectFlow</h1>
       </div>
@@ -45,7 +50,7 @@ export default function Login() {
           </TabsList>
           
           <TabsContent value="login">
-            <div className="bg-white p-6 rounded-lg shadow-sm border">
+            <div className="bg-card p-6 rounded-lg shadow-sm border">
               <h2 className="text-2xl font-bold mb-6 text-center">Welcome back</h2>
               
               <div className="space-y-4">
@@ -63,7 +68,7 @@ export default function Login() {
                     <span className="w-full border-t" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-white px-2 text-muted-foreground">
+                    <span className="bg-card px-2 text-muted-foreground">
                       Or continue with
                     </span>
                   </div>
@@ -104,7 +109,7 @@ export default function Login() {
           </TabsContent>
           
           <TabsContent value="register">
-            <div className="bg-white p-6 rounded-lg shadow-sm border">
+            <div className="bg-card p-6 rounded-lg shadow-sm border">
               <h2 className="text-2xl font-bold mb-6 text-center">Create an account</h2>
               
               <div className="space-y-4">
@@ -122,7 +127,7 @@ export default function Login() {
                     <span className="w-full border-t" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-white px-2 text-muted-foreground">
+                    <span className="bg-card px-2 text-muted-foreground">
                       Or continue with
                     </span>
                   </div>

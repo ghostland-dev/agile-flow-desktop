@@ -13,7 +13,7 @@ export function PriorityFilter({ filterPriority, setFilterPriority }: PriorityFi
       <Button 
         variant="outline" 
         size="sm" 
-        className={filterPriority === 'urgent' ? 'bg-red-50 text-red-700 border-red-200' : ''} 
+        className={filterPriority === 'urgent' ? 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800' : ''} 
         onClick={() => setFilterPriority(filterPriority === 'urgent' ? null : 'urgent')}
       >
         Urgent
@@ -21,7 +21,7 @@ export function PriorityFilter({ filterPriority, setFilterPriority }: PriorityFi
       <Button 
         variant="outline" 
         size="sm" 
-        className={filterPriority === 'high' ? 'bg-orange-50 text-orange-700 border-orange-200' : ''} 
+        className={filterPriority === 'high' ? 'bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border-orange-200 dark:border-orange-800' : ''} 
         onClick={() => setFilterPriority(filterPriority === 'high' ? null : 'high')}
       >
         High
@@ -29,7 +29,7 @@ export function PriorityFilter({ filterPriority, setFilterPriority }: PriorityFi
       <Button 
         variant="outline" 
         size="sm" 
-        className={filterPriority === 'medium' ? 'bg-amber-50 text-amber-700 border-amber-200' : ''} 
+        className={filterPriority === 'medium' ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800' : ''} 
         onClick={() => setFilterPriority(filterPriority === 'medium' ? null : 'medium')}
       >
         Medium
@@ -37,7 +37,7 @@ export function PriorityFilter({ filterPriority, setFilterPriority }: PriorityFi
       <Button 
         variant="outline" 
         size="sm" 
-        className={filterPriority === 'low' ? 'bg-blue-50 text-blue-700 border-blue-200' : ''} 
+        className={filterPriority === 'low' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800' : ''} 
         onClick={() => setFilterPriority(filterPriority === 'low' ? null : 'low')}
       >
         Low
