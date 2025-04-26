@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { Task } from '@/types/project';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -7,12 +6,16 @@ import { Button } from '@/components/ui/button';
 import { Calendar, Clock, Plus } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { NewTaskForm } from '@/components/NewTaskForm';
 
 interface TaskSidebarProps {
   upcomingDeadlines: Task[];
 }
 
 export function TaskSidebar({ upcomingDeadlines }: TaskSidebarProps) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   return (
     <div className="space-y-6">
       <Card>
@@ -22,7 +25,12 @@ export function TaskSidebar({ upcomingDeadlines }: TaskSidebarProps) {
               <Calendar size={16} />
               Upcoming Deadlines
             </CardTitle>
-            <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-7 w-7 p-0"
+              onClick={() => setIsDialogOpen(true)}
+            >
               <Plus size={16} />
             </Button>
           </div>
@@ -93,6 +101,18 @@ export function TaskSidebar({ upcomingDeadlines }: TaskSidebarProps) {
           </div>
         </CardContent>
       </Card>
+      
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent aria-describedby="new-task-description">
+          <DialogHeader>
+            <DialogTitle>Add New Task</DialogTitle>
+            <DialogDescription id="new-task-description">
+              Create a new task with a deadline
+            </DialogDescription>
+          </DialogHeader>
+          <NewTaskForm initialStatus="todo" openInDialog={false} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
