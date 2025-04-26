@@ -1,13 +1,25 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useProject } from '../contexts/ProjectContext';
-import { Calendar, List, Timer } from 'lucide-react';
+import { Calendar, Clock, List, Play, Square, Timer } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { NewTaskForm } from './NewTaskForm';
+import { useToast } from '@/hooks/use-toast';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
 
 export function ProjectHeader() {
-  const { currentProject, currentView, setCurrentView } = useProject();
+  const { currentProject, currentView, setCurrentView, tasks, startTimeTracking, stopTimeTracking } = useProject();
+  const { toast } = useToast();
+  const [isTracking, setIsTracking] = useState(false);
+  const [currentTaskId, setCurrentTaskId] = useState<string | null>(null);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [timerInterval, setTimerInterval] = useState<number | null>(null);
   
   if (!currentProject) return null;
   
@@ -15,7 +27,59 @@ export function ProjectHeader() {
     { id: 'kanban', label: 'Board', icon: <List size={16} /> },
     { id: 'list', label: 'List', icon: <List size={16} /> },
     { id: 'calendar', label: 'Calendar', icon: <Calendar size={16} /> },
+    { id: 'timeline', label: 'Timeline', icon: <Clock size={16} /> },
   ] as const;
+  
+  const projectTasksInProgress = tasks
+    .filter(task => task.project === currentProject.id && task.status === 'in_progress');
+  
+  const formatTime = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+  
+  const startTimer = (taskId: string) => {
+    if (isTracking) {
+      stopTimer();
+    }
+    
+    startTimeTracking(taskId);
+    setIsTracking(true);
+    setCurrentTaskId(taskId);
+    setElapsedTime(0);
+    
+    const interval = window.setInterval(() => {
+      setElapsedTime(prev => prev + 1);
+    }, 1000);
+    
+    setTimerInterval(interval);
+    
+    const task = tasks.find(t => t.id === taskId);
+    toast({
+      title: "Timer started",
+      description: `Tracking time for "${task?.title}"`,
+    });
+  };
+  
+  const stopTimer = () => {
+    if (currentTaskId) {
+      stopTimeTracking(currentTaskId);
+      
+      if (timerInterval !== null) {
+        clearInterval(timerInterval);
+      }
+      
+      setIsTracking(false);
+      setTimerInterval(null);
+      
+      toast({
+        title: "Timer stopped",
+        description: `Tracked ${formatTime(elapsedTime)}`,
+      });
+    }
+  };
   
   return (
     <header className="border-b bg-white px-6 py-4">
@@ -32,10 +96,39 @@ export function ProjectHeader() {
         </div>
         
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="gap-1">
-            <Timer size={14} />
-            Start Timer
-          </Button>
+          {isTracking ? (
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium">{formatTime(elapsedTime)}</span>
+              <Button variant="outline" size="sm" className="gap-1" onClick={stopTimer}>
+                <Square size={14} className="text-red-500" />
+                Stop Timer
+              </Button>
+            </div>
+          ) : (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-1">
+                  <Play size={14} className="text-green-500" />
+                  Start Timer
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                {projectTasksInProgress.length > 0 ? (
+                  projectTasksInProgress.map(task => (
+                    <DropdownMenuItem 
+                      key={task.id} 
+                      onClick={() => startTimer(task.id)}
+                      className="cursor-pointer"
+                    >
+                      {task.title}
+                    </DropdownMenuItem>
+                  ))
+                ) : (
+                  <DropdownMenuItem disabled>No tasks in progress</DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
           <NewTaskForm />
         </div>
       </div>

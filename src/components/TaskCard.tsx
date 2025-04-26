@@ -1,7 +1,8 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { format, isToday, isYesterday, isTomorrow } from 'date-fns';
-import { useProject, Task, Priority } from '../contexts/ProjectContext';
-import { AlertCircle, Calendar, Clock } from 'lucide-react';
+import { useProject, Task, Priority, Status } from '../contexts/ProjectContext';
+import { AlertCircle, Calendar, Clock, MoreVertical, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Avatar } from '@/components/ui/avatar';
 import { AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -9,9 +10,16 @@ import { Badge } from '@/components/ui/badge';
 import { TaskTimer } from './TaskTimer';
 import { FileAttachments } from './FileAttachments';
 import { FileUploader } from './FileUploader';
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Upload } from 'lucide-react';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
+import { useToast } from "@/hooks/use-toast";
 
 interface TaskCardProps {
   task: Task;
@@ -45,23 +53,102 @@ const priorityColors: Record<Priority, string> = {
   urgent: 'bg-red-100 text-red-800',
 };
 
+const statusLabels: Record<Status, string> = {
+  backlog: 'Backlog',
+  todo: 'To Do',
+  in_progress: 'In Progress',
+  in_review: 'In Review',
+  done: 'Done',
+};
+
 export function TaskCard({ task }: TaskCardProps) {
-  const { users } = useProject();
+  const { users, updateTaskStatus } = useProject();
+  const { toast } = useToast();
   const assignee = task.assignee ? users.find(u => u.id === task.assignee) : undefined;
   const [showUploader, setShowUploader] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   
+  const handleStatusChange = (newStatus: Status) => {
+    updateTaskStatus(task.id, newStatus);
+    toast({
+      title: "Task updated",
+      description: `Task moved to ${statusLabels[newStatus]}`,
+    });
+  };
+
   return (
-    <div className="task-card bg-white border rounded-lg shadow-sm p-4 animate-fade-in">
+    <div className={cn(
+      "task-card bg-white border rounded-lg shadow-sm p-4 animate-fade-in transition-all",
+      isExpanded ? "hover:shadow-md" : "hover:shadow-sm"
+    )}>
       <div className="flex items-start justify-between mb-2">
         <h3 className="font-medium text-base">{task.title}</h3>
-        {task.priority !== 'low' && (
-          <span className={cn("text-xs font-medium rounded-full px-2 py-0.5", priorityColors[task.priority])}>
-            {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
-          </span>
-        )}
+        <div className="flex items-center gap-1">
+          {task.priority !== 'low' && (
+            <span className={cn("text-xs font-medium rounded-full px-2 py-0.5", priorityColors[task.priority])}>
+              {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+            </span>
+          )}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem 
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="cursor-pointer"
+              >
+                {isExpanded ? "Collapse" : "Expand"}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem 
+                disabled={task.status === 'backlog'}
+                onClick={() => handleStatusChange('backlog')}
+                className="cursor-pointer"
+              >
+                Move to Backlog
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                disabled={task.status === 'todo'}
+                onClick={() => handleStatusChange('todo')}
+                className="cursor-pointer"
+              >
+                Move to To Do
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                disabled={task.status === 'in_progress'}
+                onClick={() => handleStatusChange('in_progress')}
+                className="cursor-pointer"
+              >
+                Move to In Progress
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                disabled={task.status === 'in_review'}
+                onClick={() => handleStatusChange('in_review')}
+                className="cursor-pointer"
+              >
+                Move to In Review
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                disabled={task.status === 'done'}
+                onClick={() => handleStatusChange('done')}
+                className="cursor-pointer"
+              >
+                Move to Done
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
       
-      <p className="text-sm text-gray-600 mb-3 line-clamp-2">{task.description}</p>
+      <p className={cn(
+        "text-sm text-gray-600 mb-3", 
+        isExpanded ? "" : "line-clamp-2"
+      )}>
+        {task.description}
+      </p>
       
       <div className="flex flex-wrap gap-1 mb-3">
         {task.tags.map(tag => (
@@ -73,25 +160,27 @@ export function TaskCard({ task }: TaskCardProps) {
       
       <TaskTimer taskId={task.id} />
       
-      <FileAttachments taskId={task.id} />
+      {(isExpanded || task.description.length < 100) && <FileAttachments taskId={task.id} />}
       
-      {showUploader ? (
-        <div className="mt-3">
-          <FileUploader 
-            taskId={task.id} 
-            onUpload={() => setShowUploader(false)} 
-          />
-        </div>
-      ) : (
-        <Button
-          variant="ghost"
-          size="sm"
-          className="mt-3 h-7 text-xs"
-          onClick={() => setShowUploader(true)}
-        >
-          <Upload size={12} className="mr-1" />
-          Attach files
-        </Button>
+      {(isExpanded || task.description.length < 100) && (
+        showUploader ? (
+          <div className="mt-3">
+            <FileUploader 
+              taskId={task.id} 
+              onUpload={() => setShowUploader(false)} 
+            />
+          </div>
+        ) : (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="mt-3 h-7 text-xs"
+            onClick={() => setShowUploader(true)}
+          >
+            <Upload size={12} className="mr-1" />
+            Attach files
+          </Button>
+        )
       )}
       
       <div className="flex items-center justify-between mt-4 pt-2 border-t border-gray-100">

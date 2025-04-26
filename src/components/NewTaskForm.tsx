@@ -11,9 +11,11 @@ import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 export function NewTaskForm() {
   const { currentProject, addTask } = useProject();
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -22,32 +24,58 @@ export function NewTaskForm() {
   const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
   const [assignee, setAssignee] = useState<string | undefined>(undefined);
   const [tags, setTags] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !currentProject) return;
+    if (!title.trim() || !currentProject) {
+      toast({
+        title: "Missing information",
+        description: "Please provide a task title",
+        variant: "destructive",
+      });
+      return;
+    }
     
-    addTask({
-      title,
-      description,
-      priority,
-      status,
-      dueDate: dueDate ? dueDate.toISOString() : undefined,
-      assignee,
-      project: currentProject.id,
-      tags: tags.split(',').map(tag => tag.trim()).filter(Boolean),
-      timeTracked: 0,
-    });
+    setIsSubmitting(true);
     
-    // Reset form
-    setTitle('');
-    setDescription('');
-    setPriority('medium');
-    setStatus('todo');
-    setDueDate(undefined);
-    setAssignee(undefined);
-    setTags('');
-    setOpen(false);
+    try {
+      addTask({
+        title,
+        description,
+        priority,
+        status,
+        dueDate: dueDate ? dueDate.toISOString() : undefined,
+        assignee,
+        project: currentProject.id,
+        tags: tags.split(',').map(tag => tag.trim()).filter(Boolean),
+        timeTracked: 0,
+      });
+      
+      toast({
+        title: "Task created",
+        description: "Your task has been successfully created",
+      });
+      
+      // Reset form
+      setTitle('');
+      setDescription('');
+      setPriority('medium');
+      setStatus('todo');
+      setDueDate(undefined);
+      setAssignee(undefined);
+      setTags('');
+      setOpen(false);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create task. Please try again.",
+        variant: "destructive",
+      });
+      console.error("Failed to create task:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   
   return (
@@ -167,7 +195,9 @@ export function NewTaskForm() {
             <Button variant="outline" type="button" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit">Create Task</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Creating..." : "Create Task"}
+            </Button>
           </div>
         </form>
       </DialogContent>
