@@ -3,12 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { CalendarCheck, CheckCircle, Clock, FileText, Layers, ArrowRight } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
-
 const Index = () => {
   const navigate = useNavigate();
-  
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 transition-all overflow-y-auto">
+  return <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 transition-all overflow-y-auto">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 bg-background/90 backdrop-blur-sm z-10 px-6 py-4 border-b shadow-sm">
         <div className="container mx-auto flex items-center justify-between">
@@ -21,10 +18,7 @@ const Index = () => {
           <div className="flex items-center gap-4">
             <ThemeToggle />
             <Button variant="ghost" onClick={() => navigate('/login')}>Login</Button>
-            <Button 
-              onClick={() => navigate('/login')}
-              className="bg-gradient-to-r from-primary to-primary/80 hover:opacity-90 transition-all"
-            >
+            <Button onClick={() => navigate('/login')} className="bg-gradient-to-r from-primary to-primary/80 hover:opacity-90 transition-all">
               Sign up for free
             </Button>
           </div>
@@ -45,20 +39,11 @@ const Index = () => {
             Streamline your workflow, track tasks, manage projects, and collaborate with your team in a single unified platform.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button 
-              size="lg" 
-              onClick={() => navigate('/login')}
-              className="bg-gradient-to-r from-primary to-primary/80 hover:opacity-90 transition-all px-8"
-            >
+            <Button size="lg" onClick={() => navigate('/login')} className="bg-gradient-to-r from-primary to-primary/80 hover:opacity-90 transition-all px-8">
               Get Started for Free
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              onClick={() => navigate('/dashboard')}
-              className="border-primary/20 hover:bg-primary/5 transition-all px-8"
-            >
+            <Button size="lg" variant="outline" onClick={() => navigate('/dashboard')} className="border-primary/20 hover:bg-primary/5 transition-all px-8">
               View Demo
             </Button>
           </div>
@@ -67,11 +52,7 @@ const Index = () => {
             <div className="absolute -top-4 -right-4 bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full shadow-md">
               Easy to use
             </div>
-            <img 
-              src="/placeholder.svg" 
-              alt="ProjectFlow dashboard" 
-              className="w-full rounded-lg border shadow-sm"
-            />
+            <img alt="ProjectFlow dashboard" className="w-full rounded-lg border shadow-sm" src="/lovable-uploads/0a109d2b-70f1-45ba-9204-a389088ce6df.png" />
           </div>
         </div>
       </section>
@@ -149,11 +130,7 @@ const Index = () => {
               <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
                 Start managing your projects with ProjectFlow today and see the difference.
               </p>
-              <Button 
-                size="lg" 
-                onClick={() => navigate('/login')}
-                className="bg-gradient-to-r from-primary to-primary/80 hover:opacity-90 transition-all px-8"
-              >
+              <Button size="lg" onClick={() => navigate('/login')} className="bg-gradient-to-r from-primary to-primary/80 hover:opacity-90 transition-all px-8">
                 Get Started for Free
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -200,15 +177,13 @@ const Index = () => {
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
                 <span className="sr-only">LinkedIn</span>
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                 </svg>
               </a>
             </div>
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
