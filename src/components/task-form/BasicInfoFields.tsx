@@ -1,5 +1,5 @@
 
-import React, { useCallback } from 'react';
+import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { TaskFormState } from '@/hooks/useTaskForm';
@@ -10,12 +10,11 @@ interface BasicInfoFieldsProps {
 }
 
 export function BasicInfoFields({ formState, setFormState }: BasicInfoFieldsProps) {
-  // Create memoized update handlers to prevent recreating functions on each render
-  const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTitleChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setFormState((prevState) => ({ ...prevState, title: e.target.value }));
   }, [setFormState]);
 
-  const handleDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleDescriptionChange = React.useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setFormState((prevState) => ({ ...prevState, description: e.target.value }));
   }, [setFormState]);
 

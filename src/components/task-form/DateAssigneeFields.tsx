@@ -1,5 +1,5 @@
 
-import React, { useCallback } from 'react';
+import React from 'react';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -15,11 +15,11 @@ interface DateAssigneeFieldsProps {
 }
 
 export function DateAssigneeFields({ formState, setFormState }: DateAssigneeFieldsProps) {
-  const handleDateChange = useCallback((date: Date | undefined) => {
+  const handleDateChange = React.useCallback((date: Date | undefined) => {
     setFormState((prevState) => ({ ...prevState, dueDate: date }));
   }, [setFormState]);
 
-  const handleAssigneeChange = useCallback((value: string) => {
+  const handleAssigneeChange = React.useCallback((value: string) => {
     setFormState((prevState) => ({ 
       ...prevState, 
       assignee: value === "unassigned" ? undefined : value 

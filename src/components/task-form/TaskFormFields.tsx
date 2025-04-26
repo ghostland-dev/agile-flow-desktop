@@ -1,5 +1,5 @@
 
-import React, { useCallback, useMemo } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { TaskFormState } from '@/hooks/useTaskForm';
 import { BasicInfoFields } from './BasicInfoFields';
@@ -22,22 +22,16 @@ export function TaskFormFields({
   onCancel,
   showCancel = true 
 }: TaskFormFieldsProps) {
-  // Use a stable callback function to update the form state
-  const updateFormState = useCallback((updater: React.SetStateAction<TaskFormState>) => {
-    setFormState(updater);
-  }, [setFormState]);
-
-  // Memoize the cancel handler function
-  const handleCancelClick = useCallback(() => {
+  const handleCancelClick = React.useCallback(() => {
     if (onCancel) onCancel();
   }, [onCancel]);
 
   return (
     <div className="space-y-4 mt-2">
-      <BasicInfoFields formState={formState} setFormState={updateFormState} />
-      <StatusPriorityFields formState={formState} setFormState={updateFormState} />
-      <DateAssigneeFields formState={formState} setFormState={updateFormState} />
-      <TagsField formState={formState} setFormState={updateFormState} />
+      <BasicInfoFields formState={formState} setFormState={setFormState} />
+      <StatusPriorityFields formState={formState} setFormState={setFormState} />
+      <DateAssigneeFields formState={formState} setFormState={setFormState} />
+      <TagsField formState={formState} setFormState={setFormState} />
       
       <div className="flex justify-end gap-2">
         {showCancel && (
