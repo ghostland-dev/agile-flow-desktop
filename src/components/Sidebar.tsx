@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useProject } from '../hooks/useProject';
 import { 
@@ -16,10 +16,13 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { NewProjectForm } from './dashboard/NewProjectForm';
 
 export function Sidebar() {
   const location = useLocation();
   const { projects } = useProject();
+  const [newProjectDialogOpen, setNewProjectDialogOpen] = useState(false);
   
   const mainMenu = [
     { name: 'Dashboard', path: '/dashboard', icon: <Home size={18} /> },
@@ -74,7 +77,12 @@ export function Sidebar() {
         <div className="mt-8 px-3">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-xs font-medium uppercase text-sidebar-foreground/60">Projects</h3>
-            <Button size="icon" variant="ghost" className="h-5 w-5 text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent">
+            <Button 
+              size="icon" 
+              variant="ghost" 
+              className="h-5 w-5 text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent"
+              onClick={() => setNewProjectDialogOpen(true)}
+            >
               <Plus size={16} />
             </Button>
           </div>
@@ -112,6 +120,15 @@ export function Sidebar() {
           Settings
         </Link>
       </div>
+
+      <Dialog open={newProjectDialogOpen} onOpenChange={setNewProjectDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Create New Project</DialogTitle>
+          </DialogHeader>
+          <NewProjectForm onSuccess={() => setNewProjectDialogOpen(false)} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
