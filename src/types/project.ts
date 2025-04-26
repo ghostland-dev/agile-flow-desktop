@@ -28,6 +28,8 @@ export interface User {
   name: string;
   email: string;
   avatar: string;
+  role?: string;
+  bio?: string;
 }
 
 export interface FileAttachment {

@@ -20,7 +20,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const [viewingTask, setViewingTask] = useState<Task | null>(null);
   const [deleteConfirmTask, setDeleteConfirmTask] = useState<Task | null>(null);
   
-  // Fixed type definition with proper typing for tags
+  // Updated type definition for formValues to correctly handle tags
   const [formValues, setFormValues] = useState<Partial<Task> & { tags?: string[] | string }>({});
 
   const handleEditClick = (task: Task) => {

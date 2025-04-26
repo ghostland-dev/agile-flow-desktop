@@ -3,7 +3,7 @@ import React from 'react';
 import { Task } from '@/types/project';
 import { TaskCard } from './TaskCard';
 import { useProject } from '@/hooks/useProject';
-import { useDrag, useDrop } from '@dnd-kit/core';
+import { useDraggable } from '@dnd-kit/core';
 import { cn } from '@/lib/utils';
 
 interface TaskDraggableProps {
@@ -16,7 +16,7 @@ interface TaskDraggableProps {
 export function TaskDraggable({ task, onView, onEdit, onDelete }: TaskDraggableProps) {
   const { updateTaskStatus } = useProject();
   
-  const { attributes, listeners, setNodeRef, isDragging } = useDrag({
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: task.id,
     data: task,
   });
