@@ -4,10 +4,12 @@ import { useProject } from '../hooks/useProject';
 import { Status } from '../types/project';
 import { KanbanColumn } from './kanban/KanbanColumn';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export function KanbanBoard() {
   const { tasks, currentProject, updateTaskStatus } = useProject();
   const [isDialogOpen, setIsDialogOpen] = useState<{ [key: string]: boolean }>({});
+  const isMobile = useIsMobile();
   
   const columns: { id: Status; title: string }[] = [
     { id: 'backlog', title: 'Backlog' },
@@ -46,8 +48,8 @@ export function KanbanBoard() {
   };
   
   return (
-    <ScrollArea className="h-full w-full">
-      <div className="flex gap-4 p-6 h-full min-w-max">
+    <ScrollArea className="h-full w-full" orientation={isMobile ? "vertical" : "horizontal"}>
+      <div className={`flex ${isMobile ? 'flex-col' : 'flex-row'} gap-4 p-2 sm:p-4 ${!isMobile && 'min-w-max'}`}>
         {columns.map(column => {
           const columnTasks = projectTasks.filter(task => task.status === column.id);
           
