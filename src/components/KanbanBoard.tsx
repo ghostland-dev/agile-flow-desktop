@@ -175,20 +175,22 @@ export function KanbanBoard() {
                 )}
               </div>
 
-              <Dialog 
-                open={isDialogOpen[column.id]} 
-                onOpenChange={(open) => open ? openDialog(column.id) : closeDialog(column.id)}
-              >
-                <DialogContent aria-describedby="new-task-description">
-                  <DialogHeader>
-                    <DialogTitle>Add new task</DialogTitle>
-                    <DialogDescription id="new-task-description">
-                      Create a new task in the {column.title} column
-                    </DialogDescription>
-                  </DialogHeader>
-                  <NewTaskForm initialStatus={column.id} openInDialog={false} />
-                </DialogContent>
-              </Dialog>
+              {isDialogOpen[column.id] && (
+                <Dialog 
+                  open={true} 
+                  onOpenChange={(open) => !open && closeDialog(column.id)}
+                >
+                  <DialogContent aria-describedby="new-task-description">
+                    <DialogHeader>
+                      <DialogTitle>Add new task</DialogTitle>
+                      <DialogDescription id="new-task-description">
+                        Create a new task in the {column.title} column
+                      </DialogDescription>
+                    </DialogHeader>
+                    <NewTaskForm initialStatus={column.id} openInDialog={false} />
+                  </DialogContent>
+                </Dialog>
+              )}
             </div>
           );
         })}
