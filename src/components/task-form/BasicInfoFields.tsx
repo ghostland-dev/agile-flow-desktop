@@ -10,13 +10,22 @@ interface BasicInfoFieldsProps {
 }
 
 export function BasicInfoFields({ formState, setFormState }: BasicInfoFieldsProps) {
+  // Create update handlers to avoid inline function recreation on each render
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormState({ ...formState, title: e.target.value });
+  };
+
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setFormState({ ...formState, description: e.target.value });
+  };
+
   return (
     <div className="space-y-4">
       <div className="space-y-2">
         <Input 
           placeholder="Task title" 
           value={formState.title}
-          onChange={e => setFormState({ ...formState, title: e.target.value })}
+          onChange={handleTitleChange}
           className="text-base"
           required
         />
@@ -26,7 +35,7 @@ export function BasicInfoFields({ formState, setFormState }: BasicInfoFieldsProp
         <Textarea
           placeholder="Description"
           value={formState.description}
-          onChange={e => setFormState({ ...formState, description: e.target.value })}
+          onChange={handleDescriptionChange}
           rows={3}
           className="resize-none"
         />

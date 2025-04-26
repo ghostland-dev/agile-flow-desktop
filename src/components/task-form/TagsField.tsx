@@ -9,13 +9,17 @@ interface TagsFieldProps {
 }
 
 export function TagsField({ formState, setFormState }: TagsFieldProps) {
+  const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormState({ ...formState, tags: e.target.value });
+  };
+
   return (
     <div>
       <label className="text-sm font-medium">Tags (separated by commas)</label>
       <Input 
         placeholder="design, frontend, urgent" 
         value={formState.tags}
-        onChange={e => setFormState({ ...formState, tags: e.target.value })}
+        onChange={handleTagsChange}
       />
     </div>
   );
