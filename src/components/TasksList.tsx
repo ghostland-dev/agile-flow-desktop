@@ -40,32 +40,29 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
     }
   };
 
-    const handleEditSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (editingTask && formValues) {
-        let tagsArray: string[] = [];
-    
-        const currentTags = formValues.tags ?? editingTask.tags ?? [];
-    
-        if (Array.isArray(currentTags)) {
-          tagsArray = currentTags;
-        } else if (typeof currentTags === 'string') {
-          tagsArray = currentTags.split(',').map((tag) => tag.trim()).filter(Boolean);
-        }
-    
-        updateTask(editingTask.id, {
-          ...formValues,
-          tags: tagsArray,
-        } as Task);
-    
-        setEditingTask(null);
-        toast({
-          title: 'Task updated',
-          description: 'The task has been successfully modified',
-        });
+  const handleEditSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingTask && formValues) {
+      let tagsArray: string[] = [];
+      
+      if (typeof formValues.tags === 'string') {
+        tagsArray = formValues.tags.split(',').map((tag) => tag.trim()).filter(Boolean);
+      } else if (Array.isArray(formValues.tags)) {
+        tagsArray = formValues.tags;
       }
-    };
-
+      
+      updateTask(editingTask.id, {
+        ...formValues,
+        tags: tagsArray,
+      } as Task);
+      
+      setEditingTask(null);
+      toast({
+        title: 'Task updated',
+        description: 'The task has been successfully modified',
+      });
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -84,7 +81,6 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
     );
   }
 
-  // Generate unique IDs for ARIA attributes
   const viewingTaskDescriptionId = "task-details-description";
   const editingTaskDescriptionId = "task-edit-description";
   const deleteConfirmDescriptionId = "task-delete-description";
