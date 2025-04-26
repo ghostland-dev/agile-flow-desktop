@@ -10,6 +10,7 @@ import { TimelineView } from '../components/TimelineView';
 import { ProjectStats } from '../components/ProjectStats';
 import { ProjectTeam } from '../components/ProjectTeam';
 import { Card, CardContent } from '../components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function ProjectView() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -23,7 +24,7 @@ export default function ProjectView() {
   const projectTasks = projectId ? tasks.filter(task => task.project === projectId) : [];
   
   return (
-    <div className="flex flex-col flex-1">
+    <div className="flex flex-col h-[calc(100vh-3.5rem)]">
       <ProjectHeader />
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-background dark:bg-background">
@@ -39,12 +40,12 @@ export default function ProjectView() {
         </Card>
       </div>
       
-      <div className="flex-1 overflow-auto bg-background dark:bg-background p-4">
+      <ScrollArea className="flex-1 p-4">
         {currentView === 'kanban' && <KanbanBoard />}
         {currentView === 'list' && <TasksList tasks={projectTasks} />}
         {currentView === 'calendar' && <CalendarView />}
         {currentView === 'timeline' && <TimelineView />}
-      </div>
+      </ScrollArea>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useProject } from '../hooks/useProject';
 import { Status } from '../types/project';
 import { KanbanColumn } from './kanban/KanbanColumn';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export function KanbanBoard() {
   const { tasks, currentProject, updateTaskStatus } = useProject();
@@ -45,25 +46,27 @@ export function KanbanBoard() {
   };
   
   return (
-    <div className="flex gap-4 p-6 h-full overflow-x-auto">
-      {columns.map(column => {
-        const columnTasks = projectTasks.filter(task => task.status === column.id);
-        
-        return (
-          <KanbanColumn
-            key={column.id}
-            id={column.id}
-            title={column.title}
-            tasks={columnTasks}
-            isDialogOpen={!!isDialogOpen[column.id]}
-            onDialogOpen={() => openDialog(column.id)}
-            onDialogClose={() => closeDialog(column.id)}
-            onDragStart={handleDragStart}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-          />
-        );
-      })}
-    </div>
+    <ScrollArea className="h-full w-full">
+      <div className="flex gap-4 p-6 h-full min-w-max">
+        {columns.map(column => {
+          const columnTasks = projectTasks.filter(task => task.status === column.id);
+          
+          return (
+            <KanbanColumn
+              key={column.id}
+              id={column.id}
+              title={column.title}
+              tasks={columnTasks}
+              isDialogOpen={!!isDialogOpen[column.id]}
+              onDialogOpen={() => openDialog(column.id)}
+              onDialogClose={() => closeDialog(column.id)}
+              onDragStart={handleDragStart}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+            />
+          );
+        })}
+      </div>
+    </ScrollArea>
   );
 }

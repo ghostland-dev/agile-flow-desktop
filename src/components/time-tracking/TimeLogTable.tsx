@@ -33,73 +33,71 @@ export function TimeLogTable({ timeEntries, tasks, projects, users }: TimeLogTab
   
   return (
     <Card className="bg-card dark:bg-card">
-      <ScrollArea className="h-[60vh] w-full">
-        <div className="p-1">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-foreground">Task</TableHead>
-                <TableHead className="text-foreground">Project</TableHead>
-                <TableHead className="text-foreground">User</TableHead>
-                <TableHead className="text-foreground">Start Time</TableHead>
-                <TableHead className="text-foreground">End Time</TableHead>
-                <TableHead className="text-foreground">Duration</TableHead>
-                <TableHead className="text-right text-foreground">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {timeEntries.map(entry => {
-                const task = getTaskDetails(entry.taskId);
-                const project = task ? getProjectDetails(task.project) : undefined;
-                const user = getUserDetails(entry.userId);
-                
-                return (
-                  <TableRow key={entry.id}>
-                    <TableCell className="font-medium text-foreground">{task?.title || 'N/A'}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        {project && (
-                          <div 
-                            className="h-2 w-2 rounded-full" 
-                            style={{ backgroundColor: project.color }} 
-                          />
-                        )}
-                        <span className="text-foreground">{project?.name || 'N/A'}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-foreground">{user?.name || 'N/A'}</TableCell>
-                    <TableCell>
+      <ScrollArea className="h-[60vh]">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-foreground">Task</TableHead>
+              <TableHead className="text-foreground">Project</TableHead>
+              <TableHead className="text-foreground">User</TableHead>
+              <TableHead className="text-foreground">Start Time</TableHead>
+              <TableHead className="text-foreground">End Time</TableHead>
+              <TableHead className="text-foreground">Duration</TableHead>
+              <TableHead className="text-right text-foreground">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {timeEntries.map(entry => {
+              const task = getTaskDetails(entry.taskId);
+              const project = task ? getProjectDetails(task.project) : undefined;
+              const user = getUserDetails(entry.userId);
+              
+              return (
+                <TableRow key={entry.id}>
+                  <TableCell className="font-medium text-foreground">{task?.title || 'N/A'}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      {project && (
+                        <div 
+                          className="h-2 w-2 rounded-full" 
+                          style={{ backgroundColor: project.color }} 
+                        />
+                      )}
+                      <span className="text-foreground">{project?.name || 'N/A'}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-foreground">{user?.name || 'N/A'}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1">
+                      <Calendar size={14} className="text-muted-foreground" />
+                      <span className="text-foreground">{format(new Date(entry.startTime), 'MMM d, yyyy h:mm a')}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    {entry.endTime ? (
                       <div className="flex items-center gap-1">
                         <Calendar size={14} className="text-muted-foreground" />
-                        <span className="text-foreground">{format(new Date(entry.startTime), 'MMM d, yyyy h:mm a')}</span>
+                        <span className="text-foreground">{format(new Date(entry.endTime), 'MMM d, yyyy h:mm a')}</span>
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      {entry.endTime ? (
-                        <div className="flex items-center gap-1">
-                          <Calendar size={14} className="text-muted-foreground" />
-                          <span className="text-foreground">{format(new Date(entry.endTime), 'MMM d, yyyy h:mm a')}</span>
-                        </div>
-                      ) : 'N/A'}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1">
-                        <Clock size={14} className="text-muted-foreground" />
-                        <span className="text-foreground">{entry.duration} seconds</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button variant="ghost" size="sm">
-                        <Download size={16} className="mr-2" />
-                        Export
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </div>
+                    ) : 'N/A'}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1">
+                      <Clock size={14} className="text-muted-foreground" />
+                      <span className="text-foreground">{entry.duration} seconds</span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Button variant="ghost" size="sm">
+                      <Download size={16} className="mr-2" />
+                      Export
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
       </ScrollArea>
     </Card>
   );

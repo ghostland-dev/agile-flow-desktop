@@ -25,6 +25,7 @@ import { ProjectProvider } from "./contexts/ProjectProvider";
 import { Sidebar } from "./components/Sidebar";
 import { Suspense } from "react";
 import { LoadingSkeleton } from "./components/ui/loading-skeleton";
+import { ScrollArea } from "./components/ui/scroll-area";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -58,7 +59,9 @@ function AppLayout({ children }: { children: React.ReactNode }) {
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader />
         <Suspense fallback={<div className="p-6"><LoadingSkeleton /></div>}>
-          {children}
+          <ScrollArea className="h-[calc(100vh-3.5rem)]">
+            {children}
+          </ScrollArea>
         </Suspense>
       </div>
     </div>

@@ -9,6 +9,7 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { NewTaskForm } from '@/components/NewTaskForm';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface TaskSidebarProps {
   upcomingDeadlines: Task[];
@@ -22,7 +23,7 @@ export function TaskSidebar({ upcomingDeadlines }: TaskSidebarProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 h-full">
       <Card>
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
@@ -46,30 +47,32 @@ export function TaskSidebar({ upcomingDeadlines }: TaskSidebarProps) {
               No upcoming deadlines
             </div>
           ) : (
-            <div className="space-y-3">
-              {upcomingDeadlines.map(task => (
-                <div key={task.id} className="flex items-start justify-between border-b pb-3 last:border-b-0 last:pb-0">
-                  <div>
-                    <p className="text-sm font-medium line-clamp-1">{task.title}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {task.dueDate ? format(new Date(task.dueDate), 'MMMM d, yyyy') : 'No due date'}
-                    </p>
+            <ScrollArea className="h-[220px]">
+              <div className="space-y-3">
+                {upcomingDeadlines.map(task => (
+                  <div key={task.id} className="flex items-start justify-between border-b pb-3 last:border-b-0 last:pb-0">
+                    <div>
+                      <p className="text-sm font-medium line-clamp-1">{task.title}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {task.dueDate ? format(new Date(task.dueDate), 'MMMM d, yyyy') : 'No due date'}
+                      </p>
+                    </div>
+                    <Badge 
+                      variant="outline" 
+                      className={cn(
+                        "font-normal text-xs",
+                        task.priority === 'urgent' && "bg-red-50 text-red-700 border-red-200",
+                        task.priority === 'high' && "bg-orange-50 text-orange-700 border-orange-200",
+                        task.priority === 'medium' && "bg-amber-50 text-amber-700 border-amber-200",
+                        task.priority === 'low' && "bg-blue-50 text-blue-700 border-blue-200"
+                      )}
+                    >
+                      {task.priority}
+                    </Badge>
                   </div>
-                  <Badge 
-                    variant="outline" 
-                    className={cn(
-                      "font-normal text-xs",
-                      task.priority === 'urgent' && "bg-red-50 text-red-700 border-red-200",
-                      task.priority === 'high' && "bg-orange-50 text-orange-700 border-orange-200",
-                      task.priority === 'medium' && "bg-amber-50 text-amber-700 border-amber-200",
-                      task.priority === 'low' && "bg-blue-50 text-blue-700 border-blue-200"
-                    )}
-                  >
-                    {task.priority}
-                  </Badge>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </ScrollArea>
           )}
         </CardContent>
       </Card>
