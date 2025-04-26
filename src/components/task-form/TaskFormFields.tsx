@@ -6,6 +6,7 @@ import { BasicInfoFields } from './BasicInfoFields';
 import { StatusPriorityFields } from './StatusPriorityFields';
 import { DateAssigneeFields } from './DateAssigneeFields';
 import { TagsField } from './TagsField';
+import { ProjectField } from './ProjectField';
 
 interface TaskFormFieldsProps {
   formState: TaskFormState;
@@ -28,6 +29,7 @@ export function TaskFormFields({
 
   return (
     <div className="space-y-4 mt-2">
+      <ProjectField formState={formState} setFormState={setFormState} />
       <BasicInfoFields formState={formState} setFormState={setFormState} />
       <StatusPriorityFields formState={formState} setFormState={setFormState} />
       <DateAssigneeFields formState={formState} setFormState={setFormState} />

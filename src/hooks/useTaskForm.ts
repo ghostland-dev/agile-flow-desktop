@@ -1,5 +1,5 @@
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback } from 'react';
 import { Priority, Status } from '../types/project';
 import { useProject } from './useProject';
 import { useToast } from './use-toast';
@@ -11,7 +11,8 @@ export interface TaskFormState {
   status: Status;
   dueDate: Date | undefined;
   assignee: string | undefined;
-  tags: string;  // Store as string for form input, convert to array when saving
+  tags: string;
+  projectId: string;
 }
 
 export const useTaskForm = (initialStatus: Status = 'todo', onSuccess?: () => void) => {
@@ -27,6 +28,7 @@ export const useTaskForm = (initialStatus: Status = 'todo', onSuccess?: () => vo
     dueDate: undefined,
     assignee: undefined,
     tags: '',
+    projectId: currentProject?.id || '',
   });
 
   const resetForm = useCallback(() => {
@@ -38,8 +40,9 @@ export const useTaskForm = (initialStatus: Status = 'todo', onSuccess?: () => vo
       dueDate: undefined,
       assignee: undefined,
       tags: '',
+      projectId: currentProject?.id || '',
     });
-  }, [initialStatus]);
+  }, [initialStatus, currentProject]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,7 +50,7 @@ export const useTaskForm = (initialStatus: Status = 'todo', onSuccess?: () => vo
     // Trim the title before checking
     const trimmedTitle = formState.title.trim();
     
-    // Check title and project separately with specific error messages
+    // Check required fields
     if (!trimmedTitle) {
       toast({
         title: "Missing information",
@@ -57,10 +60,10 @@ export const useTaskForm = (initialStatus: Status = 'todo', onSuccess?: () => vo
       return;
     }
     
-    if (!currentProject) {
+    if (!formState.projectId) {
       toast({
         title: "Missing information",
-        description: "No project selected. Please select a project first.",
+        description: "Please select a project for the task",
         variant: "destructive",
       });
       return;
@@ -84,7 +87,7 @@ export const useTaskForm = (initialStatus: Status = 'todo', onSuccess?: () => vo
         status: formState.status,
         dueDate: formState.dueDate ? formState.dueDate.toISOString() : undefined,
         assignee: formState.assignee,
-        project: currentProject.id,
+        project: formState.projectId,
         tags: tagsArray,
         timeTracked: 0,
       });
@@ -106,7 +109,7 @@ export const useTaskForm = (initialStatus: Status = 'todo', onSuccess?: () => vo
     } finally {
       setIsSubmitting(false);
     }
-  }, [formState, currentProject, addTask, toast, resetForm, onSuccess]);
+  }, [formState, addTask, toast, resetForm, onSuccess]);
 
   return {
     formState,
