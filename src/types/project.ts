@@ -1,3 +1,4 @@
+
 export type Priority = 'low' | 'medium' | 'high' | 'urgent';
 export type Status = 'backlog' | 'todo' | 'in_progress' | 'in_review' | 'done';
 
@@ -70,4 +71,9 @@ export interface ProjectContextType {
   startTimeTracking: (taskId: string) => void;
   stopTimeTracking: (taskId: string) => void;
   getTaskTimeEntries: (taskId: string) => TimeEntry[];
+  // File attachment context
+  fileAttachments: FileAttachment[];
+  getTaskAttachments: (taskId: string) => FileAttachment[];
+  addFileAttachment: (taskId: string, file: Omit<FileAttachment, 'id' | 'taskId' | 'uploadedAt' | 'uploadedBy'>) => void;
+  deleteFileAttachment: (fileId: string) => void;
 }

@@ -5,6 +5,7 @@ import { Project, User, ProjectContextType } from '../types/project';
 import { loadFromStorage, saveToStorage } from '../utils/storage';
 import { TaskProvider } from './TaskContext';
 import { TimeTrackingProvider } from './TimeTrackingContext';
+import { FileAttachmentProvider } from './FileAttachmentsContext';
 
 export const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 
@@ -42,7 +43,9 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     }}>
       <TaskProvider>
         <TimeTrackingProvider>
-          {children}
+          <FileAttachmentProvider>
+            {children}
+          </FileAttachmentProvider>
         </TimeTrackingProvider>
       </TaskProvider>
     </ProjectContext.Provider>
