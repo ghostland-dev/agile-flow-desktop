@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { TaskFormState } from '@/hooks/useTaskForm';
@@ -10,12 +10,15 @@ interface BasicInfoFieldsProps {
 }
 
 export function BasicInfoFields({ formState, setFormState }: BasicInfoFieldsProps) {
-  const handleTitleChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormState((prevState) => ({ ...prevState, title: e.target.value }));
+  // Optimize with memoized handlers that only update specific fields
+  const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setFormState(prevState => ({ ...prevState, title: newValue }));
   }, [setFormState]);
 
-  const handleDescriptionChange = React.useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setFormState((prevState) => ({ ...prevState, description: e.target.value }));
+  const handleDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value;
+    setFormState(prevState => ({ ...prevState, description: newValue }));
   }, [setFormState]);
 
   return (

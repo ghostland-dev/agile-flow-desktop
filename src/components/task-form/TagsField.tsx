@@ -10,7 +10,8 @@ interface TagsFieldProps {
 
 export function TagsField({ formState, setFormState }: TagsFieldProps) {
   const handleTagsChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormState((prevState) => ({ ...prevState, tags: e.target.value }));
+    const newValue = e.target.value;
+    setFormState(prevState => ({ ...prevState, tags: newValue }));
   }, [setFormState]);
 
   return (

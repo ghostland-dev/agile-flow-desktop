@@ -1,5 +1,5 @@
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { Priority, Status } from '../types/project';
 import { useProject } from './useProject';
 import { useToast } from './use-toast';

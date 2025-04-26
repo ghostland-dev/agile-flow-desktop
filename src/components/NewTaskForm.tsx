@@ -28,7 +28,7 @@ export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: New
     setOpen(false);
   }, []);
 
-  const TaskFormContent = () => (
+  const TaskFormContent = React.memo(() => (
     <form onSubmit={handleSubmit}>
       <TaskFormFields
         formState={formState}
@@ -38,7 +38,9 @@ export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: New
         showCancel={openInDialog}
       />
     </form>
-  );
+  ));
+  
+  TaskFormContent.displayName = 'TaskFormContent';
 
   if (!openInDialog) {
     return <TaskFormContent />;
