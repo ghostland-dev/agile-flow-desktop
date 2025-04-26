@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Task } from '../types/project';
 import { useProject } from '../hooks/useProject';
-import { Dialog } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { TaskDetails } from './tasks/TaskDetails';
 import { TaskEditor } from './tasks/TaskEditor';
@@ -19,7 +19,6 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const [viewingTask, setViewingTask] = useState<Task | null>(null);
   const [deleteConfirmTask, setDeleteConfirmTask] = useState<Task | null>(null);
   
-  // Fix: Explicitly define the type for formValues to handle tags properly
   const [formValues, setFormValues] = useState<Partial<Task> & { tags?: string[] | string }>({});
 
   const handleEditClick = (task: Task) => {
@@ -49,10 +48,8 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
       if (Array.isArray(formValues.tags)) {
         tagsArray = formValues.tags;
       } else if (typeof formValues.tags === 'string') {
-        // This is where the error was occurring
         tagsArray = formValues.tags.split(',').map((tag) => tag.trim()).filter(Boolean);
       } else if (editingTask.tags) {
-        // Fallback to existing tags if tags is undefined
         tagsArray = editingTask.tags;
       }
 
@@ -86,6 +83,11 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
     );
   }
 
+  // Generate unique IDs for ARIA attributes
+  const viewingTaskDescriptionId = "task-details-description";
+  const editingTaskDescriptionId = "task-edit-description";
+  const deleteConfirmDescriptionId = "task-delete-description";
+
   return (
     <div className="space-y-3">
       {tasks.map((task) => (
@@ -99,26 +101,41 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
       ))}
 
       <Dialog open={!!viewingTask} onOpenChange={(open) => !open && setViewingTask(null)}>
-        <TaskDetails task={viewingTask} />
+        <DialogContent aria-describedby={viewingTaskDescriptionId}>
+          <DialogDescription id={viewingTaskDescriptionId} className="sr-only">
+            View details for task {viewingTask?.title}
+          </DialogDescription>
+          <TaskDetails task={viewingTask} />
+        </DialogContent>
       </Dialog>
 
       <Dialog open={!!editingTask} onOpenChange={(open) => !open && setEditingTask(null)}>
-        <TaskEditor
-          task={editingTask}
-          formValues={formValues}
-          onInputChange={handleInputChange}
-          onSelectChange={handleSelectChange}
-          onSubmit={handleEditSubmit}
-          onCancel={() => setEditingTask(null)}
-        />
+        <DialogContent aria-describedby={editingTaskDescriptionId}>
+          <DialogDescription id={editingTaskDescriptionId} className="sr-only">
+            Edit details for task {editingTask?.title}
+          </DialogDescription>
+          <TaskEditor
+            task={editingTask}
+            formValues={formValues}
+            onInputChange={handleInputChange}
+            onSelectChange={handleSelectChange}
+            onSubmit={handleEditSubmit}
+            onCancel={() => setEditingTask(null)}
+          />
+        </DialogContent>
       </Dialog>
 
       <Dialog open={!!deleteConfirmTask} onOpenChange={(open) => !open && setDeleteConfirmTask(null)}>
-        <TaskDeleteConfirmation
-          task={deleteConfirmTask}
-          onConfirm={handleDeleteConfirm}
-          onCancel={() => setDeleteConfirmTask(null)}
-        />
+        <DialogContent aria-describedby={deleteConfirmDescriptionId}>
+          <DialogDescription id={deleteConfirmDescriptionId} className="sr-only">
+            Confirm deletion of task {deleteConfirmTask?.title}
+          </DialogDescription>
+          <TaskDeleteConfirmation
+            task={deleteConfirmTask}
+            onConfirm={handleDeleteConfirm}
+            onCancel={() => setDeleteConfirmTask(null)}
+          />
+        </DialogContent>
       </Dialog>
     </div>
   );
