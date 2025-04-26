@@ -12,7 +12,7 @@ import ProjectView from "./pages/ProjectView";
 import MyTasks from "./pages/MyTasks";
 import TimeTracking from "./pages/TimeTracking";
 import Team from "./pages/Team";
-import CalendarView from "./components/CalendarView";
+import { CalendarView } from "./components/CalendarView"; // Changed to named import
 import { ProjectProvider } from "./contexts/ProjectContext";
 import { Sidebar } from "./components/Sidebar";
 

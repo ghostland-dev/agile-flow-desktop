@@ -10,12 +10,15 @@ import { TimelineView } from '../components/TimelineView';
 
 export default function ProjectView() {
   const { projectId } = useParams<{ projectId: string }>();
-  const { projects, setCurrentProject, currentView } = useProject();
+  const { projects, tasks, setCurrentProject, currentView } = useProject();
   
   useEffect(() => {
     const project = projects.find(p => p.id === projectId) || null;
     setCurrentProject(project);
   }, [projectId, projects, setCurrentProject]);
+  
+  // Filter tasks for the current project
+  const projectTasks = projectId ? tasks.filter(task => task.project === projectId) : [];
   
   return (
     <div className="flex flex-col flex-1">
@@ -23,7 +26,7 @@ export default function ProjectView() {
       
       <div className="flex-1 overflow-auto bg-background">
         {currentView === 'kanban' && <KanbanBoard />}
-        {currentView === 'list' && <TasksList />}
+        {currentView === 'list' && <TasksList tasks={projectTasks} />}
         {currentView === 'calendar' && <CalendarView />}
         {currentView === 'timeline' && <TimelineView />}
       </div>
