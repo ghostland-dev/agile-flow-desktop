@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useProject } from '../hooks/useProject';
 import { NewTaskForm } from '@/components/NewTaskForm';
@@ -6,10 +7,11 @@ import { TaskBoard } from '@/components/tasks/TaskBoard';
 import { TaskListView } from '@/components/tasks/TaskListView';
 import { TaskSidebar } from '@/components/tasks/TaskSidebar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ListFilter, CheckCircle } from 'lucide-react';
+import { LayoutGrid, ListFilter } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
 
 export default function MyTasks() {
   const { tasks, currentUser, projects } = useProject();
@@ -58,36 +60,40 @@ export default function MyTasks() {
   };
 
   return (
-    <div className="w-full h-full flex-1">
+    <div className="w-full h-full flex-1 bg-background">
       <div className="w-full h-full overflow-auto scrollbar-none">
-        <div className="w-full px-4 md:px-6 space-y-6">
+        <div className="w-full px-4 md:px-6 py-6 space-y-6 max-w-[1800px] mx-auto">
           {/* Header Section */}
-          <div className="flex flex-col gap-4">
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl md:text-3xl font-bold tracking-tight">My Tasks</h1>
-                <Badge variant="outline" className="rounded-full">
-                  {filteredTasks.length} tasks
-                </Badge>
+          <Card className="p-6 bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="flex flex-col gap-4">
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <h1 className="text-2xl md:text-3xl font-bold tracking-tight animate-fade-in">My Tasks</h1>
+                  <Badge variant="secondary" className="rounded-full animate-fade-in">
+                    {filteredTasks.length} tasks
+                  </Badge>
+                </div>
+                <p className="text-muted-foreground animate-fade-in">
+                  Manage and track your assigned tasks efficiently
+                </p>
               </div>
-              <p className="text-muted-foreground">
-                Manage and track your assigned tasks efficiently
-              </p>
-            </div>
-            
-            <div className="flex flex-col md:flex-row md:items-center gap-4">
-              <div className="flex-1">
-                <TaskFilters 
-                  searchTerm={searchTerm}
-                  setSearchTerm={setSearchTerm}
-                  filterPriority={filterPriority}
-                  setFilterPriority={setFilterPriority}
-                  handleResetFilters={handleResetFilters}
-                />
+              
+              <div className="flex flex-col md:flex-row md:items-center gap-4">
+                <div className="flex-1">
+                  <TaskFilters 
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    filterPriority={filterPriority}
+                    setFilterPriority={setFilterPriority}
+                    handleResetFilters={handleResetFilters}
+                  />
+                </div>
+                <div className="shrink-0">
+                  <NewTaskForm />
+                </div>
               </div>
-              <NewTaskForm />
             </div>
-          </div>
+          </Card>
           
           {/* Main Content */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -98,19 +104,19 @@ export default function MyTasks() {
                     "w-full sm:w-auto",
                     "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
                   )}>
-                    <TabsTrigger value="board" className="flex items-center gap-2 data-[state=active]:bg-primary/10">
-                      <ListFilter size={16} />
+                    <TabsTrigger value="board" className="flex items-center gap-2">
+                      <LayoutGrid size={16} />
                       Board View
                     </TabsTrigger>
-                    <TabsTrigger value="list" className="flex items-center gap-2 data-[state=active]:bg-primary/10">
-                      <CheckCircle size={16} />
+                    <TabsTrigger value="list" className="flex items-center gap-2">
+                      <ListFilter size={16} />
                       List View
                     </TabsTrigger>
                   </TabsList>
                 </div>
                 
-                <div className="relative">
-                  <TabsContent value="board" className="mt-0 space-y-4">
+                <div className="relative animate-fade-in">
+                  <TabsContent value="board" className="mt-0">
                     <TaskBoard 
                       todoTasks={todoTasks}
                       inProgressTasks={inProgressTasks}
@@ -118,7 +124,7 @@ export default function MyTasks() {
                     />
                   </TabsContent>
                   
-                  <TabsContent value="list" className="mt-0 space-y-4">
+                  <TabsContent value="list" className="mt-0">
                     <TaskListView 
                       tasks={filteredTasks}
                       projects={projects}
@@ -130,7 +136,7 @@ export default function MyTasks() {
             </div>
             
             {!isMobile && (
-              <div className="hidden lg:block w-full">
+              <div className="hidden lg:block w-full animate-fade-in">
                 <div className="sticky top-4">
                   <TaskSidebar upcomingDeadlines={upcomingDeadlines} />
                 </div>
