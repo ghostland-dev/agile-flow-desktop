@@ -86,7 +86,7 @@ export default function Dashboard() {
           return (
             <ProjectCard
               key={project.id}
-              project={project}
+              project={project} // Now passing the full project object that includes createdAt
               completedCount={completedCount}
               totalCount={projectTasks.length}
             />

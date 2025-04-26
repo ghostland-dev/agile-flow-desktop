@@ -13,14 +13,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { EditProjectForm } from './EditProjectForm';
 import { useProject } from '@/hooks/useProject';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { Project } from '@/types/project';
 
 interface ProjectCardProps {
-  project: {
-    id: string;
-    name: string;
-    description: string;
-    color: string;
-  };
+  project: Project;
   completedCount: number;
   totalCount: number;
 }
