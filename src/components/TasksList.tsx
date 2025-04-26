@@ -24,7 +24,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [viewingTask, setViewingTask] = useState<Task | null>(null);
   const [deleteConfirmTask, setDeleteConfirmTask] = useState<Task | null>(null);
-  const [formValues, setFormValues] = useState<Partial<Task>>({});
+  const [formValues, setFormValues] = useState<Partial<Task> & { tags?: string[] | string }>({});
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return null;
@@ -71,11 +71,15 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingTask && formValues) {
-      const tagsArray = Array.isArray(formValues.tags)
-        ? formValues.tags
-        : typeof formValues.tags === 'string'
-          ? formValues.tags.split(',').map((tag) => tag.trim()).filter(Boolean)
-          : editingTask.tags;
+      let tagsArray: string[] = [];
+      
+      if (Array.isArray(formValues.tags)) {
+        tagsArray = formValues.tags;
+      } else if (typeof formValues.tags === 'string') {
+        tagsArray = formValues.tags.split(',').map((tag) => tag.trim()).filter(Boolean);
+      } else {
+        tagsArray = editingTask.tags;
+      }
 
       updateTask(editingTask.id, {
         ...formValues,
