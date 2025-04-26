@@ -48,7 +48,7 @@ export function KanbanBoard() {
   };
   
   return (
-    <ScrollArea className="h-full w-full" orientation={isMobile ? "vertical" : "horizontal"}>
+    <ScrollArea className="h-full w-full">
       <div className={`flex ${isMobile ? 'flex-col' : 'flex-row'} gap-4 p-2 sm:p-4 ${!isMobile && 'min-w-max'}`}>
         {columns.map(column => {
           const columnTasks = projectTasks.filter(task => task.status === column.id);
