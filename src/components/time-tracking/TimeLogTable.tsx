@@ -5,6 +5,8 @@ import { Project, Task, User, TimeEntry } from '@/types/project';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, Download } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Card } from '@/components/ui/card';
 
 interface TimeLogTableProps {
   timeEntries: TimeEntry[];
@@ -30,69 +32,75 @@ export function TimeLogTable({ timeEntries, tasks, projects, users }: TimeLogTab
   };
   
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Task</TableHead>
-          <TableHead>Project</TableHead>
-          <TableHead>User</TableHead>
-          <TableHead>Start Time</TableHead>
-          <TableHead>End Time</TableHead>
-          <TableHead>Duration</TableHead>
-          <TableHead className="text-right">Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {timeEntries.map(entry => {
-          const task = getTaskDetails(entry.taskId);
-          const project = task ? getProjectDetails(task.project) : undefined;
-          const user = getUserDetails(entry.userId);
-          
-          return (
-            <TableRow key={entry.id}>
-              <TableCell>{task?.title || 'N/A'}</TableCell>
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  {project && (
-                    <div 
-                      className="h-2 w-2 rounded-full" 
-                      style={{ backgroundColor: project.color }} 
-                    />
-                  )}
-                  {project?.name || 'N/A'}
-                </div>
-              </TableCell>
-              <TableCell>{user?.name || 'N/A'}</TableCell>
-              <TableCell>
-                <div className="flex items-center gap-1">
-                  <Calendar size={14} className="text-muted-foreground" />
-                  {format(new Date(entry.startTime), 'MMM d, yyyy h:mm a')}
-                </div>
-              </TableCell>
-              <TableCell>
-                {entry.endTime ? (
-                  <div className="flex items-center gap-1">
-                    <Calendar size={14} className="text-muted-foreground" />
-                    {format(new Date(entry.endTime), 'MMM d, yyyy h:mm a')}
-                  </div>
-                ) : 'N/A'}
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center gap-1">
-                  <Clock size={14} className="text-muted-foreground" />
-                  {entry.duration} seconds
-                </div>
-              </TableCell>
-              <TableCell className="text-right">
-                <Button variant="ghost" size="sm">
-                  <Download size={16} className="mr-2" />
-                  Export
-                </Button>
-              </TableCell>
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+    <Card className="bg-card dark:bg-card">
+      <ScrollArea className="h-[60vh] w-full">
+        <div className="p-1">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="text-foreground">Task</TableHead>
+                <TableHead className="text-foreground">Project</TableHead>
+                <TableHead className="text-foreground">User</TableHead>
+                <TableHead className="text-foreground">Start Time</TableHead>
+                <TableHead className="text-foreground">End Time</TableHead>
+                <TableHead className="text-foreground">Duration</TableHead>
+                <TableHead className="text-right text-foreground">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {timeEntries.map(entry => {
+                const task = getTaskDetails(entry.taskId);
+                const project = task ? getProjectDetails(task.project) : undefined;
+                const user = getUserDetails(entry.userId);
+                
+                return (
+                  <TableRow key={entry.id}>
+                    <TableCell className="font-medium text-foreground">{task?.title || 'N/A'}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        {project && (
+                          <div 
+                            className="h-2 w-2 rounded-full" 
+                            style={{ backgroundColor: project.color }} 
+                          />
+                        )}
+                        <span className="text-foreground">{project?.name || 'N/A'}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-foreground">{user?.name || 'N/A'}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1">
+                        <Calendar size={14} className="text-muted-foreground" />
+                        <span className="text-foreground">{format(new Date(entry.startTime), 'MMM d, yyyy h:mm a')}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {entry.endTime ? (
+                        <div className="flex items-center gap-1">
+                          <Calendar size={14} className="text-muted-foreground" />
+                          <span className="text-foreground">{format(new Date(entry.endTime), 'MMM d, yyyy h:mm a')}</span>
+                        </div>
+                      ) : 'N/A'}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1">
+                        <Clock size={14} className="text-muted-foreground" />
+                        <span className="text-foreground">{entry.duration} seconds</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button variant="ghost" size="sm">
+                        <Download size={16} className="mr-2" />
+                        Export
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
+      </ScrollArea>
+    </Card>
   );
 }

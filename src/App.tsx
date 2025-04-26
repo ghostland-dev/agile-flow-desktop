@@ -22,7 +22,6 @@ import Stats from "./pages/Stats";
 import { CalendarView } from "./components/CalendarView";
 import { ProjectProvider } from "./contexts/ProjectProvider";
 import { Sidebar } from "./components/Sidebar";
-import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
@@ -30,7 +29,7 @@ function AppHeader() {
   const { notifications, markAsRead, markAllAsRead, clearNotification } = useNotifications();
   
   return (
-    <div className="h-14 border-b border-border/60 flex items-center justify-end px-4 gap-2 bg-background">
+    <header className="h-14 border-b border-border/60 flex items-center justify-end px-4 gap-2 bg-background sticky top-0 z-10">
       <NotificationBell 
         notifications={notifications}
         onMarkAsRead={markAsRead}
@@ -38,13 +37,13 @@ function AppHeader() {
         onClear={clearNotification}
       />
       <ThemeToggle />
-    </div>
+    </header>
   );
 }
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen overflow-hidden">
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader />

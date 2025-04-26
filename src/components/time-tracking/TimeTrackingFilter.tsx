@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Filter, Calendar } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface TimeTrackingFilterProps {
   projects: Project[];
@@ -27,14 +28,16 @@ export function TimeTrackingFilter({
   onUserChange,
   onTimeRangeChange
 }: TimeTrackingFilterProps) {
+  const isMobile = useIsMobile();
+  
   return (
-    <Card className="bg-white">
+    <Card className="bg-card dark:bg-card">
       <CardContent className="pt-6">
-        <div className="flex flex-col md:flex-row gap-4 items-start md:items-end">
-          <div className="space-y-2 w-full md:w-1/3">
+        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-end">
+          <div className="space-y-2 w-full">
             <div className="flex items-center gap-2">
-              <Filter size={14} />
-              <Label htmlFor="project-filter">Filter by project</Label>
+              <Filter size={14} className="text-foreground" />
+              <Label htmlFor="project-filter" className="text-foreground">Filter by project</Label>
             </div>
             <Select
               value={selectedProject}
@@ -54,10 +57,10 @@ export function TimeTrackingFilter({
             </Select>
           </div>
           
-          <div className="space-y-2 w-full md:w-1/3">
+          <div className="space-y-2 w-full">
             <div className="flex items-center gap-2">
-              <Filter size={14} />
-              <Label htmlFor="user-filter">Filter by team member</Label>
+              <Filter size={14} className="text-foreground" />
+              <Label htmlFor="user-filter" className="text-foreground">Filter by team member</Label>
             </div>
             <Select
               value={selectedUser}
@@ -77,10 +80,10 @@ export function TimeTrackingFilter({
             </Select>
           </div>
           
-          <div className="space-y-2 w-full md:w-1/3">
+          <div className="space-y-2 w-full">
             <div className="flex items-center gap-2">
-              <Calendar size={14} />
-              <Label htmlFor="time-filter">Time period</Label>
+              <Calendar size={14} className="text-foreground" />
+              <Label htmlFor="time-filter" className="text-foreground">Time period</Label>
             </div>
             <Select
               value={timeRange}

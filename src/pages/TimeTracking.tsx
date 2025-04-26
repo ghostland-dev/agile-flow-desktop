@@ -1,12 +1,13 @@
 
 import React, { useState } from 'react';
 import { useProject } from '../hooks/useProject';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { TimeOverviewChart } from '@/components/time-tracking/TimeOverviewChart';
 import { TimeTrackingFilter } from '@/components/time-tracking/TimeTrackingFilter';
 import { TimeLogTable } from '@/components/time-tracking/TimeLogTable';
 import { TimeTrackingSummary } from '@/components/time-tracking/TimeTrackingSummary';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function TimeTracking() {
   const { timeEntries, projects, tasks, users } = useProject();
@@ -45,47 +46,49 @@ export default function TimeTracking() {
   });
   
   return (
-    <div className="flex-1 space-y-6 p-6 animate-fade-in">
-      <div>
-        <h1 className="text-3xl font-bold">Time Tracking</h1>
-        <p className="text-muted-foreground mt-1">Monitor time spent across projects and tasks</p>
+    <ScrollArea className="flex-1 h-[calc(100vh-3.5rem)]">
+      <div className="space-y-6 p-4 md:p-6 pb-12">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">Time Tracking</h1>
+          <p className="text-muted-foreground mt-1">Monitor time spent across projects and tasks</p>
+        </div>
+        
+        <TimeTrackingFilter 
+          projects={projects} 
+          users={users}
+          selectedProject={selectedProject}
+          selectedUser={selectedUser}
+          timeRange={timeRange}
+          onProjectChange={setSelectedProject}
+          onUserChange={setSelectedUser}
+          onTimeRangeChange={setTimeRange}
+        />
+        
+        <TimeTrackingSummary timeEntries={filteredEntries} tasks={tasks} />
+        
+        <Tabs defaultValue="overview" className="w-full">
+          <TabsList>
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="logs">Time Logs</TabsTrigger>
+          </TabsList>
+          <TabsContent value="overview" className="space-y-6 mt-2">
+            <TimeOverviewChart 
+              timeEntries={filteredEntries} 
+              projects={projects} 
+              tasks={tasks}
+              timeRange={timeRange}
+            />
+          </TabsContent>
+          <TabsContent value="logs" className="mt-2">
+            <TimeLogTable 
+              timeEntries={filteredEntries}
+              tasks={tasks}
+              projects={projects}
+              users={users}
+            />
+          </TabsContent>
+        </Tabs>
       </div>
-      
-      <TimeTrackingFilter 
-        projects={projects} 
-        users={users}
-        selectedProject={selectedProject}
-        selectedUser={selectedUser}
-        timeRange={timeRange}
-        onProjectChange={setSelectedProject}
-        onUserChange={setSelectedUser}
-        onTimeRangeChange={setTimeRange}
-      />
-      
-      <TimeTrackingSummary timeEntries={filteredEntries} tasks={tasks} />
-      
-      <Tabs defaultValue="overview" className="w-full">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="logs">Time Logs</TabsTrigger>
-        </TabsList>
-        <TabsContent value="overview" className="space-y-6 mt-2">
-          <TimeOverviewChart 
-            timeEntries={filteredEntries} 
-            projects={projects} 
-            tasks={tasks}
-            timeRange={timeRange}
-          />
-        </TabsContent>
-        <TabsContent value="logs" className="mt-2">
-          <TimeLogTable 
-            timeEntries={filteredEntries}
-            tasks={tasks}
-            projects={projects}
-            users={users}
-          />
-        </TabsContent>
-      </Tabs>
-    </div>
+    </ScrollArea>
   );
 }

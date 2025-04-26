@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import { Task } from '@/types/project';
 import { Card, CardContent } from '@/components/ui/card';
 import { Clock, CheckCircle, Calendar, BarChart } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface TimeTrackingSummaryProps {
   timeEntries: Array<{
@@ -17,7 +18,9 @@ interface TimeTrackingSummaryProps {
 }
 
 export function TimeTrackingSummary({ timeEntries, tasks }: TimeTrackingSummaryProps) {
-  // Utilisation de useMemo pour optimiser les calculs intensifs
+  const isMobile = useIsMobile();
+  
+  // Use useMemo to optimize intensive calculations
   const {
     trackedHours,
     trackedMinutes,
@@ -58,13 +61,13 @@ export function TimeTrackingSummary({ timeEntries, tasks }: TimeTrackingSummaryP
   }, [timeEntries, tasks]);
   
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <Card className="bg-white hover-lift transition-all hover:shadow-md">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <Card className="bg-card hover-lift transition-all hover:shadow-md dark:hover:shadow-lg dark:hover:shadow-primary/5">
         <CardContent className="pt-6">
           <div className="flex justify-between items-start">
             <div>
               <p className="text-muted-foreground text-sm">Total tracked time</p>
-              <h3 className="text-2xl font-bold mt-1">
+              <h3 className="text-2xl font-bold mt-1 text-foreground">
                 {trackedHours}h {trackedMinutes}m
               </h3>
             </div>
@@ -75,12 +78,12 @@ export function TimeTrackingSummary({ timeEntries, tasks }: TimeTrackingSummaryP
         </CardContent>
       </Card>
       
-      <Card className="bg-white hover-lift transition-all hover:shadow-md">
+      <Card className="bg-card hover-lift transition-all hover:shadow-md dark:hover:shadow-lg dark:hover:shadow-primary/5">
         <CardContent className="pt-6">
           <div className="flex justify-between items-start">
             <div>
               <p className="text-muted-foreground text-sm">Tasks tracked</p>
-              <h3 className="text-2xl font-bold mt-1">
+              <h3 className="text-2xl font-bold mt-1 text-foreground">
                 {tasksWithTimeIds.size}
               </h3>
             </div>
@@ -91,33 +94,33 @@ export function TimeTrackingSummary({ timeEntries, tasks }: TimeTrackingSummaryP
         </CardContent>
       </Card>
       
-      <Card className="bg-white hover-lift transition-all hover:shadow-md">
+      <Card className="bg-card hover-lift transition-all hover:shadow-md dark:hover:shadow-lg dark:hover:shadow-primary/5">
         <CardContent className="pt-6">
           <div className="flex justify-between items-start">
             <div>
               <p className="text-muted-foreground text-sm">Completed tasks</p>
-              <h3 className="text-2xl font-bold mt-1">
+              <h3 className="text-2xl font-bold mt-1 text-foreground">
                 {completedTasksCount}
               </h3>
             </div>
-            <div className="bg-green-100 p-2 rounded-full">
-              <CheckCircle className="h-5 w-5 text-green-600" />
+            <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-full">
+              <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
             </div>
           </div>
         </CardContent>
       </Card>
       
-      <Card className="bg-white hover-lift transition-all hover:shadow-md">
+      <Card className="bg-card hover-lift transition-all hover:shadow-md dark:hover:shadow-lg dark:hover:shadow-primary/5">
         <CardContent className="pt-6">
           <div className="flex justify-between items-start">
             <div>
               <p className="text-muted-foreground text-sm">Avg. time per task</p>
-              <h3 className="text-2xl font-bold mt-1">
+              <h3 className="text-2xl font-bold mt-1 text-foreground">
                 {avgTimeFormatted}
               </h3>
             </div>
-            <div className="bg-amber-100 p-2 rounded-full">
-              <BarChart className="h-5 w-5 text-amber-600" />
+            <div className="bg-amber-100 dark:bg-amber-900/30 p-2 rounded-full">
+              <BarChart className="h-5 w-5 text-amber-600 dark:text-amber-400" />
             </div>
           </div>
         </CardContent>
