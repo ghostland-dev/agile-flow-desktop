@@ -1,6 +1,9 @@
 
 import * as React from "react"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { useIsMobile } from "@/hooks/use-mobile"
+import { cn } from "@/lib/utils"
+import { SIDEBAR_WIDTH, SIDEBAR_WIDTH_ICON } from "./sidebar-constants"
 
 type SidebarContext = {
   state: "expanded" | "collapsed"
