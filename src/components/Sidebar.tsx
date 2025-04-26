@@ -27,6 +27,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import { Project } from '@/types/project';
 
 export function Sidebar() {
   const location = useLocation();
@@ -34,7 +35,7 @@ export function Sidebar() {
   const [newProjectDialogOpen, setNewProjectDialogOpen] = useState(false);
   const [editProjectDialogOpen, setEditProjectDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<null | { id: string, name: string }>(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   
   const mainMenu = [
     { name: 'Dashboard', path: '/dashboard', icon: <Home size={18} /> },
@@ -45,12 +46,12 @@ export function Sidebar() {
     { name: 'Team', path: '/team', icon: <Users size={18} /> },
   ];
 
-  const handleEditProject = (project: { id: string, name: string }) => {
+  const handleEditProject = (project: Project) => {
     setSelectedProject(project);
     setEditProjectDialogOpen(true);
   };
 
-  const handleDeleteProject = (project: { id: string, name: string }) => {
+  const handleDeleteProject = (project: Project) => {
     setSelectedProject(project);
     setDeleteDialogOpen(true);
   };
