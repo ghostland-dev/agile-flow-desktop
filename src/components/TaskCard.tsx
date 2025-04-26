@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useProject } from '../hooks/useProject';
 import { Task } from '../types/project';
@@ -81,8 +80,8 @@ export function TaskCard({ task }: TaskCardProps) {
         )
       )}
       
-      <div className="flex items-center justify-between mt-4 pt-2 border-t border-gray-100 dark:border-gray-700">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mt-4 pt-2 border-t border-gray-100 dark:border-gray-700">
+        <div className="flex flex-wrap items-center gap-2">
           <TaskPriorityBadge priority={task.priority} />
           <TaskStatusBadge status={task.status} />
         </div>
