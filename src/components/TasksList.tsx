@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useProject } from '../hooks/useProject';
 import { Task } from '../types/project';
@@ -23,8 +22,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [viewingTask, setViewingTask] = useState<Task | null>(null);
   const [deleteConfirmTask, setDeleteConfirmTask] = useState<Task | null>(null);
-  // Fix the type definition to properly handle string or string[] for tags
-  const [formValues, setFormValues] = useState<Partial<Task & { tags: string[] | string }>>({});
+  const [formValues, setFormValues] = useState<Partial<Task> & { tags?: string[] | string }>({});
 
   const getPriorityClasses = (priority: string) => {
     switch(priority) {
@@ -114,7 +112,6 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
     if (editingTask && formValues) {
       let tagsArray: string[] = [];
       
-      // Ensure we properly convert tags to string array regardless of current type
       if (typeof formValues.tags === 'string') {
         tagsArray = formValues.tags.split(',').map(tag => tag.trim()).filter(Boolean);
       } else if (Array.isArray(formValues.tags)) {
