@@ -18,12 +18,19 @@ export function TimeTrackingProvider({ children }: { children: React.ReactNode }
   );
   const { updateTask } = useTaskContext();
 
+  // Save time entries to storage when they change
   useEffect(() => {
     saveToStorage('timeEntries', timeEntries);
   }, [timeEntries]);
 
-  // Utilisation de useCallback pour optimiser les fonctions
+  // Start time tracking for a task
   const startTimeTracking = useCallback((taskId: string) => {
+    // Check if there's already an active timer for this task
+    const activeEntry = timeEntries.find(entry => entry.taskId === taskId && !entry.endTime);
+    
+    // If there's an active timer, don't create another one
+    if (activeEntry) return;
+    
     const newEntry: TimeEntry = {
       id: `time-${Date.now()}`,
       taskId,
@@ -31,9 +38,11 @@ export function TimeTrackingProvider({ children }: { children: React.ReactNode }
       startTime: new Date().toISOString(),
       duration: 0
     };
+    
     setTimeEntries(prevEntries => [...prevEntries, newEntry]);
-  }, []);
+  }, [timeEntries]);
 
+  // Stop time tracking for a task
   const stopTimeTracking = useCallback((taskId: string) => {
     const now = new Date();
     
@@ -56,12 +65,16 @@ export function TimeTrackingProvider({ children }: { children: React.ReactNode }
       const totalSeconds = taskEntries.reduce((total, entry) => total + entry.duration, 0);
       const totalMinutes = Math.floor(totalSeconds / 60);
       
-      updateTask(taskId, { timeTracked: totalMinutes });
+      // Update task with total time tracked
+      setTimeout(() => {
+        updateTask(taskId, { timeTracked: totalMinutes });
+      }, 0);
       
       return updatedEntries;
     });
   }, [updateTask]);
 
+  // Get time entries for a specific task
   const getTaskTimeEntries = useCallback((taskId: string) => {
     return timeEntries.filter(entry => entry.taskId === taskId);
   }, [timeEntries]);

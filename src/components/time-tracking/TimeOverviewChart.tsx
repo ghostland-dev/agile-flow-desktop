@@ -31,9 +31,10 @@ export function TimeOverviewChart({ timeEntries, projects, tasks, timeRange }: T
     return isWithinInterval(entryDate, { start: startDate, end: now });
   });
   
-  // Aggregate time entries by project and date
-  const projectTimeData: { [projectId: string]: { date: string; duration: number }[] } = {};
+  // Prepare data for the chart
+  const aggregatedData: Record<string, Record<string, number>> = {};
   
+  // Process time entries
   filteredEntries.forEach(entry => {
     const task = tasks.find(t => t.id === entry.taskId);
     const project = task ? projects.find(p => p.id === task.project) : undefined;
@@ -43,40 +44,59 @@ export function TimeOverviewChart({ timeEntries, projects, tasks, timeRange }: T
     const projectId = project.id;
     const entryDate = format(new Date(entry.startTime), 'yyyy-MM-dd');
     
-    if (!projectTimeData[projectId]) {
-      projectTimeData[projectId] = [];
+    if (!aggregatedData[entryDate]) {
+      aggregatedData[entryDate] = {};
     }
     
-    const existingDataPoint = projectTimeData[projectId]?.find(d => d.date === entryDate);
-    
-    if (existingDataPoint) {
-      existingDataPoint.duration += entry.duration;
-    } else {
-      projectTimeData[projectId]?.push({ date: entryDate, duration: entry.duration });
+    if (!aggregatedData[entryDate][projectId]) {
+      aggregatedData[entryDate][projectId] = 0;
     }
-  });
-  
-  // Prepare chart data
-  const chartData = Object.entries(projectTimeData).map(([projectId, data]) => {
-    const project = projects.find(p => p.id === projectId);
     
-    return {
-      name: project?.name || 'Unknown Project',
-      color: project?.color || '#8884d8',
-      data: data.map(item => ({
-        date: item.date,
-        duration: item.duration / 3600, // Convert seconds to hours
-      })),
-    };
+    aggregatedData[entryDate][projectId] += entry.duration / 3600; // Convert to hours
   });
   
-  // Generate date labels for the x-axis
-  const dateLabels: string[] = [];
-  let currentDate = startDate ? new Date(startDate) : subDays(now, 6);
+  // Prepare chart data in the format recharts expects
+  const chartData = Object.entries(aggregatedData).map(([date, projects]) => {
+    const dataPoint: any = { date };
+    
+    Object.entries(projects).forEach(([projectId, duration]) => {
+      const project = projects.find(p => p.id === projectId);
+      const projectName = project ? project.name : 'Unknown';
+      dataPoint[projectName] = duration;
+    });
+    
+    return dataPoint;
+  });
   
-  while (currentDate <= now) {
-    dateLabels.push(format(currentDate, 'MMM d'));
-    currentDate = subDays(new Date(now), 6);
+  // Sort chart data by date
+  chartData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  
+  // Extract project names for bars
+  const projectNames = projects
+    .filter(project => filteredEntries.some(entry => {
+      const task = tasks.find(t => t.id === entry.taskId);
+      return task && task.project === project.id;
+    }))
+    .map(project => project.name);
+  
+  // Generate colors for bars
+  const colorMap = projects.reduce((acc, project) => {
+    acc[project.name] = project.color;
+    return acc;
+  }, {} as Record<string, string>);
+  
+  // Fallback if there's no data
+  if (chartData.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Time Overview</CardTitle>
+        </CardHeader>
+        <CardContent className="h-[450px] flex items-center justify-center">
+          <p className="text-muted-foreground">No time tracking data available for the selected filters</p>
+        </CardContent>
+      </Card>
+    );
   }
   
   return (
@@ -88,20 +108,21 @@ export function TimeOverviewChart({ timeEntries, projects, tasks, timeRange }: T
         <div className="h-[450px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
-              data={chartData.flatMap(project => project.data)}
+              data={chartData}
               margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
               <YAxis label={{ value: 'Hours', angle: -90, position: 'insideLeft', offset: -5 }} />
               <Tooltip formatter={(value: number) => `${value.toFixed(2)} hours`} />
-              {chartData.map(project => (
+              
+              {projectNames.map((name) => (
                 <Bar 
-                  key={project.name} 
-                  dataKey="duration" 
+                  key={name}
+                  dataKey={name}
                   stackId="a" 
-                  fill={project.color} 
-                  name={project.name}
+                  fill={colorMap[name] || '#8884d8'}
+                  name={name}
                 />
               ))}
             </BarChart>
