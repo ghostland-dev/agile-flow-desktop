@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Calendar, List } from 'lucide-react';
+import { Calendar, ChartGantt, List } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useProject } from '../contexts/ProjectContext';
 
@@ -11,6 +11,7 @@ export function ViewSelector() {
     { id: 'kanban', label: 'Board', icon: <List size={16} /> },
     { id: 'list', label: 'List', icon: <List size={16} /> },
     { id: 'calendar', label: 'Calendar', icon: <Calendar size={16} /> },
+    { id: 'timeline', label: 'Timeline', icon: <ChartGantt size={16} /> },
   ] as const;
   
   return (

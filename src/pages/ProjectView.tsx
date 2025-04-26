@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useProject } from '../contexts/ProjectContext';
@@ -5,6 +6,7 @@ import { ProjectHeader } from '../components/ProjectHeader';
 import { KanbanBoard } from '../components/KanbanBoard';
 import { TasksList } from '../components/TasksList';
 import { CalendarView } from '../components/CalendarView';
+import { TimelineView } from '../components/TimelineView';
 
 export default function ProjectView() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -23,6 +25,7 @@ export default function ProjectView() {
         {currentView === 'kanban' && <KanbanBoard />}
         {currentView === 'list' && <TasksList />}
         {currentView === 'calendar' && <CalendarView />}
+        {currentView === 'timeline' && <TimelineView />}
       </div>
     </div>
   );

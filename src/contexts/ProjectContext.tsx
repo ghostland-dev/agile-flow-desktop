@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { projects, tasks, users } from '../utils/mockData';
 
@@ -39,9 +38,9 @@ interface ProjectContextType {
   tasks: Task[];
   users: User[];
   currentProject: Project | null;
-  currentView: 'kanban' | 'list' | 'calendar';
+  currentView: 'kanban' | 'list' | 'calendar' | 'timeline';
   setCurrentProject: (project: Project | null) => void;
-  setCurrentView: (view: 'kanban' | 'list' | 'calendar') => void;
+  setCurrentView: (view: 'kanban' | 'list' | 'calendar' | 'timeline') => void;
   addTask: (task: Omit<Task, 'id' | 'createdAt'>) => void;
   updateTaskStatus: (taskId: string, status: Status) => void;
 }
@@ -53,7 +52,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   const [tasksList, setTasksList] = useState<Task[]>(tasks);
   const [usersList] = useState<User[]>(users);
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
-  const [currentView, setCurrentView] = useState<'kanban' | 'list' | 'calendar'>('kanban');
+  const [currentView, setCurrentView] = useState<'kanban' | 'list' | 'calendar' | 'timeline'>('kanban');
 
   const addTask = (task: Omit<Task, 'id' | 'createdAt'>) => {
     const newTask: Task = {
