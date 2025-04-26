@@ -14,6 +14,8 @@ interface NewTaskFormProps {
 export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: NewTaskFormProps) {
   const [open, setOpen] = React.useState(false);
   const { formState, setFormState, isSubmitting, handleSubmit } = useTaskForm(initialStatus, () => setOpen(false));
+  // Create a stable ID for accessibility
+  const dialogDescriptionId = React.useId();
 
   const closeDialog = useCallback(() => {
     setOpen(false);
@@ -43,12 +45,14 @@ export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: New
           Add Task
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent aria-describedby={dialogDescriptionId} className="max-w-md">
         <DialogHeader>
           <DialogTitle>Add New Task</DialogTitle>
-          <DialogDescription>
-            Create a new task with the details below
-          </DialogDescription>
+          <div id={dialogDescriptionId}>
+            <DialogDescription>
+              Create a new task with the details below
+            </DialogDescription>
+          </div>
         </DialogHeader>
         <TaskFormContent />
       </DialogContent>
