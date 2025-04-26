@@ -30,18 +30,30 @@ export function ProjectDialogs({
   return (
     <>
       <Dialog open={newProjectDialog} onOpenChange={onNewProjectClose}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent 
+          className="sm:max-w-[425px]"
+          aria-describedby="new-project-description"
+        >
           <DialogHeader>
             <DialogTitle>Create New Project</DialogTitle>
+            <DialogDescription id="new-project-description" className="sr-only">
+              Create a new project by filling out this form
+            </DialogDescription>
           </DialogHeader>
           <NewProjectForm onSuccess={onNewProjectClose} />
         </DialogContent>
       </Dialog>
 
       <Dialog open={editProjectDialog} onOpenChange={onEditProjectClose}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent 
+          className="sm:max-w-[425px]"
+          aria-describedby="edit-project-description"
+        >
           <DialogHeader>
             <DialogTitle>Edit Project</DialogTitle>
+            <DialogDescription id="edit-project-description" className="sr-only">
+              Edit the project details
+            </DialogDescription>
           </DialogHeader>
           {selectedProject && (
             <EditProjectForm 

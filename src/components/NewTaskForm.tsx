@@ -36,6 +36,8 @@ export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: New
     return <TaskFormContent />;
   }
   
+  const descriptionId = "new-task-description";
+  
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -44,10 +46,10 @@ export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: New
           Add Task
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md" aria-describedby="new-task-description">
+      <DialogContent className="max-w-md" aria-describedby={descriptionId}>
         <DialogHeader>
           <DialogTitle>Add New Task</DialogTitle>
-          <DialogDescription id="new-task-description">
+          <DialogDescription id={descriptionId}>
             Create a new task with the details below
           </DialogDescription>
         </DialogHeader>

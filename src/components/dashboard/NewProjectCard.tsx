@@ -2,11 +2,12 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Plus } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { NewProjectForm } from './NewProjectForm';
 
 export function NewProjectCard() {
   const [open, setOpen] = React.useState(false);
+  const descriptionId = "new-project-card-description";
 
   return (
     <>
@@ -24,9 +25,12 @@ export function NewProjectCard() {
       </Card>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px]" aria-describedby={descriptionId}>
           <DialogHeader>
             <DialogTitle>Create New Project</DialogTitle>
+            <DialogDescription id={descriptionId}>
+              Fill in the details to create a new project
+            </DialogDescription>
           </DialogHeader>
           <NewProjectForm onSuccess={() => setOpen(false)} />
         </DialogContent>

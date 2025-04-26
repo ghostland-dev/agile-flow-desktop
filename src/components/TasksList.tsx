@@ -253,9 +253,15 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
       )}
 
       <Dialog open={!!viewingTask} onOpenChange={(open) => !open && setViewingTask(null)}>
-        <DialogContent className="sm:max-w-[550px]">
+        <DialogContent 
+          className="sm:max-w-[550px]" 
+          aria-describedby="view-task-description"
+        >
           <DialogHeader>
             <DialogTitle>{viewingTask?.title}</DialogTitle>
+            <DialogDescription id="view-task-description" className="sr-only">
+              View task details
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 my-4">
             <div>
@@ -318,9 +324,15 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
       </Dialog>
 
       <Dialog open={!!editingTask} onOpenChange={(open) => !open && setEditingTask(null)}>
-        <DialogContent className="sm:max-w-[550px]">
+        <DialogContent 
+          className="sm:max-w-[550px]" 
+          aria-describedby="edit-task-description"
+        >
           <DialogHeader>
             <DialogTitle>Edit Task</DialogTitle>
+            <DialogDescription id="edit-task-description" className="sr-only">
+              Edit task details
+            </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleEditSubmit} className="space-y-4 mt-2">
             <div>
@@ -405,10 +417,13 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
       </Dialog>
 
       <Dialog open={!!deleteConfirmTask} onOpenChange={(open) => !open && setDeleteConfirmTask(null)}>
-        <DialogContent className="sm:max-w-[400px]">
+        <DialogContent 
+          className="sm:max-w-[400px]"
+          aria-describedby="delete-task-description" 
+        >
           <DialogHeader>
             <DialogTitle>Confirm deletion</DialogTitle>
-            <DialogDescription>
+            <DialogDescription id="delete-task-description">
               Are you sure you want to delete this task? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
