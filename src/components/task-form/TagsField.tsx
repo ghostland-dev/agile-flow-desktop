@@ -18,7 +18,7 @@ export function TagsField({ formState, setFormState }: TagsFieldProps) {
       <label className="text-sm font-medium">Tags (separated by commas)</label>
       <Input 
         placeholder="design, frontend, urgent" 
-        value={formState.tags}
+        value={formState.tags || ''}
         onChange={handleTagsChange}
       />
     </div>

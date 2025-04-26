@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useProject } from '../hooks/useProject';
 import { Task } from '../types/project';
@@ -23,7 +22,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [viewingTask, setViewingTask] = useState<Task | null>(null);
   const [deleteConfirmTask, setDeleteConfirmTask] = useState<Task | null>(null);
-  const [formValues, setFormValues] = useState<Partial<Task>>({});
+  const [formValues, setFormValues] = useState<Partial<Task & { tags: string | string[] }>>({});
 
   const getPriorityClasses = (priority: string) => {
     switch(priority) {
@@ -85,8 +84,7 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
     setEditingTask(task);
     setFormValues({ 
       ...task,
-      // Convert tags array to comma-separated string for the input field
-      tags: task.tags.join(', ')
+      tags: task.tags?.join(', ') || ''
     });
   };
 
@@ -112,13 +110,17 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingTask && formValues) {
-      const tags = typeof formValues.tags === 'string' 
-        ? formValues.tags.split(',').map(tag => tag.trim()).filter(Boolean)
-        : formValues.tags;
+      let tagsArray: string[] = [];
+      
+      if (typeof formValues.tags === 'string') {
+        tagsArray = formValues.tags.split(',').map(tag => tag.trim()).filter(Boolean);
+      } else if (Array.isArray(formValues.tags)) {
+        tagsArray = formValues.tags;
+      }
 
       updateTask(editingTask.id, {
         ...formValues,
-        tags
+        tags: tagsArray
       });
       
       setEditingTask(null);
@@ -217,7 +219,6 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
               </div>
             </div>
 
-            {/* Buttons for task actions */}
             <div className="mt-3 pt-2 border-t border-border/40 flex justify-end gap-2">
               <Button 
                 variant="ghost" 
@@ -251,7 +252,6 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
         ))
       )}
 
-      {/* View Task Dialog */}
       <Dialog open={!!viewingTask} onOpenChange={(open) => !open && setViewingTask(null)}>
         <DialogContent className="sm:max-w-[550px]">
           <DialogHeader>
@@ -317,7 +317,6 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
         </DialogContent>
       </Dialog>
 
-      {/* Edit Task Dialog */}
       <Dialog open={!!editingTask} onOpenChange={(open) => !open && setEditingTask(null)}>
         <DialogContent className="sm:max-w-[550px]">
           <DialogHeader>
@@ -405,7 +404,6 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirmation Dialog */}
       <Dialog open={!!deleteConfirmTask} onOpenChange={(open) => !open && setDeleteConfirmTask(null)}>
         <DialogContent className="sm:max-w-[400px]">
           <DialogHeader>

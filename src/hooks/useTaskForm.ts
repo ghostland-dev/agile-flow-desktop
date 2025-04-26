@@ -57,9 +57,11 @@ export const useTaskForm = (initialStatus: Status = 'todo', onSuccess?: () => vo
     try {
       // Convert tags string to array
       const tagsArray = formState.tags
-        .split(',')
-        .map(tag => tag.trim())
-        .filter(Boolean);
+        ? formState.tags
+            .split(',')
+            .map(tag => tag.trim())
+            .filter(Boolean)
+        : [];
         
       addTask({
         title: formState.title,
