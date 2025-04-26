@@ -6,8 +6,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import { InviteMemberDialog } from '@/components/team/InviteMemberDialog';
 
-// Données fictives pour les invitations
+// Fictional data for invitations
 const invitations = [
   { 
     id: 1, 
