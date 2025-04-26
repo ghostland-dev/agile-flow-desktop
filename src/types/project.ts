@@ -65,6 +65,8 @@ export interface ProjectContextType {
   setCurrentProject: (project: Project | null) => void;
   setCurrentView: (view: 'kanban' | 'list' | 'calendar' | 'timeline') => void;
   addProject: (project: Omit<Project, 'id'>) => void;
+  updateProject: (projectId: string, updatedData: Partial<Project>) => void;
+  deleteProject: (projectId: string) => void;
   projectMembers: ProjectMember[];
   addProjectMember: (userId: string, projectId: string) => void;
 }

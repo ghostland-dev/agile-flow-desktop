@@ -49,6 +49,22 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     setProjectMembers(prev => [...prev, newMember]);
   };
 
+  const updateProject = (projectId: string, updatedData: Partial<Project>) => {
+    setProjectsList(prevProjects => 
+      prevProjects.map(project => 
+        project.id === projectId 
+          ? { ...project, ...updatedData }
+          : project
+      )
+    );
+  };
+
+  const deleteProject = (projectId: string) => {
+    setProjectsList(prevProjects => 
+      prevProjects.filter(project => project.id !== projectId)
+    );
+  };
+
   return (
     <ProjectContext.Provider value={{
       projects: projectsList,
@@ -60,6 +76,8 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       setCurrentProject,
       setCurrentView,
       addProject,
+      updateProject,
+      deleteProject,
       projectMembers,
       addProjectMember,
     }}>
