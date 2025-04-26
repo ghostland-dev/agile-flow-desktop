@@ -1,25 +1,30 @@
 
 import React, { useState } from 'react';
 import { useProject } from '../contexts/ProjectContext';
-import { Calendar, Clock, List, Play, Square, Timer } from 'lucide-react';
+import { Calendar, Clock, List, Play, Square, Timer, Search, Filter, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { NewTaskForm } from './NewTaskForm';
 import { useToast } from '@/hooks/use-toast';
+import { Input } from '@/components/ui/input';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { 
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
+  DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
 
 export function ProjectHeader() {
-  const { currentProject, currentView, setCurrentView, tasks, startTimeTracking, stopTimeTracking } = useProject();
+  const { currentProject, currentView, setCurrentView, tasks, startTimeTracking, stopTimeTracking, users } = useProject();
   const { toast } = useToast();
   const [isTracking, setIsTracking] = useState(false);
   const [currentTaskId, setCurrentTaskId] = useState<string | null>(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [timerInterval, setTimerInterval] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   
   if (!currentProject) return null;
   
@@ -80,28 +85,64 @@ export function ProjectHeader() {
       });
     }
   };
+
+  // Calculate project stats
+  const totalTasks = tasks.filter(task => task.project === currentProject.id).length;
+  const completedTasks = tasks.filter(task => task.project === currentProject.id && task.status === 'done').length;
+  const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+  
+  // Get team members working on this project
+  const projectTeam = users.filter(user => 
+    tasks.some(task => task.project === currentProject.id && task.assignee === user.id)
+  ).slice(0, 5); // Limit to 5 visible members
   
   return (
     <header className="border-b bg-white px-6 py-4">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <div 
-              className="h-4 w-4 rounded-full" 
+              className="h-10 w-10 rounded-lg flex items-center justify-center" 
               style={{ backgroundColor: currentProject.color }}
-            />
-            <h1 className="font-bold text-2xl">{currentProject.name}</h1>
+            >
+              <span className="text-white font-bold text-xl">{currentProject.name.charAt(0)}</span>
+            </div>
+            <div>
+              <h1 className="font-bold text-2xl flex items-center gap-2">
+                {currentProject.name}
+                <Badge variant="outline" className="ml-2 font-normal">
+                  {completionPercentage}% complete
+                </Badge>
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">{currentProject.description}</p>
+            </div>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">{currentProject.description}</p>
         </div>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          <div className="flex -space-x-2">
+            {projectTeam.map((member) => (
+              <Avatar key={member.id} className="border-2 border-background h-8 w-8">
+                <AvatarImage src={member.avatar} alt={member.name} />
+                <AvatarFallback className="text-xs">
+                  {member.name.substring(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            ))}
+            {users.length > 5 && (
+              <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs border-2 border-background">
+                +{users.length - 5}
+              </div>
+            )}
+          </div>
+
           {isTracking ? (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 bg-red-50 border border-red-100 rounded-md px-3 py-1.5 animate-pulse">
+              <Timer size={16} className="text-red-500" />
               <span className="text-sm font-medium">{formatTime(elapsedTime)}</span>
-              <Button variant="outline" size="sm" className="gap-1" onClick={stopTimer}>
-                <Square size={14} className="text-red-500" />
-                Stop Timer
+              <Button variant="ghost" size="sm" className="h-7 text-red-500 hover:text-red-600 hover:bg-red-50 p-0 px-2" onClick={stopTimer}>
+                <Square size={14} className="mr-1" />
+                Stop
               </Button>
             </div>
           ) : (
@@ -133,22 +174,64 @@ export function ProjectHeader() {
         </div>
       </div>
       
-      <div className="flex border-b">
-        {views.map((view) => (
-          <button
-            key={view.id}
-            className={cn(
-              "flex items-center gap-1 px-4 py-2 text-sm border-b-2 transition-colors",
-              currentView === view.id
-                ? "text-primary border-primary font-medium"
-                : "text-muted-foreground border-transparent hover:text-foreground hover:border-muted"
-            )}
-            onClick={() => setCurrentView(view.id)}
-          >
-            {view.icon}
-            {view.label}
-          </button>
-        ))}
+      <div className="flex items-center justify-between">
+        <div className="flex border-b">
+          {views.map((view) => (
+            <button
+              key={view.id}
+              className={cn(
+                "flex items-center gap-1.5 px-4 py-2 text-sm border-b-2 transition-colors",
+                currentView === view.id
+                  ? "text-primary border-primary font-medium"
+                  : "text-muted-foreground border-transparent hover:text-foreground hover:border-muted"
+              )}
+              onClick={() => setCurrentView(view.id)}
+            >
+              {view.icon}
+              {view.label}
+            </button>
+          ))}
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <div className="relative max-w-xs">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Search tasks..."
+              className="pl-9 w-60 h-9"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-1.5">
+                <Filter size={14} />
+                Filter
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem>
+                Recently updated
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                Priority: High to Low
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                Priority: Low to High
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                Due date: Closest first
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                Alphabetical: A to Z
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </header>
   );
