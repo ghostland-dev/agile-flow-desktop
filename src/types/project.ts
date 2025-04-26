@@ -56,6 +56,7 @@ export interface ProjectContextType {
   users: User[];
   currentProject: Project | null;
   currentView: 'kanban' | 'list' | 'calendar' | 'timeline';
+  loading?: boolean;  // Add loading property
   setCurrentProject: (project: Project | null) => void;
   setCurrentView: (view: 'kanban' | 'list' | 'calendar' | 'timeline') => void;
   addTask: (task: Omit<Task, 'id' | 'createdAt'>) => void;

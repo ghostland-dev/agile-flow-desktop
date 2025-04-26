@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, ReactNode, useEffect } from 'react';
 import { projects, tasks, users } from '../utils/mockData';
 import { useToast } from '@/hooks/use-toast';
@@ -16,6 +15,7 @@ import type {
 export const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 
 export function ProjectProvider({ children }: { children: ReactNode }) {
+  const [loading, setLoading] = useState<boolean>(true);
   const [projectsList, setProjectsList] = useState<Project[]>(() => 
     loadFromStorage('projects', projects)
   );
@@ -33,6 +33,14 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   );
   const [currentUser] = useState<User | null>(users[0] || null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     saveToStorage('projects', projectsList);
@@ -178,6 +186,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         projects: projectsList,
         tasks: tasksList,
         users: usersList,
+        loading,
         currentProject,
         currentView,
         setCurrentProject,
