@@ -1,4 +1,3 @@
-
 import React, { useCallback, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
@@ -15,7 +14,6 @@ import {
   DrawerClose,
 } from '@/components/ui/drawer';
 
-// Define TaskFormContent outside of NewTaskForm to prevent re-rendering issues
 const TaskFormContent = React.memo(({
   formState,
   setFormState,
@@ -47,18 +45,20 @@ TaskFormContent.displayName = 'TaskFormContent';
 interface NewTaskFormProps {
   initialStatus?: Status;
   openInDialog?: boolean;
+  onSuccess?: () => void;
 }
 
-export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: NewTaskFormProps) {
+export function NewTaskForm({ initialStatus = 'todo', openInDialog = true, onSuccess }: NewTaskFormProps) {
   const [open, setOpen] = useState(false);
   
-  // Create a stable callback for success that will be stable across renders
-  const onSuccess = useCallback(() => setOpen(false), []);
+  const handleSuccess = useCallback(() => {
+    setOpen(false);
+    onSuccess?.();
+  }, [onSuccess]);
   
-  const { formState, setFormState, isSubmitting, handleSubmit } = useTaskForm(initialStatus, onSuccess);
+  const { formState, setFormState, isSubmitting, handleSubmit } = useTaskForm(initialStatus, handleSuccess);
   const drawerDescriptionId = React.useId();
 
-  // Stable function reference to prevent re-renders
   const closeDrawer = useCallback(() => {
     setOpen(false);
   }, []);

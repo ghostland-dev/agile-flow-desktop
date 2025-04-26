@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Task } from '@/types/project';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
@@ -15,6 +16,10 @@ interface TaskSidebarProps {
 
 export function TaskSidebar({ upcomingDeadlines }: TaskSidebarProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleNewTaskSuccess = () => {
+    setIsDialogOpen(false);
+  };
 
   return (
     <div className="space-y-6">
@@ -110,7 +115,11 @@ export function TaskSidebar({ upcomingDeadlines }: TaskSidebarProps) {
               Create a new task with a deadline
             </DialogDescription>
           </DialogHeader>
-          <NewTaskForm initialStatus="todo" openInDialog={false} />
+          <NewTaskForm 
+            initialStatus="todo" 
+            openInDialog={false} 
+            onSuccess={handleNewTaskSuccess}
+          />
         </DialogContent>
       </Dialog>
     </div>
