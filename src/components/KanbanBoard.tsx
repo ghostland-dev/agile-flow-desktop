@@ -13,7 +13,13 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogDescription 
+} from '@/components/ui/dialog';
 
 export function KanbanBoard() {
   const { tasks, currentProject, updateTaskStatus } = useProject();
@@ -173,9 +179,12 @@ export function KanbanBoard() {
                 open={isDialogOpen[column.id]} 
                 onOpenChange={(open) => open ? openDialog(column.id) : closeDialog(column.id)}
               >
-                <DialogContent>
+                <DialogContent aria-describedby="new-task-description">
                   <DialogHeader>
                     <DialogTitle>Add new task</DialogTitle>
+                    <DialogDescription id="new-task-description">
+                      Create a new task in the {column.title} column
+                    </DialogDescription>
                   </DialogHeader>
                   <NewTaskForm initialStatus={column.id} openInDialog={false} />
                 </DialogContent>
