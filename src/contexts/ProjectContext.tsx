@@ -69,6 +69,7 @@ interface ProjectContextType {
   fileAttachments: FileAttachment[];
   addFileAttachment: (taskId: string, file: Pick<FileAttachment, 'name' | 'url' | 'type'>) => void;
   getTaskAttachments: (taskId: string) => FileAttachment[];
+  currentUser: User | null;
 }
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
@@ -81,6 +82,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   const [currentView, setCurrentView] = useState<'kanban' | 'list' | 'calendar' | 'timeline'>('kanban');
   const [timeEntries, setTimeEntries] = useState<TimeEntry[]>([]);
   const [fileAttachments, setFileAttachments] = useState<FileAttachment[]>([]);
+  const [currentUser] = useState<User | null>(users[0] || null);
 
   const addTask = (task: Omit<Task, 'id' | 'createdAt'>) => {
     const newTask: Task = {
@@ -103,7 +105,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     const newEntry: TimeEntry = {
       id: `time-${Date.now()}`,
       taskId,
-      userId: 'current-user', // In a real app, this would come from auth
+      userId: 'current-user',
       startTime: new Date().toISOString(),
       duration: 0
     };
@@ -136,7 +138,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
       id: `file-${Date.now()}`,
       taskId,
       uploadedAt: new Date().toISOString(),
-      uploadedBy: 'current-user', // In a real app, this would come from auth
+      uploadedBy: 'current-user',
       ...file,
     };
     setFileAttachments(prev => [...prev, newAttachment]);
@@ -165,6 +167,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         fileAttachments,
         addFileAttachment,
         getTaskAttachments,
+        currentUser,
       }}
     >
       {children}

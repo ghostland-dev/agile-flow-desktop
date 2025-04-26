@@ -5,11 +5,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function TimeTracking() {
-  const { timeEntries, projects } = useProject();
+  const { timeEntries, projects, tasks } = useProject();
   
   // Calculate time spent per project
   const projectTime = projects.map(project => {
-    const projectEntries = timeEntries.filter(entry => entry.projectId === project.id);
+    // Find task IDs that belong to this project
+    const projectTaskIds = tasks
+      .filter(task => task.project === project.id)
+      .map(task => task.id);
+    
+    // Filter time entries for tasks in this project
+    const projectEntries = timeEntries.filter(entry => 
+      projectTaskIds.includes(entry.taskId)
+    );
+    
     const totalTime = projectEntries.reduce((acc, entry) => acc + entry.duration, 0);
     return {
       name: project.name,

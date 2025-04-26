@@ -9,6 +9,10 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import ProjectView from "./pages/ProjectView";
+import MyTasks from "./pages/MyTasks";
+import TimeTracking from "./pages/TimeTracking";
+import Team from "./pages/Team";
+import CalendarView from "./components/CalendarView";
 import { ProjectProvider } from "./contexts/ProjectContext";
 import { Sidebar } from "./components/Sidebar";
 

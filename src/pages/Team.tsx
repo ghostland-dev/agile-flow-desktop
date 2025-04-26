@@ -13,6 +13,9 @@ export default function Team() {
       ...user,
       tasksCount: userTasks.length,
       completedTasks: userTasks.filter(task => task.status === 'done').length,
+      role: user.email.includes('manager') ? 'Project Manager' : 
+            user.email.includes('dev') ? 'Developer' :
+            user.email.includes('design') ? 'Designer' : 'Team Member', // Add a role based on email
     };
   });
   
