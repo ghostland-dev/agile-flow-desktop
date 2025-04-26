@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,14 +24,12 @@ export function CalendarView() {
   const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day');
   const [selectedProject, setSelectedProject] = useState<string | 'all'>('all');
 
-  // Filter tasks for the current selection
   const filteredTasks = tasks.filter(task => {
     const matchesProject = selectedProject === 'all' || task.project === selectedProject;
     const hasDate = Boolean(task.dueDate);
     return matchesProject && hasDate;
   });
 
-  // Get tasks for the selected date
   const getTasksForDate = (date: Date) => {
     return filteredTasks.filter(task => {
       if (!task.dueDate) return false;
@@ -41,7 +38,6 @@ export function CalendarView() {
     });
   };
 
-  // For month view, get all days with their tasks
   const getMonthTasks = () => {
     if (!selectedDate) return [];
     
@@ -65,7 +61,6 @@ export function CalendarView() {
     urgent: 'bg-red-100 text-red-800',
   };
 
-  // Navigate to previous/next date based on view mode
   const navigateDate = (direction: 'prev' | 'next') => {
     if (!selectedDate) return;
     
@@ -130,7 +125,7 @@ export function CalendarView() {
 
       <div className="grid md:grid-cols-[auto,1fr] gap-6">
         <div className="w-fit">
-          <Card className="bg-white p-4">
+          <Card className="bg-card p-4">
             <CalendarComponent
               mode="single"
               selected={selectedDate}
@@ -219,7 +214,6 @@ export function CalendarView() {
             </div>
           ) : viewMode === 'week' ? (
             <div className="grid grid-cols-7 gap-2">
-              {/* Week view would go here */}
               <Card className="p-6 col-span-7">
                 <div className="flex flex-col items-center justify-center text-center">
                   <CalendarIcon className="h-12 w-12 text-muted-foreground opacity-50 mb-2" />
