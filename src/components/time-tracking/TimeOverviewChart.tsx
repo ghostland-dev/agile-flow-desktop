@@ -36,10 +36,10 @@ export function TimeOverviewChart({ timeEntries, projects, tasks, timeRange }: T
     return {
       id: project.id,
       name: project.name,
-      hours: Math.max(0.1, (totalTime / 3600).toFixed(1)), // Convert seconds to hours, minimum 0.1 for visibility
+      hours: Math.max(0.1, +(totalTime / 3600).toFixed(1)), // Convert to number with + operator
       color: project.color,
     };
-  }).filter(project => Number(project.hours) > 0); // Only show projects with tracked time
+  }).filter(project => project.hours > 0); // Only show projects with tracked time
   
   // Calculate time spent by status
   const statusTimeData = ['backlog', 'todo', 'in_progress', 'in_review', 'done'].map(status => {
@@ -65,10 +65,10 @@ export function TimeOverviewChart({ timeEntries, projects, tasks, timeRange }: T
     
     return {
       status: statusLabels[status],
-      hours: Math.max(0.1, (totalTime / 3600).toFixed(1)),
+      hours: Math.max(0.1, +(totalTime / 3600).toFixed(1)), // Convert to number with + operator
       color: statusColors[status]
     };
-  }).filter(statusData => Number(statusData.hours) > 0);
+  }).filter(statusData => statusData.hours > 0);
   
   // For time series chart - daily time tracking
   let timeSeriesData = [];
