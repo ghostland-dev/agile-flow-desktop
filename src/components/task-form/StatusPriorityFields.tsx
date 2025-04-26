@@ -5,7 +5,7 @@ import { TaskFormState } from '@/hooks/useTaskForm';
 
 interface StatusPriorityFieldsProps {
   formState: TaskFormState;
-  setFormState: (state: TaskFormState) => void;
+  setFormState: React.Dispatch<React.SetStateAction<TaskFormState>>;
 }
 
 export function StatusPriorityFields({ formState, setFormState }: StatusPriorityFieldsProps) {

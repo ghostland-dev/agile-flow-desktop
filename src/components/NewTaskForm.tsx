@@ -16,13 +16,9 @@ export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: New
   const [open, setOpen] = useState(false);
   const { formState, setFormState, isSubmitting, handleSubmit } = useTaskForm(initialStatus, () => setOpen(false));
   
-  // Mémoriser la fonction de mise à jour de l'état pour éviter les re-rendus
-  const updateFormState = useCallback((newState) => {
-    if (typeof newState === 'function') {
-      setFormState(newState);
-    } else {
-      setFormState(newState);
-    }
+  // Create a stable function for updating form state
+  const updateFormState = useCallback((newState: React.SetStateAction<typeof formState>) => {
+    setFormState(newState);
   }, [setFormState]);
   
   const closeDialog = useCallback(() => {

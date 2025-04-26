@@ -6,7 +6,7 @@ import { TaskFormState } from '@/hooks/useTaskForm';
 
 interface BasicInfoFieldsProps {
   formState: TaskFormState;
-  setFormState: (state: TaskFormState) => void;
+  setFormState: React.Dispatch<React.SetStateAction<TaskFormState>>;
 }
 
 export function BasicInfoFields({ formState, setFormState }: BasicInfoFieldsProps) {

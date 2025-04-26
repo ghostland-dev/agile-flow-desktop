@@ -11,7 +11,7 @@ import { TaskFormState } from '@/hooks/useTaskForm';
 
 interface DateAssigneeFieldsProps {
   formState: TaskFormState;
-  setFormState: (state: TaskFormState) => void;
+  setFormState: React.Dispatch<React.SetStateAction<TaskFormState>>;
 }
 
 export function DateAssigneeFields({ formState, setFormState }: DateAssigneeFieldsProps) {
