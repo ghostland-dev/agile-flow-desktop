@@ -1,14 +1,18 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { RoleForm } from '@/components/team/RoleForm';
+import { DeleteRoleDialog } from '@/components/team/DeleteRoleDialog';
+import { Plus, Pencil, Trash2 } from 'lucide-react';
 
-// Données fictives pour les rôles d'équipe
-const roles = [
+// État initial des rôles (simulation)
+const initialRoles = [
   { 
     id: 1, 
     name: 'Admin', 
@@ -47,6 +51,40 @@ const roles = [
 ];
 
 export default function TeamRoles() {
+  const [roles, setRoles] = useState(initialRoles);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingRole, setEditingRole] = useState<typeof initialRoles[0] | null>(null);
+  const [deleteRole, setDeleteRole] = useState<typeof initialRoles[0] | null>(null);
+
+  const handleCreateRole = (data: any) => {
+    const newRole = {
+      id: Math.max(...roles.map(r => r.id)) + 1,
+      ...data,
+      users: 0,
+    };
+    setRoles([...roles, newRole]);
+    setIsFormOpen(false);
+    toast.success('Role created successfully');
+  };
+
+  const handleUpdateRole = (data: any) => {
+    if (!editingRole) return;
+    const updatedRoles = roles.map(role => 
+      role.id === editingRole.id ? { ...role, ...data } : role
+    );
+    setRoles(updatedRoles);
+    setEditingRole(null);
+    toast.success('Role updated successfully');
+  };
+
+  const handleDeleteRole = () => {
+    if (!deleteRole) return;
+    const filtered = roles.filter(role => role.id !== deleteRole.id);
+    setRoles(filtered);
+    setDeleteRole(null);
+    toast.success('Role deleted successfully');
+  };
+
   return (
     <ScrollArea className="h-[calc(100vh-3.5rem)]">
       <div className="p-6 space-y-6">
@@ -57,7 +95,10 @@ export default function TeamRoles() {
               Manage roles and their associated permissions
             </p>
           </div>
-          <Button onClick={() => toast.info('Create role dialog will open here')}>Create New Role</Button>
+          <Button onClick={() => setIsFormOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Create New Role
+          </Button>
         </div>
 
         <Card>
@@ -73,7 +114,7 @@ export default function TeamRoles() {
                   <TableHead>Description</TableHead>
                   <TableHead>Permissions</TableHead>
                   <TableHead className="text-right">Users</TableHead>
-                  <TableHead className="w-[100px]"></TableHead>
+                  <TableHead className="w-[100px]">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -97,13 +138,23 @@ export default function TeamRoles() {
                     </TableCell>
                     <TableCell className="text-right">{role.users}</TableCell>
                     <TableCell>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={() => toast.info(`Edit ${role.name} role`)}
-                      >
-                        Edit
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setEditingRole(role)}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setDeleteRole(role)}
+                          className="text-destructive hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -111,19 +162,43 @@ export default function TeamRoles() {
             </Table>
           </CardContent>
         </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Role Permissions</CardTitle>
-            <CardDescription>Detailed permissions breakdown by role</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[300px] flex items-center justify-center">
-              <p className="text-muted-foreground">Detailed permissions matrix will be displayed here</p>
-            </div>
-          </CardContent>
-        </Card>
       </div>
+
+      <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Create New Role</DialogTitle>
+          </DialogHeader>
+          <RoleForm
+            onSubmit={handleCreateRole}
+            onCancel={() => setIsFormOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!editingRole} onOpenChange={(open) => !open && setEditingRole(null)}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Edit Role</DialogTitle>
+          </DialogHeader>
+          {editingRole && (
+            <RoleForm
+              initialData={editingRole}
+              onSubmit={handleUpdateRole}
+              onCancel={() => setEditingRole(null)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {deleteRole && (
+        <DeleteRoleDialog
+          open={!!deleteRole}
+          onOpenChange={(open) => !open && setDeleteRole(null)}
+          onConfirm={handleDeleteRole}
+          roleName={deleteRole.name}
+        />
+      )}
     </ScrollArea>
   );
 }
