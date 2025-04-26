@@ -1,14 +1,14 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { useProject } from '../hooks/useProject';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
+import { AddMemberDialog } from './team/AddMemberDialog';
 
 export function ProjectTeam() {
   const { users, tasks, currentProject } = useProject();
+  const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
   
-  // Get team members working on this project
   const projectTeam = currentProject
     ? users.filter(user => 
         tasks.some(task => 
@@ -22,7 +22,11 @@ export function ProjectTeam() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">Team Members</h2>
-        <Button variant="outline" size="sm">
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={() => setIsAddMemberDialogOpen(true)}
+        >
           <Plus size={16} className="mr-1" />
           Add Member
         </Button>
@@ -53,6 +57,11 @@ export function ProjectTeam() {
           </div>
         )}
       </div>
+      
+      <AddMemberDialog 
+        open={isAddMemberDialogOpen}
+        onOpenChange={setIsAddMemberDialogOpen}
+      />
     </div>
   );
 }
