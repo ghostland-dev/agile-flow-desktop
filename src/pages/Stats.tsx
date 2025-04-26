@@ -1,6 +1,5 @@
-
-import React, { useState } from 'react';
-import { useProject } from '../contexts/ProjectContext';
+import React from 'react';
+import { useProject } from '../hooks/useProject';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';

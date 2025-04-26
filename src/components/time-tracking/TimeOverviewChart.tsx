@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { format, subDays, isWithinInterval } from 'date-fns';
 import { Project, Task, TimeEntry } from '@/types/project';
@@ -110,4 +111,3 @@ export function TimeOverviewChart({ timeEntries, projects, tasks, timeRange }: T
     </Card>
   );
 }
-

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { format } from 'date-fns';
 import { Project, Task, User, TimeEntry } from '@/types/project';
@@ -7,25 +8,25 @@ import { Calendar, Clock, Download } from 'lucide-react';
 
 interface TimeLogTableProps {
   timeEntries: TimeEntry[];
-  tasks: Record<string, Task>;
-  projects: Record<string, Project>;
-  users: Record<string, User>;
+  tasks: Task[];
+  projects: Project[];
+  users: User[];
 }
 
 export function TimeLogTable({ timeEntries, tasks, projects, users }: TimeLogTableProps) {
   // Helper function to get task details
   const getTaskDetails = (taskId: string): Task | undefined => {
-    return Object.values(tasks).find(task => task.id === taskId);
+    return tasks.find(task => task.id === taskId);
   };
   
   // Helper function to get project details
   const getProjectDetails = (projectId: string): Project | undefined => {
-    return Object.values(projects).find(project => project.id === projectId);
+    return projects.find(project => project.id === projectId);
   };
   
   // Helper function to get user details
   const getUserDetails = (userId: string): User | undefined => {
-    return Object.values(users).find(user => user.id === userId);
+    return users.find(user => user.id === userId);
   };
   
   return (
