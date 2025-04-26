@@ -32,6 +32,22 @@ import Integrations from "./pages/Integrations";
 import Billing from "./pages/Billing";
 import Help from "./pages/Help";
 
+// Import des nouvelles pages
+import Performance from "./pages/analytics/Performance";
+import UserActivity from "./pages/analytics/UserActivity";
+
+// Lazy loading pour les pages supplémentaires
+const Growth = lazy(() => import('./pages/analytics/Growth'));
+const WeeklyReport = lazy(() => import('./pages/reports/WeeklyReport'));
+const MonthlyReport = lazy(() => import('./pages/reports/MonthlyReport'));
+const CustomReports = lazy(() => import('./pages/reports/CustomReports'));
+const Preferences = lazy(() => import('./pages/settings/Preferences'));
+const Security = lazy(() => import('./pages/settings/Security'));
+const Notifications = lazy(() => import('./pages/settings/Notifications'));
+const TeamMembers = lazy(() => import('./pages/team/Members'));
+const TeamRoles = lazy(() => import('./pages/team/Roles'));
+const TeamInvitations = lazy(() => import('./pages/team/Invitations'));
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -97,6 +113,7 @@ const App = () => {
                     } 
                   />
                   
+                  {/* Tasks routes */}
                   <Route 
                     path="/my-tasks" 
                     element={
@@ -106,6 +123,7 @@ const App = () => {
                     } 
                   />
                   
+                  {/* Calendar route */}
                   <Route 
                     path="/calendar" 
                     element={
@@ -115,6 +133,7 @@ const App = () => {
                     } 
                   />
                   
+                  {/* Time tracking route */}
                   <Route 
                     path="/time-tracking" 
                     element={
@@ -124,6 +143,7 @@ const App = () => {
                     } 
                   />
                   
+                  {/* Team routes */}
                   <Route 
                     path="/team" 
                     element={
@@ -134,6 +154,40 @@ const App = () => {
                   />
                   
                   <Route 
+                    path="/team/members" 
+                    element={
+                      <AppLayout>
+                        <Suspense fallback={<LoadingSkeleton />}>
+                          <TeamMembers />
+                        </Suspense>
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/team/roles" 
+                    element={
+                      <AppLayout>
+                        <Suspense fallback={<LoadingSkeleton />}>
+                          <TeamRoles />
+                        </Suspense>
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/team/invitations" 
+                    element={
+                      <AppLayout>
+                        <Suspense fallback={<LoadingSkeleton />}>
+                          <TeamInvitations />
+                        </Suspense>
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  {/* Stats route */}
+                  <Route 
                     path="/stats" 
                     element={
                       <AppLayout>
@@ -142,6 +196,7 @@ const App = () => {
                     } 
                   />
                   
+                  {/* Analytics routes */}
                   <Route 
                     path="/analytics" 
                     element={
@@ -152,6 +207,36 @@ const App = () => {
                   />
                   
                   <Route 
+                    path="/analytics/performance" 
+                    element={
+                      <AppLayout>
+                        <Performance />
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/analytics/user-activity" 
+                    element={
+                      <AppLayout>
+                        <UserActivity />
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/analytics/growth" 
+                    element={
+                      <AppLayout>
+                        <Suspense fallback={<LoadingSkeleton />}>
+                          <Growth />
+                        </Suspense>
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  {/* Reports routes */}
+                  <Route 
                     path="/reports" 
                     element={
                       <AppLayout>
@@ -161,6 +246,40 @@ const App = () => {
                   />
                   
                   <Route 
+                    path="/reports/weekly" 
+                    element={
+                      <AppLayout>
+                        <Suspense fallback={<LoadingSkeleton />}>
+                          <WeeklyReport />
+                        </Suspense>
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/reports/monthly" 
+                    element={
+                      <AppLayout>
+                        <Suspense fallback={<LoadingSkeleton />}>
+                          <MonthlyReport />
+                        </Suspense>
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/reports/custom" 
+                    element={
+                      <AppLayout>
+                        <Suspense fallback={<LoadingSkeleton />}>
+                          <CustomReports />
+                        </Suspense>
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  {/* Integrations route */}
+                  <Route 
                     path="/integrations" 
                     element={
                       <AppLayout>
@@ -169,6 +288,7 @@ const App = () => {
                     } 
                   />
                   
+                  {/* Billing route */}
                   <Route 
                     path="/billing" 
                     element={
@@ -178,6 +298,7 @@ const App = () => {
                     } 
                   />
                   
+                  {/* Settings routes */}
                   <Route 
                     path="/settings" 
                     element={
@@ -188,6 +309,40 @@ const App = () => {
                   />
                   
                   <Route 
+                    path="/settings/preferences" 
+                    element={
+                      <AppLayout>
+                        <Suspense fallback={<LoadingSkeleton />}>
+                          <Preferences />
+                        </Suspense>
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/settings/security" 
+                    element={
+                      <AppLayout>
+                        <Suspense fallback={<LoadingSkeleton />}>
+                          <Security />
+                        </Suspense>
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/settings/notifications" 
+                    element={
+                      <AppLayout>
+                        <Suspense fallback={<LoadingSkeleton />}>
+                          <Notifications />
+                        </Suspense>
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  {/* Help route */}
+                  <Route 
                     path="/help" 
                     element={
                       <AppLayout>
@@ -196,6 +351,7 @@ const App = () => {
                     } 
                   />
                   
+                  {/* Profile route */}
                   <Route 
                     path="/profile" 
                     element={
@@ -205,6 +361,7 @@ const App = () => {
                     } 
                   />
                   
+                  {/* Project view route */}
                   <Route 
                     path="/projects/:projectId" 
                     element={
