@@ -6,11 +6,11 @@ import { cn } from '@/lib/utils';
 import { AlertCircle, Calendar, CheckCircle, Clock, Edit, Eye, Trash2 } from 'lucide-react';
 import { format, isAfter } from 'date-fns';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
+import { TaskDetails } from './tasks/TaskDetails';
+import { TaskEditor } from './tasks/TaskEditor';
+import { TaskDeleteConfirmation } from './tasks/TaskDeleteConfirmation';
 
 interface TasksListProps {
   tasks: Task[];
@@ -253,189 +253,26 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
       )}
 
       <Dialog open={!!viewingTask} onOpenChange={(open) => !open && setViewingTask(null)}>
-        <DialogContent 
-          className="sm:max-w-[550px]" 
-          aria-describedby="view-task-description"
-        >
-          <DialogHeader>
-            <DialogTitle>{viewingTask?.title}</DialogTitle>
-            <DialogDescription id="view-task-description" className="sr-only">
-              View task details
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 my-4">
-            <div>
-              <p className="text-sm text-muted-foreground mb-2">Description:</p>
-              <p className="text-sm p-3 bg-muted/20 rounded-md">{viewingTask?.description}</p>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Status:</p>
-                <Badge 
-                  variant="outline" 
-                  className={cn(
-                    "font-normal", 
-                    viewingTask?.status && getStatusClasses(viewingTask.status)
-                  )}
-                >
-                  {viewingTask?.status === 'todo' ? 'To Do' : 
-                   viewingTask?.status === 'in_progress' ? 'In Progress' : 
-                   viewingTask?.status === 'in_review' ? 'In Review' : 'Done'}
-                </Badge>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Priority:</p>
-                <Badge 
-                  variant="outline" 
-                  className={cn(
-                    "font-normal", 
-                    viewingTask?.priority && getPriorityClasses(viewingTask.priority)
-                  )}
-                >
-                  {viewingTask?.priority}
-                </Badge>
-              </div>
-            </div>
-            
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Tags:</p>
-              <div className="flex flex-wrap gap-2">
-                {viewingTask?.tags?.map(tag => (
-                  <Badge key={tag} variant="outline" className="text-xs bg-muted/50">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Due date:</p>
-                <p className="text-sm">{viewingTask?.dueDate ? formatDate(viewingTask.dueDate) : 'Not set'}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Time tracked:</p>
-                <p className="text-sm">{viewingTask?.timeTracked || 0} minutes</p>
-              </div>
-            </div>
-          </div>
-        </DialogContent>
+        <TaskDetails task={viewingTask} />
       </Dialog>
 
       <Dialog open={!!editingTask} onOpenChange={(open) => !open && setEditingTask(null)}>
-        <DialogContent 
-          className="sm:max-w-[550px]" 
-          aria-describedby="edit-task-description"
-        >
-          <DialogHeader>
-            <DialogTitle>Edit Task</DialogTitle>
-            <DialogDescription id="edit-task-description" className="sr-only">
-              Edit task details
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleEditSubmit} className="space-y-4 mt-2">
-            <div>
-              <Input 
-                name="title" 
-                value={formValues.title || ''} 
-                onChange={handleInputChange} 
-                placeholder="Task title" 
-                className="w-full" 
-              />
-            </div>
-            
-            <div>
-              <Textarea 
-                name="description" 
-                value={formValues.description || ''} 
-                onChange={handleInputChange} 
-                placeholder="Task description" 
-                className="w-full" 
-                rows={4} 
-              />
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm font-medium mb-1">Status:</p>
-                <Select 
-                  value={formValues.status} 
-                  onValueChange={(value) => handleSelectChange('status', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="todo">To Do</SelectItem>
-                    <SelectItem value="in_progress">In Progress</SelectItem>
-                    <SelectItem value="in_review">In Review</SelectItem>
-                    <SelectItem value="done">Done</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <p className="text-sm font-medium mb-1">Priority:</p>
-                <Select 
-                  value={formValues.priority} 
-                  onValueChange={(value) => handleSelectChange('priority', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select priority" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="low">Low</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="high">High</SelectItem>
-                    <SelectItem value="urgent">Urgent</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            
-            <div>
-              <p className="text-sm font-medium mb-1">Tags (separated by commas):</p>
-              <Input 
-                name="tags"
-                value={typeof formValues.tags === 'string' ? formValues.tags : formValues.tags?.join(', ') || ''}
-                onChange={handleInputChange}
-                placeholder="design, frontend, bug..."
-                className="w-full"
-              />
-            </div>
-            
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setEditingTask(null)}>
-                Cancel
-              </Button>
-              <Button type="submit">
-                Update
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
+        <TaskEditor
+          task={editingTask}
+          formValues={formValues}
+          onInputChange={handleInputChange}
+          onSelectChange={handleSelectChange}
+          onSubmit={handleEditSubmit}
+          onCancel={() => setEditingTask(null)}
+        />
       </Dialog>
 
       <Dialog open={!!deleteConfirmTask} onOpenChange={(open) => !open && setDeleteConfirmTask(null)}>
-        <DialogContent 
-          className="sm:max-w-[400px]"
-          aria-describedby="delete-task-description" 
-        >
-          <DialogHeader>
-            <DialogTitle>Confirm deletion</DialogTitle>
-            <DialogDescription id="delete-task-description">
-              Are you sure you want to delete this task? This action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="mt-4">
-            <Button variant="outline" onClick={() => setDeleteConfirmTask(null)}>
-              Cancel
-            </Button>
-            <Button variant="destructive" onClick={handleDeleteConfirm}>
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
+        <TaskDeleteConfirmation
+          task={deleteConfirmTask}
+          onConfirm={handleDeleteConfirm}
+          onCancel={() => setDeleteConfirmTask(null)}
+        />
       </Dialog>
     </div>
   );
