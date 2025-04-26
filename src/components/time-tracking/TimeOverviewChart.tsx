@@ -60,7 +60,8 @@ export function TimeOverviewChart({ timeEntries, projects, tasks, timeRange }: T
     const dataPoint: any = { date };
     
     Object.entries(projects).forEach(([projectId, duration]) => {
-      const project = projects.find(p => p.id === projectId);
+      // Fix: Instead of finding in projects which is a number, we need to find in the projects array
+      const project = projects.find((p: Project) => p.id === projectId);
       const projectName = project ? project.name : 'Unknown';
       dataPoint[projectName] = duration;
     });
