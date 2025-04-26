@@ -8,9 +8,10 @@ import {
   Clock, 
   FileText, 
   Home, 
-  Plus, 
+  Plus,
   Search, 
-  Settings, 
+  Settings,
+  BarChart, 
   Users 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -25,6 +26,7 @@ export function Sidebar() {
     { name: 'My Tasks', path: '/my-tasks', icon: <CheckCircle size={18} /> },
     { name: 'Calendar', path: '/calendar', icon: <Calendar size={18} /> },
     { name: 'Time Tracking', path: '/time-tracking', icon: <Clock size={18} /> },
+    { name: 'Stats', path: '/stats', icon: <BarChart size={18} /> },
     { name: 'Team', path: '/team', icon: <Users size={18} /> },
   ];
 
@@ -99,7 +101,12 @@ export function Sidebar() {
       <div className="mt-auto px-3 py-4 border-t border-sidebar-border">
         <Link
           to="/settings"
-          className="flex items-center gap-2 px-2 py-2 text-sm rounded-md transition-colors text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+          className={cn(
+            "flex items-center gap-2 px-2 py-2 text-sm rounded-md transition-colors",
+            location.pathname === "/settings"
+              ? "bg-primary/20 text-primary-foreground font-medium" 
+              : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+          )}
         >
           <Settings size={18} />
           Settings

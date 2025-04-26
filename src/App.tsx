@@ -13,7 +13,8 @@ import MyTasks from "./pages/MyTasks";
 import TimeTracking from "./pages/TimeTracking";
 import Team from "./pages/Team";
 import Settings from "./pages/Settings";
-import { CalendarView } from "./components/CalendarView"; // Changed to named import
+import Stats from "./pages/Stats";
+import { CalendarView } from "./components/CalendarView";
 import { ProjectProvider } from "./contexts/ProjectContext";
 import { Sidebar } from "./components/Sidebar";
 
@@ -86,6 +87,18 @@ const App = () => (
                   <Sidebar />
                   <div className="flex-1 flex flex-col overflow-hidden">
                     <Team />
+                  </div>
+                </div>
+              } 
+            />
+            
+            <Route 
+              path="/stats" 
+              element={
+                <div className="flex h-screen">
+                  <Sidebar />
+                  <div className="flex-1 flex flex-col overflow-hidden">
+                    <Stats />
                   </div>
                 </div>
               } 
