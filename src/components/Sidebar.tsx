@@ -2,12 +2,13 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useProject } from '../hooks/useProject';
-import { FileText, Search, Settings } from 'lucide-react';
+import { Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Project } from '@/types/project';
-import { MainMenu } from './sidebar/MainMenu';
 import { ProjectList } from './sidebar/ProjectList';
 import { ProjectDialogs } from './sidebar/ProjectDialogs';
+import { SidebarHeader } from './sidebar/SidebarHeader';
+import { SidebarSearch } from './sidebar/SidebarSearch';
+import { SidebarNavigation } from './sidebar/SidebarNavigation';
 
 export function Sidebar() {
   const location = useLocation();
@@ -15,14 +16,14 @@ export function Sidebar() {
   const [newProjectDialogOpen, setNewProjectDialogOpen] = useState(false);
   const [editProjectDialogOpen, setEditProjectDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [selectedProject, setSelectedProject] = useState(null);
 
-  const handleEditProject = (project: Project) => {
+  const handleEditProject = (project) => {
     setSelectedProject(project);
     setEditProjectDialogOpen(true);
   };
 
-  const handleDeleteProject = (project: Project) => {
+  const handleDeleteProject = (project) => {
     setSelectedProject(project);
     setDeleteDialogOpen(true);
   };
@@ -37,28 +38,9 @@ export function Sidebar() {
   return (
     <div className="flex flex-col h-full w-60 bg-sidebar border-r border-sidebar-border text-sidebar-foreground">
       <div className="px-3 py-4">
-        <div className="flex items-center px-3 mb-8">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-md bg-primary flex items-center justify-center">
-              <FileText size={20} className="text-white" />
-            </div>
-            <h1 className="font-bold text-xl text-white">ProjectFlow</h1>
-          </div>
-        </div>
-        
-        <div className="px-3 mb-2">
-          <div className="relative">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <input 
-              type="text" 
-              placeholder="Search..." 
-              className="w-full py-2 pl-8 pr-3 bg-sidebar-accent text-sidebar-foreground rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary"
-            />
-          </div>
-        </div>
-        
-        <MainMenu />
-        
+        <SidebarHeader />
+        <SidebarSearch />
+        <SidebarNavigation />
         <ProjectList
           projects={projects}
           onNewProject={() => setNewProjectDialogOpen(true)}
