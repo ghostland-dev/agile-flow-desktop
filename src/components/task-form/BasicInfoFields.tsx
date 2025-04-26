@@ -3,6 +3,7 @@ import React, { useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { TaskFormState } from '@/hooks/useTaskForm';
+import { Label } from '@/components/ui/label';
 
 interface BasicInfoFieldsProps {
   formState: TaskFormState;
@@ -10,7 +11,7 @@ interface BasicInfoFieldsProps {
 }
 
 export function BasicInfoFields({ formState, setFormState }: BasicInfoFieldsProps) {
-  // Optimize with memoized handlers that only update specific fields
+  // Use stable callback references to prevent re-renders and focus loss
   const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setFormState(prevState => ({ ...prevState, title: newValue }));
@@ -24,7 +25,9 @@ export function BasicInfoFields({ formState, setFormState }: BasicInfoFieldsProp
   return (
     <div className="space-y-4">
       <div className="space-y-2">
+        <Label htmlFor="task-title">Title</Label>
         <Input 
+          id="task-title"
           placeholder="Task title" 
           value={formState.title}
           onChange={handleTitleChange}
@@ -34,7 +37,9 @@ export function BasicInfoFields({ formState, setFormState }: BasicInfoFieldsProp
       </div>
       
       <div className="space-y-2">
+        <Label htmlFor="task-description">Description</Label>
         <Textarea
+          id="task-description"
           placeholder="Description"
           value={formState.description}
           onChange={handleDescriptionChange}

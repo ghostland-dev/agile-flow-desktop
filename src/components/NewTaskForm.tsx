@@ -1,5 +1,5 @@
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Status } from '../types/project';
@@ -12,6 +12,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
   DrawerDescription,
+  DrawerClose,
 } from '@/components/ui/drawer';
 
 interface NewTaskFormProps {
@@ -20,14 +21,20 @@ interface NewTaskFormProps {
 }
 
 export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: NewTaskFormProps) {
-  const [open, setOpen] = React.useState(false);
-  const { formState, setFormState, isSubmitting, handleSubmit } = useTaskForm(initialStatus, () => setOpen(false));
+  const [open, setOpen] = useState(false);
+  
+  // Create a callback for success that will be stable across renders
+  const onSuccess = useCallback(() => setOpen(false), []);
+  
+  const { formState, setFormState, isSubmitting, handleSubmit } = useTaskForm(initialStatus, onSuccess);
   const drawerDescriptionId = React.useId();
 
+  // Stable function reference to prevent re-renders
   const closeDrawer = useCallback(() => {
     setOpen(false);
   }, []);
-
+  
+  // Memoize the form component to prevent unnecessary re-renders
   const TaskFormContent = React.memo(() => (
     <form onSubmit={handleSubmit}>
       <TaskFormFields
@@ -58,11 +65,9 @@ export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: New
         <div className="mx-auto w-full max-w-lg">
           <DrawerHeader>
             <DrawerTitle>Add New Task</DrawerTitle>
-            <div id={drawerDescriptionId}>
-              <DrawerDescription>
-                Create a new task with the details below
-              </DrawerDescription>
-            </div>
+            <DrawerDescription id={drawerDescriptionId}>
+              Create a new task with the details below
+            </DrawerDescription>
           </DrawerHeader>
           <div className="p-4">
             <TaskFormContent />

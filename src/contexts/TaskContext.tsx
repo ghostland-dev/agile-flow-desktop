@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { Task, Status, TaskContextType } from '../types/project';
 import { loadFromStorage, saveToStorage } from '../utils/storage';
 import { tasks } from '../utils/mockData';
@@ -23,42 +23,43 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
     saveToStorage('tasks', tasksList);
   }, [tasksList]);
 
-  const addTask = (task: Omit<Task, 'id' | 'createdAt'>) => {
+  // Optimize with useCallback to ensure stable function references
+  const addTask = useCallback((task: Omit<Task, 'id' | 'createdAt'>) => {
     const newTask: Task = {
       ...task,
       id: `task-${Date.now()}`,
       createdAt: new Date().toISOString(),
     };
     setTasksList(prevTasks => [...prevTasks, newTask]);
-  };
+  }, []);
 
-  const updateTaskStatus = (taskId: string, status: Status) => {
-    setTasksList(
-      tasksList.map(task => 
+  const updateTaskStatus = useCallback((taskId: string, status: Status) => {
+    setTasksList(prevTasks =>
+      prevTasks.map(task => 
         task.id === taskId ? { ...task, status } : task
       )
     );
-  };
+  }, []);
 
-  const updateTask = (taskId: string, updatedTask: Partial<Task>) => {
-    setTasksList(
-      tasksList.map(task => 
+  const updateTask = useCallback((taskId: string, updatedTask: Partial<Task>) => {
+    setTasksList(prevTasks =>
+      prevTasks.map(task => 
         task.id === taskId ? { ...task, ...updatedTask } : task
       )
     );
-  };
+  }, []);
 
-  const deleteTask = (taskId: string) => {
-    setTasksList(tasksList.filter(task => task.id !== taskId));
+  const deleteTask = useCallback((taskId: string) => {
+    setTasksList(prevTasks => prevTasks.filter(task => task.id !== taskId));
     toast({
       title: "Task deleted",
       description: "The task has been removed",
     });
-  };
+  }, [toast]);
 
-  const getTaskById = (taskId: string) => {
+  const getTaskById = useCallback((taskId: string) => {
     return tasksList.find(task => task.id === taskId);
-  };
+  }, [tasksList]);
 
   return (
     <TaskContext.Provider value={{
