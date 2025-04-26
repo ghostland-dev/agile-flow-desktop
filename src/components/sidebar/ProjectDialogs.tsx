@@ -36,7 +36,7 @@ export function ProjectDialogs({
         >
           <DialogHeader>
             <DialogTitle>Create New Project</DialogTitle>
-            <DialogDescription id="new-project-description" className="sr-only">
+            <DialogDescription id="new-project-description">
               Create a new project by filling out this form
             </DialogDescription>
           </DialogHeader>
@@ -51,7 +51,7 @@ export function ProjectDialogs({
         >
           <DialogHeader>
             <DialogTitle>Edit Project</DialogTitle>
-            <DialogDescription id="edit-project-description" className="sr-only">
+            <DialogDescription id="edit-project-description">
               Edit the project details
             </DialogDescription>
           </DialogHeader>
