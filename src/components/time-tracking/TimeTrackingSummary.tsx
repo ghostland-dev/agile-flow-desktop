@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Task } from '@/types/project';
 import { Card, CardContent } from '@/components/ui/card';
 import { Clock, CheckCircle, Calendar, BarChart } from 'lucide-react';
@@ -17,32 +17,49 @@ interface TimeTrackingSummaryProps {
 }
 
 export function TimeTrackingSummary({ timeEntries, tasks }: TimeTrackingSummaryProps) {
-  // Calculate total tracked time in hours
-  const totalTrackedSeconds = timeEntries.reduce((total, entry) => total + entry.duration, 0);
-  const trackedHours = Math.floor(totalTrackedSeconds / 3600);
-  const trackedMinutes = Math.floor((totalTrackedSeconds % 3600) / 60);
-  
-  // Calculate completed tasks with time entries
-  const tasksWithTimeIds = new Set(timeEntries.map(entry => entry.taskId));
-  const completedTasksCount = tasks.filter(task => 
-    tasksWithTimeIds.has(task.id) && task.status === 'done'
-  ).length;
-  
-  // Calculate productivity (average time per completed task)
-  const avgTimePerTask = completedTasksCount > 0 
-    ? Math.floor(totalTrackedSeconds / completedTasksCount / 60) 
-    : 0;
-  
-  // Format average time into hours and minutes
-  const avgHours = Math.floor(avgTimePerTask / 60);
-  const avgMinutes = avgTimePerTask % 60;
-  const avgTimeFormatted = avgHours > 0 
-    ? `${avgHours}h ${avgMinutes}m`
-    : `${avgMinutes}m`;
+  // Utilisation de useMemo pour optimiser les calculs intensifs
+  const {
+    trackedHours,
+    trackedMinutes,
+    tasksWithTimeIds,
+    completedTasksCount,
+    avgTimeFormatted
+  } = useMemo(() => {
+    // Calculate total tracked time in hours
+    const totalTrackedSeconds = timeEntries.reduce((total, entry) => total + entry.duration, 0);
+    const trackedHours = Math.floor(totalTrackedSeconds / 3600);
+    const trackedMinutes = Math.floor((totalTrackedSeconds % 3600) / 60);
+    
+    // Calculate completed tasks with time entries
+    const tasksWithTimeIds = new Set(timeEntries.map(entry => entry.taskId));
+    const completedTasksCount = tasks.filter(task => 
+      tasksWithTimeIds.has(task.id) && task.status === 'done'
+    ).length;
+    
+    // Calculate productivity (average time per completed task)
+    const avgTimePerTask = completedTasksCount > 0 
+      ? Math.floor(totalTrackedSeconds / completedTasksCount / 60) 
+      : 0;
+    
+    // Format average time into hours and minutes
+    const avgHours = Math.floor(avgTimePerTask / 60);
+    const avgMinutes = avgTimePerTask % 60;
+    const avgTimeFormatted = avgHours > 0 
+      ? `${avgHours}h ${avgMinutes}m`
+      : `${avgMinutes}m`;
+
+    return {
+      trackedHours,
+      trackedMinutes,
+      tasksWithTimeIds,
+      completedTasksCount,
+      avgTimeFormatted
+    };
+  }, [timeEntries, tasks]);
   
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <Card className="bg-white hover-lift transition-all">
+      <Card className="bg-white hover-lift transition-all hover:shadow-md">
         <CardContent className="pt-6">
           <div className="flex justify-between items-start">
             <div>
@@ -58,7 +75,7 @@ export function TimeTrackingSummary({ timeEntries, tasks }: TimeTrackingSummaryP
         </CardContent>
       </Card>
       
-      <Card className="bg-white hover-lift transition-all">
+      <Card className="bg-white hover-lift transition-all hover:shadow-md">
         <CardContent className="pt-6">
           <div className="flex justify-between items-start">
             <div>
@@ -74,7 +91,7 @@ export function TimeTrackingSummary({ timeEntries, tasks }: TimeTrackingSummaryP
         </CardContent>
       </Card>
       
-      <Card className="bg-white hover-lift transition-all">
+      <Card className="bg-white hover-lift transition-all hover:shadow-md">
         <CardContent className="pt-6">
           <div className="flex justify-between items-start">
             <div>
@@ -90,7 +107,7 @@ export function TimeTrackingSummary({ timeEntries, tasks }: TimeTrackingSummaryP
         </CardContent>
       </Card>
       
-      <Card className="bg-white hover-lift transition-all">
+      <Card className="bg-white hover-lift transition-all hover:shadow-md">
         <CardContent className="pt-6">
           <div className="flex justify-between items-start">
             <div>

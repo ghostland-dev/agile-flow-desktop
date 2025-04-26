@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { TimeEntry, TimeTrackingContextType } from '../types/project';
 import { loadFromStorage, saveToStorage } from '../utils/storage';
 import { useTaskContext } from './TaskContext';
@@ -22,7 +22,8 @@ export function TimeTrackingProvider({ children }: { children: React.ReactNode }
     saveToStorage('timeEntries', timeEntries);
   }, [timeEntries]);
 
-  const startTimeTracking = (taskId: string) => {
+  // Utilisation de useCallback pour optimiser les fonctions
+  const startTimeTracking = useCallback((taskId: string) => {
     const newEntry: TimeEntry = {
       id: `time-${Date.now()}`,
       taskId,
@@ -30,10 +31,10 @@ export function TimeTrackingProvider({ children }: { children: React.ReactNode }
       startTime: new Date().toISOString(),
       duration: 0
     };
-    setTimeEntries([...timeEntries, newEntry]);
-  };
+    setTimeEntries(prevEntries => [...prevEntries, newEntry]);
+  }, []);
 
-  const stopTimeTracking = (taskId: string) => {
+  const stopTimeTracking = useCallback((taskId: string) => {
     const now = new Date();
     
     setTimeEntries(entries => {
@@ -59,11 +60,11 @@ export function TimeTrackingProvider({ children }: { children: React.ReactNode }
       
       return updatedEntries;
     });
-  };
+  }, [updateTask]);
 
-  const getTaskTimeEntries = (taskId: string) => {
+  const getTaskTimeEntries = useCallback((taskId: string) => {
     return timeEntries.filter(entry => entry.taskId === taskId);
-  };
+  }, [timeEntries]);
 
   return (
     <TimeTrackingContext.Provider value={{
