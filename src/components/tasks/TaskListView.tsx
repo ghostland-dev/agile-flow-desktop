@@ -15,10 +15,10 @@ interface TaskListViewProps {
 
 export function TaskListView({ tasks, projects, getProjectDetails }: TaskListViewProps) {
   return (
-    <Card>
+    <Card className="bg-card dark:bg-card">
       <CardContent className="p-0">
         <div className="rounded-md border">
-          <div className="bg-muted/50 p-2 border-b grid grid-cols-12 text-xs font-medium text-muted-foreground">
+          <div className="bg-muted/50 dark:bg-muted/20 p-2 border-b grid grid-cols-12 text-xs font-medium text-muted-foreground">
             <div className="col-span-5 px-3 py-2">Task Name</div>
             <div className="col-span-2 px-3 py-2">Project</div>
             <div className="col-span-2 px-3 py-2">Due Date</div>
@@ -62,10 +62,10 @@ export function TaskListView({ tasks, projects, getProjectDetails }: TaskListVie
                       variant="outline" 
                       className={cn(
                         "font-normal text-xs capitalize",
-                        task.priority === 'urgent' && "bg-red-50 text-red-700 border-red-200",
-                        task.priority === 'high' && "bg-orange-50 text-orange-700 border-orange-200",
-                        task.priority === 'medium' && "bg-amber-50 text-amber-700 border-amber-200",
-                        task.priority === 'low' && "bg-blue-50 text-blue-700 border-blue-200"
+                        task.priority === 'urgent' && "bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800",
+                        task.priority === 'high' && "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800",
+                        task.priority === 'medium' && "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800",
+                        task.priority === 'low' && "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800"
                       )}
                     >
                       {task.priority}
@@ -76,9 +76,9 @@ export function TaskListView({ tasks, projects, getProjectDetails }: TaskListVie
                       variant="outline" 
                       className={cn(
                         "font-normal text-xs",
-                        task.status === 'todo' && "bg-gray-50 text-gray-700 border-gray-200",
-                        task.status === 'in_progress' && "bg-blue-50 text-blue-700 border-blue-200",
-                        task.status === 'done' && "bg-green-50 text-green-700 border-green-200"
+                        task.status === 'todo' && "bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-900/30 dark:text-gray-300 dark:border-gray-800",
+                        task.status === 'in_progress' && "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800",
+                        task.status === 'done' && "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800"
                       )}
                     >
                       {task.status === 'todo' ? 'To Do' : 

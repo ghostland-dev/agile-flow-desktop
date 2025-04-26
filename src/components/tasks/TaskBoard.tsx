@@ -18,8 +18,8 @@ interface TaskBoardProps {
 export function TaskBoard({ todoTasks, inProgressTasks, completedTasks }: TaskBoardProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-      <Card className="flex flex-col min-h-[200px]">
-        <CardHeader className="bg-muted/50 pb-2 flex flex-row items-center justify-between">
+      <Card className="flex flex-col min-h-[200px] bg-card dark:bg-card">
+        <CardHeader className="bg-muted/50 dark:bg-muted/20 pb-2 flex flex-row items-center justify-between">
           <CardTitle className="text-sm font-medium">
             To Do
             <Badge variant="outline" className="ml-2">
@@ -32,7 +32,7 @@ export function TaskBoard({ todoTasks, inProgressTasks, completedTasks }: TaskBo
                 <Plus size={16} />
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="bg-card dark:bg-card">
               <DialogHeader>
                 <DialogTitle>Ajouter une nouvelle tâche</DialogTitle>
               </DialogHeader>
@@ -47,8 +47,8 @@ export function TaskBoard({ todoTasks, inProgressTasks, completedTasks }: TaskBo
         </CardContent>
       </Card>
       
-      <Card className="flex flex-col min-h-[200px]">
-        <CardHeader className="bg-muted/50 pb-2 flex flex-row items-center justify-between">
+      <Card className="flex flex-col min-h-[200px] bg-card dark:bg-card">
+        <CardHeader className="bg-muted/50 dark:bg-muted/20 pb-2 flex flex-row items-center justify-between">
           <CardTitle className="text-sm font-medium">
             In Progress
             <Badge variant="outline" className="ml-2">
@@ -61,7 +61,7 @@ export function TaskBoard({ todoTasks, inProgressTasks, completedTasks }: TaskBo
                 <Plus size={16} />
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="bg-card dark:bg-card">
               <DialogHeader>
                 <DialogTitle>Ajouter une nouvelle tâche</DialogTitle>
               </DialogHeader>
@@ -76,8 +76,8 @@ export function TaskBoard({ todoTasks, inProgressTasks, completedTasks }: TaskBo
         </CardContent>
       </Card>
       
-      <Card className="flex flex-col min-h-[200px]">
-        <CardHeader className="bg-muted/50 pb-2 flex flex-row items-center justify-between">
+      <Card className="flex flex-col min-h-[200px] bg-card dark:bg-card">
+        <CardHeader className="bg-muted/50 dark:bg-muted/20 pb-2 flex flex-row items-center justify-between">
           <CardTitle className="text-sm font-medium">
             Completed
             <Badge variant="outline" className="ml-2">
@@ -90,7 +90,7 @@ export function TaskBoard({ todoTasks, inProgressTasks, completedTasks }: TaskBo
                 <Plus size={16} />
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="bg-card dark:bg-card">
               <DialogHeader>
                 <DialogTitle>Ajouter une nouvelle tâche</DialogTitle>
               </DialogHeader>

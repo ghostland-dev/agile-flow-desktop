@@ -26,20 +26,20 @@ export default function ProjectView() {
     <div className="flex flex-col flex-1">
       <ProjectHeader />
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-background">
-        <Card className="md:col-span-2">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-background dark:bg-background">
+        <Card className="md:col-span-2 bg-card dark:bg-card">
           <CardContent className="p-4">
             <ProjectStats tasks={projectTasks} />
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-card dark:bg-card">
           <CardContent className="p-4">
             <ProjectTeam />
           </CardContent>
         </Card>
       </div>
       
-      <div className="flex-1 overflow-auto bg-background p-4">
+      <div className="flex-1 overflow-auto bg-background dark:bg-background p-4">
         {currentView === 'kanban' && <KanbanBoard />}
         {currentView === 'list' && <TasksList tasks={projectTasks} />}
         {currentView === 'calendar' && <CalendarView />}
