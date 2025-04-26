@@ -22,15 +22,15 @@ export function KanbanBoard() {
     : [];
   
   // Handle drag events
-  const handleDragStart = (e: React.DragEvent, taskId: string) => {
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, taskId: string) => {
     e.dataTransfer.setData('taskId', taskId);
   };
   
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
   
-  const handleDrop = (e: React.DragEvent, status: Status) => {
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>, status: Status) => {
     e.preventDefault();
     const taskId = e.dataTransfer.getData('taskId');
     updateTaskStatus(taskId, status);

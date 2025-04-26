@@ -12,9 +12,9 @@ interface KanbanColumnProps {
   isDialogOpen: boolean;
   onDialogOpen: () => void;
   onDialogClose: () => void;
-  onDragStart: (e: React.DragEvent, taskId: string) => void;
-  onDragOver: (e: React.DragEvent) => void;
-  onDrop: (e: React.DragEvent, status: Status) => void;
+  onDragStart: (e: React.DragEvent<HTMLDivElement>, taskId: string) => void;
+  onDragOver: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDrop: (e: React.DragEvent<HTMLDivElement>, status: Status) => void;
 }
 
 export function KanbanColumn({
@@ -32,7 +32,7 @@ export function KanbanColumn({
     <div
       className="flex flex-col bg-muted/40 rounded-lg w-72 min-w-[18rem] h-full"
       onDragOver={onDragOver}
-      onDrop={e => onDrop(e, id)}
+      onDrop={(e) => onDrop(e, id)}
     >
       <KanbanColumnHeader
         title={title}

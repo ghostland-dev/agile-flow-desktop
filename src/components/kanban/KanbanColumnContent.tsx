@@ -1,11 +1,11 @@
 
 import React from 'react';
 import { Task } from '@/types/project';
-import { TaskCard } from '@/components/TaskCard';
+import { TaskCard } from '@/components/tasks/TaskCard';
 
 interface KanbanColumnContentProps {
   tasks: Task[];
-  onDragStart: (e: React.DragEvent, taskId: string) => void;
+  onDragStart: (e: React.DragEvent<HTMLDivElement>, taskId: string) => void;
 }
 
 export function KanbanColumnContent({ tasks, onDragStart }: KanbanColumnContentProps) {
@@ -20,7 +20,7 @@ export function KanbanColumnContent({ tasks, onDragStart }: KanbanColumnContentP
           <div
             key={task.id}
             draggable
-            onDragStart={e => onDragStart(e, task.id)}
+            onDragStart={(e) => onDragStart(e, task.id)}
           >
             <TaskCard task={task} />
           </div>

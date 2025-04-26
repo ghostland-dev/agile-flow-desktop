@@ -1,14 +1,14 @@
+
 import React, { useState } from 'react';
 import { useProject } from '../hooks/useProject';
 import { Task } from '../types/project';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { TaskTimer } from './TaskTimer';
 import { FileAttachments } from './FileAttachments';
 import { FileUploader } from './FileUploader';
 import { Button } from '@/components/ui/button';
-import { Upload } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { TaskStatusBadge } from './tasks/TaskStatusBadge';
 import { TaskPriorityBadge } from './tasks/TaskPriorityBadge';
@@ -44,9 +44,9 @@ export function TaskCard({ task }: TaskCardProps) {
       </p>
       
       <div className="flex flex-wrap gap-1 mb-3">
-        {task.tags.map(tag => (
+        {task.tags && task.tags.map((tag, index) => (
           <Badge 
-            key={tag} 
+            key={`${task.id}-tag-${index}`}
             variant="outline" 
             className="text-xs bg-muted dark:bg-gray-700 text-muted-foreground dark:text-gray-300"
           >
@@ -73,6 +73,7 @@ export function TaskCard({ task }: TaskCardProps) {
             size="sm"
             className="mt-3 h-7 text-xs dark:hover:bg-gray-700"
             onClick={() => setShowUploader(true)}
+            type="button"
           >
             <Upload size={12} className="mr-1" />
             Attach files
