@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,7 +22,7 @@ import { AlertCircle, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Filte
 export function CalendarView() {
   const { tasks, currentProject, projects } = useProject();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
-  const [viewMode, setViewMode<'day' | 'week' | 'month'>('day');
+  const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day');
   const [selectedProject, setSelectedProject] = useState<string | 'all'>('all');
 
   // Filter tasks for the current selection
