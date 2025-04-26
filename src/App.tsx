@@ -26,7 +26,6 @@ import { Sidebar } from "./components/Sidebar";
 import { Suspense } from "react";
 import { LoadingSkeleton } from "./components/ui/loading-skeleton";
 import { ScrollArea } from "./components/ui/scroll-area";
-import { SidebarProvider } from "@/components/ui/sidebar";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -60,11 +59,9 @@ function AppLayout({ children }: { children: React.ReactNode }) {
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader />
         <Suspense fallback={<div className="p-6"><LoadingSkeleton /></div>}>
-          <ScrollArea className="flex-1">
-            <main className="p-4">
-              {children}
-            </main>
-          </ScrollArea>
+          <main className="flex-1 overflow-hidden">
+            {children}
+          </main>
         </Suspense>
       </div>
     </div>
@@ -78,101 +75,99 @@ const App = () => {
         <TooltipProvider>
           <NotificationProvider>
             <ProjectProvider>
-              <SidebarProvider>
-                <Toaster />
-                <Sonner />
-                <BrowserRouter>
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/login" element={<Login />} />
-                    
-                    {/* Protected routes with sidebar */}
-                    <Route 
-                      path="/dashboard" 
-                      element={
-                        <AppLayout>
-                          <Dashboard />
-                        </AppLayout>
-                      } 
-                    />
-                    
-                    <Route 
-                      path="/my-tasks" 
-                      element={
-                        <AppLayout>
-                          <MyTasks />
-                        </AppLayout>
-                      } 
-                    />
-                    
-                    <Route 
-                      path="/calendar" 
-                      element={
-                        <AppLayout>
-                          <CalendarView />
-                        </AppLayout>
-                      } 
-                    />
-                    
-                    <Route 
-                      path="/time-tracking" 
-                      element={
-                        <AppLayout>
-                          <TimeTracking />
-                        </AppLayout>
-                      } 
-                    />
-                    
-                    <Route 
-                      path="/team" 
-                      element={
-                        <AppLayout>
-                          <Team />
-                        </AppLayout>
-                      } 
-                    />
-                    
-                    <Route 
-                      path="/stats" 
-                      element={
-                        <AppLayout>
-                          <Stats />
-                        </AppLayout>
-                      } 
-                    />
-                    
-                    <Route 
-                      path="/settings" 
-                      element={
-                        <AppLayout>
-                          <Settings />
-                        </AppLayout>
-                      } 
-                    />
-                    
-                    <Route 
-                      path="/profile" 
-                      element={
-                        <AppLayout>
-                          <Profile />
-                        </AppLayout>
-                      } 
-                    />
-                    
-                    <Route 
-                      path="/projects/:projectId" 
-                      element={
-                        <AppLayout>
-                          <ProjectView />
-                        </AppLayout>
-                      } 
-                    />
-                    
-                    {/* Redirect unrecognized paths to 404 */}
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </BrowserRouter>
-              </SidebarProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/login" element={<Login />} />
+                  
+                  {/* Protected routes with sidebar */}
+                  <Route 
+                    path="/dashboard" 
+                    element={
+                      <AppLayout>
+                        <Dashboard />
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/my-tasks" 
+                    element={
+                      <AppLayout>
+                        <MyTasks />
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/calendar" 
+                    element={
+                      <AppLayout>
+                        <CalendarView />
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/time-tracking" 
+                    element={
+                      <AppLayout>
+                        <TimeTracking />
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/team" 
+                    element={
+                      <AppLayout>
+                        <Team />
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/stats" 
+                    element={
+                      <AppLayout>
+                        <Stats />
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/settings" 
+                    element={
+                      <AppLayout>
+                        <Settings />
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/profile" 
+                    element={
+                      <AppLayout>
+                        <Profile />
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/projects/:projectId" 
+                    element={
+                      <AppLayout>
+                        <ProjectView />
+                      </AppLayout>
+                    } 
+                  />
+                  
+                  {/* Redirect unrecognized paths to 404 */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
             </ProjectProvider>
           </NotificationProvider>
         </TooltipProvider>
