@@ -91,11 +91,11 @@
   }
 
   html {
-    @apply overflow-hidden;
+    @apply overflow-auto;
   }
 
   body {
-    @apply bg-background text-foreground transition-colors duration-300 overflow-hidden;
+    @apply bg-background text-foreground transition-colors duration-300;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
