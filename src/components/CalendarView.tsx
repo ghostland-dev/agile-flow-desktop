@@ -78,7 +78,7 @@ export function CalendarView() {
   };
 
   return (
-    <div className="flex flex-col gap-4 p-6 animate-fade-in">
+    <div className="flex flex-col gap-4 p-6 bg-background dark:bg-background animate-fade-in">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-3xl font-bold">Calendar</h1>
         <div className="flex items-center gap-4">
@@ -125,7 +125,7 @@ export function CalendarView() {
 
       <div className="grid md:grid-cols-[auto,1fr] gap-6">
         <div className="w-fit">
-          <Card className="bg-card p-4">
+          <Card className="bg-card dark:bg-card p-4">
             <CalendarComponent
               mode="single"
               selected={selectedDate}

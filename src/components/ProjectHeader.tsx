@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useProject } from '../hooks/useProject';
 import { Calendar, Clock, List, Play, Square, Timer, Search, Filter, Plus } from 'lucide-react';
@@ -97,7 +96,7 @@ export function ProjectHeader() {
   ).slice(0, 5); // Limit to 5 visible members
   
   return (
-    <header className="border-b bg-white px-6 py-4">
+    <header className="border-b bg-background dark:bg-background px-6 py-4">
       <div className="flex items-center justify-between mb-6">
         <div>
           <div className="flex items-center gap-3">
