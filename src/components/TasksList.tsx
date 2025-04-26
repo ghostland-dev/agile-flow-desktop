@@ -212,17 +212,32 @@ export const TasksList: React.FC<TasksListProps> = ({ tasks }) => {
             </div>
 
             <div className="mt-3 pt-2 border-t border-border/40 flex justify-end gap-2">
-              <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => handleViewClick(task)}>
-                <Eye size={16} className="mr-1" />
-                View
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8" 
+                onClick={() => handleViewClick(task)}
+                title="View task"
+              >
+                <Eye size={16} />
               </Button>
-              <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => handleEditClick(task)}>
-                <Edit size={16} className="mr-1" />
-                Edit
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8" 
+                onClick={() => handleEditClick(task)}
+                title="Edit task"
+              >
+                <Edit size={16} />
               </Button>
-              <Button variant="ghost" size="sm" className="h-8 px-2 text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteClick(task)}>
-                <Trash2 size={16} className="mr-1" />
-                Delete
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50" 
+                onClick={() => handleDeleteClick(task)}
+                title="Delete task"
+              >
+                <Trash2 size={16} />
               </Button>
             </div>
           </div>
