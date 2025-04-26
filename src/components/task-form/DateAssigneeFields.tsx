@@ -15,6 +15,14 @@ interface DateAssigneeFieldsProps {
 }
 
 export function DateAssigneeFields({ formState, setFormState }: DateAssigneeFieldsProps) {
+  const handleDateChange = (date: Date | undefined) => {
+    setFormState({ ...formState, dueDate: date });
+  };
+
+  const handleAssigneeChange = (value: string) => {
+    setFormState({ ...formState, assignee: value === "unassigned" ? undefined : value });
+  };
+
   return (
     <div className="grid grid-cols-2 gap-4">
       <div className="space-y-2">
@@ -36,7 +44,7 @@ export function DateAssigneeFields({ formState, setFormState }: DateAssigneeFiel
             <Calendar 
               mode="single" 
               selected={formState.dueDate} 
-              onSelect={(date) => setFormState({ ...formState, dueDate: date })}
+              onSelect={handleDateChange}
               initialFocus 
               className="pointer-events-auto"
             />
@@ -48,7 +56,7 @@ export function DateAssigneeFields({ formState, setFormState }: DateAssigneeFiel
         <label className="text-sm font-medium">Assigned to</label>
         <Select 
           value={formState.assignee || "unassigned"}
-          onValueChange={(value) => setFormState({ ...formState, assignee: value === "unassigned" ? undefined : value })}
+          onValueChange={handleAssigneeChange}
         >
           <SelectTrigger>
             <SelectValue placeholder="Unassigned" />

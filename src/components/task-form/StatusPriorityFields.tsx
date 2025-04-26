@@ -9,13 +9,21 @@ interface StatusPriorityFieldsProps {
 }
 
 export function StatusPriorityFields({ formState, setFormState }: StatusPriorityFieldsProps) {
+  const handleStatusChange = (value: string) => {
+    setFormState({ ...formState, status: value as any });
+  };
+
+  const handlePriorityChange = (value: string) => {
+    setFormState({ ...formState, priority: value as any });
+  };
+
   return (
     <div className="grid grid-cols-2 gap-4">
       <div className="space-y-2">
         <label className="text-sm font-medium">Status</label>
         <Select 
           value={formState.status} 
-          onValueChange={(value) => setFormState({ ...formState, status: value as any })}
+          onValueChange={handleStatusChange}
         >
           <SelectTrigger>
             <SelectValue />
@@ -34,7 +42,7 @@ export function StatusPriorityFields({ formState, setFormState }: StatusPriority
         <label className="text-sm font-medium">Priority</label>
         <Select 
           value={formState.priority} 
-          onValueChange={(value) => setFormState({ ...formState, priority: value as any })}
+          onValueChange={handlePriorityChange}
         >
           <SelectTrigger>
             <SelectValue />

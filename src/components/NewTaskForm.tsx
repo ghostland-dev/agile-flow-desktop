@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
@@ -16,13 +16,22 @@ export function NewTaskForm({ initialStatus = 'todo', openInDialog = true }: New
   const [open, setOpen] = useState(false);
   const { formState, setFormState, isSubmitting, handleSubmit } = useTaskForm(initialStatus, () => setOpen(false));
   
+  // Mémoriser la fonction de mise à jour de l'état pour éviter les re-rendus
+  const updateFormState = useCallback((state) => {
+    setFormState(state);
+  }, [setFormState]);
+  
+  const closeDialog = useCallback(() => {
+    setOpen(false);
+  }, []);
+  
   const TaskFormContent = () => (
     <form onSubmit={handleSubmit}>
       <TaskFormFields
         formState={formState}
-        setFormState={setFormState}
+        setFormState={updateFormState}
         isSubmitting={isSubmitting}
-        onCancel={() => setOpen(false)}
+        onCancel={closeDialog}
         showCancel={openInDialog}
       />
     </form>
