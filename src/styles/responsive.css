@@ -1,0 +1,67 @@
+
+@responsive {
+  .content-height {
+    height: calc(100vh - 3.5rem);
+  }
+  
+  .content-container {
+    @apply px-4 py-6 md:px-6 lg:px-8;
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .mobile-content {
+    @apply px-3 py-4;
+  }
+  
+  .mobile-text {
+    font-size: 0.9rem;
+  }
+  
+  .mobile-heading {
+    font-size: 1.5rem !important;
+  }
+}
+
+/* Chart responsiveness */
+.chart-container {
+  @apply w-full overflow-x-auto;
+  min-height: 300px;
+}
+
+@media (max-width: 768px) {
+  .chart-container {
+    min-height: 250px;
+  }
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, Opera */
+}
+
+/* Page transitions */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.page-transition-exit {
+  opacity: 1;
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transition: opacity 300ms;
+}
